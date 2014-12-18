@@ -1,0 +1,29 @@
+Util::SetGlobal language=pt selector=src
+# a-layer to t-layer
+A2T::PT::MarkEdgesToCollapse
+A2T::BuildTtree
+A2T::RehangUnaryCoordConj
+A2T::SetIsMember
+A2T::PT::SetCoapFunctors
+A2T::FixIsMember
+A2T::MarkParentheses
+A2T::MoveAuxFromCoordToMembers
+A2T::MarkClauseHeads
+A2T::MarkRelClauseHeads
+A2T::MarkRelClauseCoref 
+A2T::DeleteChildlessPunctuation
+
+# lexical transformation of lemmas to t-lemmas should be here
+#A2T::PT::FixTlemmas 
+A2T::SetNodetype
+A2T::SetFormeme 
+A2T::SetGrammatemes
+A2T::PT::SetGrammatemesFromAux
+A2T::AddPersPronSb
+A2T::MinimizeGrammatemes
+
+# semantic role labeling should be here
+#A2T::PT::SetFunctors
+A2T::SetNodetype
+A2T::FixAtomicNodes
+A2T::MarkReflpronCoref 
