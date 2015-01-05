@@ -7,7 +7,8 @@ function main {
 	align
 	m2a
 	a2t
-	train
+	train $lang1 $lang2
+	train $lang2 $lang1
 }
 
 function init {
@@ -35,7 +36,7 @@ function init {
 
 function get_corpus {
 	test -f corpus/parts.txt && return 0
-	stderr "$(date) get_corpus started"
+	stderr "$(date)  started get_corpus"
 	corpusf1=${corpus/\{lang\}/$lang1}
 	corpusf2=${corpus/\{lang\}/$lang2}
 	test -f "$corpusf1" || fatal "corpus file '$corpusf1' does not exist"
@@ -50,7 +51,7 @@ function get_corpus {
 
 	find corpus/$lang1 -name 'part_*.txt' -printf '%f\n' | sed 's/\.txt$//' |
 	sort > corpus/parts.txt
-	stderr "$(date) get_corpus finished"
+	stderr "$(date) finished get_corpus"
 }
 
 function w2m {
@@ -58,7 +59,7 @@ function w2m {
 	batches=$(todo w2m)
 	changed=false
 	if test -n "$batches"; then
-		stderr "$(date) w2m started"
+		stderr "$(date)  started w2m"
 		for batch in $batches; do
 			test -s batches/$batch || continue
 			changed=true
@@ -87,19 +88,19 @@ function w2m {
 		for batch in $batches; do
 			rm -f corpus/{$lang1,$lang2}/batch_$batch.txt
 		done
-		stderr "$(date) w2m ended"
+		stderr "$(date) finished w2m"
 	fi
 	if $changed || ! test -f lemmas.gz; then
-		stderr $(date) "gzipping lemmas ..."
+		stderr "$(date)  started gzipping lemmas"
 		find lemmas -name '*.txt' | sort | xargs cat | gzip > lemmas.gz
-		stderr $(date) "gzipping lemmas finished"
+		stderr "$(date) finished gzipping lemmas"
 	fi
 }
 
 function align {
 	test -f lemmas.gz || fatal "$workdir/lemmas.gz does not exist"
 	test lemmas.gz -nt alignments.gz || return 0
-	stderr "$(date) align started"
+	stderr "$(date)  started align"
 	create_dir align_tmp
 	$treexdir/devel/qtleap/bin/gizawrapper.pl \
 		--tempdir=align_tmp \
@@ -115,14 +116,14 @@ function align {
 	if $rm_giza_files; then
 		rm -rf align_tmp
 	fi
-	stderr "$(date) align ended"
+	stderr "$(date) finished align"
 }
 
 function m2a {
 	create_dir atrees
 	batches=$(todo m2a)
 	if test -n "$batches"; then
-		stderr "$(date) m2a started"
+		stderr "$(date)  started m2a"
 		for batch in $batches; do
 			test -s batches/$batch || continue
 			ln -f batches/$batch mtrees/batch_$batch.txt
@@ -150,7 +151,7 @@ function m2a {
 		for batch in $batches; do
 			rm -f mtrees/batch_$batch.txt
 		done
-		stderr "$(date) m2a ended"
+		stderr "$(date) finished m2a"
 	fi
 }
 
@@ -158,7 +159,7 @@ function a2t {
 	create_dir ttrees $lang1-$lang2/v $lang2-$lang1/v
 	batches=$(todo a2t)
 	if test -n "$batches"; then
-		stderr "$(date) a2t started"
+		stderr "$(date)  started a2t"
 		for batch in $batches; do
 			test -s batches/$batch || continue
 			ln -f batches/$batch atrees/batch_$batch.txt
@@ -185,12 +186,14 @@ function a2t {
 					selector=src \
 					trg_lang=$lang1 \
 					compress=1 \
+					to='.' \
 					substitute="{ttrees}{$lang2-$lang1/v}" \
 				Print::VectorsForTM \
 					language=$lang1 \
 					selector=src \
 					trg_lang=$lang2 \
 					compress=1 \
+					to='.' \
 					substitute="{$lang2-$lang1}{$lang1-$lang2}" \
 				&> logs/$batch.log &
 		done
@@ -198,13 +201,35 @@ function a2t {
 		for batch in $batches; do
 			rm -f atrees/batch_$batch.txt
 		done
-		stderr "$(date) a2t ended"
+		stderr "$(date) finished a2t"
 	fi
 }
 
 function train {
-	stderr "$(date) train started"
-	stderr "$(date) train ended"
+	src=$1
+	trg=$2
+	stderr "$(date)  started train $src-$trg"
+	create_dir $src-$trg/{lemma,formeme}
+
+	stderr "$(date)  started sorting $src-$trg vectors by $src lemmas"
+	find $src-$trg/v -name "part_*.gz" |
+	sort |
+	xargs zcat |
+	cut -f1,2,5 |
+	sort -k1,1 --buffer-size $sort_mem --parallel=$num_procs |
+	gzip > $src-$trg/lemma/train.gz
+	stderr "$(date) finished sorting $src-$trg vectors by $src lemmas"
+
+	for modeltype in static maxent; do
+		stderr "$(date)  started training $modeltype $src-$trg lemmas transfer model"
+		eval "train_opts=\$${modeltype}_train_opts"
+		zcat $src-$trg/lemma/train.gz |
+		eval $treexdir/training/mt/transl_models/train.pl \
+			$modeltype $train_opts $src-$trg/lemma/$modeltype.model.gz \
+			>& logs/train_${src}-${trg}_$modeltype.log
+		stderr "$(date) finished training $modeltype $src-$trg lemmas transfer model"
+	done
+	stderr "$(date) finished train $src-$trg"
 }
 
 # -------------- Aux functions ----------------
