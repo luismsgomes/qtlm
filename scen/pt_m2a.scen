@@ -10,10 +10,7 @@ Util::SetGlobal lxsuite_key=nlx.qtleap.13417612987549387402
 # NER should be run here - optional
 
 # a-layer
-W2A::PT::Parse lxsuite_mode=conll.pos:parser:conll.lx
-#W2A::PT::RemoveUnderscoresFromExpandedContractions
-HamleDT::PT::HarmonizeCintil
 
-#W2A::PT::Parse lxsuite_mode=conll.pos:parser:conll.usd
+W2A::PT::Parse lxsuite_mode=conll.pos:parser:conll.usd
 #W2A::PT::RemoveUnderscoresFromExpandedContractions
-#HamleDT::PT::HarmonizeCintilUSD
+HamleDT::PT::HarmonizeCintilUSD
