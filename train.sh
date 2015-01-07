@@ -273,7 +273,7 @@ function todo {
 		<(find $trees -name '*.streex' -printf '%f\n' | sort) \
 		> todo.$step
 	if test -s todo.$step; then
-		split -d -a 1 -n l/$num_procs todo.$step batches/${step}_
+		split -d -a 3 -n l/$num_procs todo.$step batches/${step}_
 		rm -f todo.$step
 	fi
 	find batches -name "${step}_*" -printf '%f\n'
