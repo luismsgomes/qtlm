@@ -221,10 +221,11 @@ function train_langpair {
 	done
 	wait
 	for factor in lemma formeme; do
-		create_dir $treex_share/models/$configname/$src-$trg/$factor
+		d="$treex_share/data/models/transfer_$configname/$src-$trg/$factor"
+		create_dir "$d"
 		pushd $treex_share/models/$configname/$src-$trg/$factor
-			ln -fs $workdir/$src-$trg/$factor/static.model.gz
-			ln -fs $workdir/$src-$trg/$factor/maxent.model.gz
+			ln -fs "$d/static.model.gz"
+			ln -fs "$d/maxent.model.gz"
 		popd
 	done
 	stderr "$(date '+%F %T') finished train $src-$trg"

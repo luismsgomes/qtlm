@@ -64,11 +64,11 @@ function translate {
 			source_language=$src \
 			source_selector=src \
 		T2T::TrFAddVariants \
-			model_dir="models/${configname}/${src}-${trg}/formeme" \
+			model_dir="data/models/${configname}/${src}-${trg}/formeme" \
 			static_model="static.model.gz" \
 			discr_model="maxent.model.gz" \
 		T2T::TrLAddVariants \
-			model_dir="models/${configname}/${src}-${trg}/lemma" \
+			model_dir="data/models/${configname}/${src}-${trg}/lemma" \
 			static_model="static.model.gz" \
 			discr_model="maxent.model.gz" \
 		"$mydir/scen/${trg}_t2a.scen" \
