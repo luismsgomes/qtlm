@@ -30,12 +30,12 @@ function init {
 	if test "$src" == "$trg"; then
 		fatal "SRC_LANG and TRG_LANG must be different"
 	fi
-	for step in w2m m2a a2t; do
+	for step in w2a a2t; do
 		scen="$mydir/scen/${src}_${step}.scen"
 		test -f "$scen" ||
 			fatal "missing ${step^^} scenario for ${src^^}: $scen"
 	done
-	for step in t2a a2m m2w; do
+	for step in t2a a2w; do
 		scen="$mydir/scen/${trg}_${step}.scen"
 		test -f "$scen" ||
 			fatal "missing ${step^^} scenario for ${trg^^}: $scen"
@@ -46,17 +46,16 @@ function init {
 
 function translate {
 	create_dir translated
-	treex_out="$workdir/translated/$(date '+%F_%T')_${src}-${trg}"
+	session="$(date '+%F_%T')_${src}-${trg}"
+	treex_out="$workdir/translated/$session"
 	$treexdir/bin/treex \
-		--quiet \
 		Util::SetGlobal if_missing_bundles=ignore \
 		Read::Sentences \
 			skip_empty=1 \
 			lines_per_doc=1 \
 			language=$src \
 			selector=src \
-		"$mydir/scen/${src}_w2m.scen" \
-		"$mydir/scen/${src}_m2a.scen" \
+		"$mydir/scen/${src}_w2a.scen" \
 		"$mydir/scen/${src}_a2t.scen" \
 		Util::SetGlobal \
 			language=$trg \
@@ -73,15 +72,14 @@ function translate {
 			static_model="static.model.gz" \
 			discr_model="maxent.model.gz" \
 		"$mydir/scen/${trg}_t2a.scen" \
-		"$mydir/scen/${trg}_a2m.scen" \
-		"$mydir/scen/${trg}_m2w.scen" \
+		"$mydir/scen/${trg}_a2w.scen" \
 		Write::Treex \
 			storable=1 \
 			to="." \
 			substitute="{noname}{$treex_out/}" \
 		Write::Sentences \
 			selector=trg \
-			language=$trg
+			language=$trg 2> "translated/$session.stderr"
 }
 
 function stderr {

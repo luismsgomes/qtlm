@@ -3,14 +3,10 @@ Util::SetGlobal selector=src language=pt
 Util::SetGlobal lxsuite_host=localhost lxsuite_port=10000
 Util::SetGlobal lxsuite_key=nlx.qtleap.13417612987549387402
 
-
 #Util::SetGlobal error_level=DEBUG
 
-# named entities
-# NER should be run here - optional
+W2A::PT::TokenizeAndTag
 
 # a-layer
-
 W2A::PT::Parse lxsuite_mode=conll.pos:parser:conll.usd
-#W2A::PT::RemoveUnderscoresFromExpandedContractions
 HamleDT::PT::HarmonizeCintilUSD

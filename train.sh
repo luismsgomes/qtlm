@@ -3,9 +3,8 @@
 function main {
 	init "$@"
 	get_corpus
-	w2m
+	w2a
 	align
-	m2a
 	a2t
 	train
 }
@@ -25,7 +24,7 @@ function init {
 		sort_mem static_train_opts maxent_train_opts
 	
 	for lang in $lang1 $lang2; do
-		for step in w2m m2a a2t; do
+		for step in w2a a2t; do
 			scen="$mydir/scen/${lang}_${step}.scen"
 			test -f "$scen" ||
 				fatal "missing ${step^^} scenario for ${lang^^}: $scen"
@@ -57,12 +56,12 @@ function get_corpus {
 	stderr "$(date '+%F %T') finished get_corpus"
 }
 
-function w2m {
-	create_dir mtrees lemmas
-	batches=$(todo w2m)
+function w2a {
+	create_dir atrees lemmas
+	batches=$(todo w2a)
 	changed=false
 	if test -n "$batches"; then
-		stderr "$(date '+%F %T')  started w2m"
+		stderr "$(date '+%F %T')  started w2a"
 		for batch in $batches; do
 			test -s batches/$batch || continue
 			changed=true
@@ -73,11 +72,11 @@ function w2m {
 				Read::AlignedSentences \
 					${lang1}_src=@corpus/$lang1/batch_$batch.txt \
 					${lang2}_src=@corpus/$lang2/batch_$batch.txt \
-				"$mydir/scen/${lang1}_w2m.scen" \
-				"$mydir/scen/${lang2}_w2m.scen" \
+				"$mydir/scen/${lang1}_w2a.scen" \
+				"$mydir/scen/${lang2}_w2a.scen" \
 				Write::Treex \
 					storable=1 \
-					substitute='{^.*/([^\/]*)\.streex}{mtrees/$1.streex}' \
+					substitute='{^.*/([^\/]*)\.streex}{atrees/$1.streex}' \
 				Write::LemmatizedBitexts \
 					selector=src \
 					language=$lang1 \
@@ -91,7 +90,7 @@ function w2m {
 		for batch in $batches; do
 			rm -f corpus/{$lang1,$lang2}/batch_$batch.txt
 		done
-		stderr "$(date '+%F %T') finished w2m"
+		stderr "$(date '+%F %T') finished w2a"
 	fi
 	if $changed || ! test -f lemmas.gz; then
 		stderr "$(date '+%F %T')  started gzipping lemmas"
@@ -114,48 +113,12 @@ function align {
 		--keep \
 		--dirsym=gdfa,int,left,right,revgdfa \
 		2> logs/align.log |
-	paste <(zcat lemmas.gz | cut -f 1 | sed 's|^.*/|mtrees/|;s|\.txt|.streex|') - |
+	paste <(zcat lemmas.gz | cut -f 1 | sed 's|^.*/|atrees/|;s|\.txt|.streex|') - |
 	gzip > alignments.gz
 	if $rm_giza_files; then
 		rm -rf align_tmp
 	fi
 	stderr "$(date '+%F %T') finished align"
-}
-
-function m2a {
-	create_dir atrees
-	batches=$(todo m2a)
-	if test -n "$batches"; then
-		stderr "$(date '+%F %T')  started m2a"
-		for batch in $batches; do
-			test -s batches/$batch || continue
-			ln -f batches/$batch mtrees/batch_$batch.txt
-			$treexdir/bin/treex \
-				Read::Treex \
-					from=@mtrees/batch_$batch.txt \
-				"$mydir/scen/${lang1}_m2a.scen" \
-				"$mydir/scen/${lang2}_m2a.scen" \
-				Align::A::InsertAlignmentFromFile \
-					from=alignments.gz \
-					inputcols=gdfa_int_left_right_revgdfa_therescore_backscore \
-					selector=src \
-					language=$lang1 \
-					to_selector=src \
-					to_language=$lang2 \
-				Align::ReverseAlignment2 \
-					language=$lang1 \
-					layer=a \
-				Write::Treex \
-					storable=1 \
-					substitute='{mtrees}{atrees}' \
-				&> logs/$batch.log &
-		done
-		wait
-		for batch in $batches; do
-			rm -f mtrees/batch_$batch.txt
-		done
-		stderr "$(date '+%F %T') finished m2a"
-	fi
 }
 
 function a2t {
@@ -169,6 +132,17 @@ function a2t {
 			$treexdir/bin/treex \
 				Read::Treex \
 					from=@atrees/batch_$batch.txt \
+				Align::A::InsertAlignmentFromFile \
+					from=alignments.gz \
+					inputcols=gdfa_int_left_right_revgdfa_therescore_backscore \
+					selector=src \
+					language=$lang1 \
+					to_selector=src \
+					to_language=$lang2 \
+				Align::ReverseAlignment2 \
+					selector=src \
+					language=$lang1 \
+					layer=a \
 				"$mydir/scen/${lang1}_a2t.scen" \
 				"$mydir/scen/${lang2}_a2t.scen" \
 				Align::T::CopyAlignmentFromAlayer \
@@ -288,8 +262,7 @@ function todo {
 	create_dir batches
 	step=$1
 	case $1 in
-		w2m) trees=mtrees ;;
-		m2a) trees=atrees ;;
+		w2a) trees=atrees ;;
 		a2t) trees=ttrees ;;
 		*) fatal "invalid step '$step'" ;;
 	esac

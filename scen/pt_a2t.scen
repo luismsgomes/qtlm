@@ -1,4 +1,5 @@
-Util::SetGlobal language=pt selector=src
+Util::SetGlobal selector=src language=pt
+
 # a-layer to t-layer
 A2T::PT::MarkEdgesToCollapse
 A2T::BuildTtree

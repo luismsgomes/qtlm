@@ -1,4 +1,4 @@
-Util::SetGlobal language=en selector=trg
+Util::SetGlobal selector=trg language=en
 
 T2A::DeleteGeneratedNodes
 T2A::CopyTtree

@@ -1,0 +1,30 @@
+Util::SetGlobal selector=trg language=pt
+
+Util::SetGlobal lxsuite_host=localhost lxsuite_port=10000
+Util::SetGlobal lxsuite_key=nlx.qtleap.13417612987549387402
+
+T2T::SetClauseNumber
+
+# and do the synthesis
+T2A::CopyTtree
+T2A::MarkSubject
+T2A::PT::InitMorphcat
+T2A::PT::AddArticles
+T2A::PT::AddPrepos
+T2A::AddSubconjs
+T2A::AddCoordPunct
+T2A::PT::AddComparatives
+T2A::PT::MoveRhematizers
+
+T2A::ImposeSubjpredAgr
+T2A::ImposeAttrAgr
+T2A::DropPersPronSb
+
+T2A::ProjectClauseNumber
+T2A::AddParentheses
+T2A::AddSentFinalPunct
+
+T2A::PT::GenerateWordforms
+Util::Eval anode='$.set_tag(join " ", $.get_iset_values())'
+T2A::DeleteSuperfluousAuxCP
+T2A::CapitalizeSentStart
