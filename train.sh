@@ -224,8 +224,8 @@ function train_langpair {
 		d="$treex_share/data/models/transfer/$src-$trg/$configname/$factor"
 		create_dir "$d"
 		pushd "$d"
-			ln -fs "$d/static.model.gz"
-			ln -fs "$d/maxent.model.gz"
+			ln -fs "$workdir/$src-$trg/$factor/static.model.gz"
+			ln -fs "$workdir/$src-$trg/$factor/maxent.model.gz"
 		popd
 	done
 	stderr "$(date '+%F %T') finished train $src-$trg"
