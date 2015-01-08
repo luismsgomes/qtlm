@@ -13,10 +13,10 @@ function init {
 	test $# == 3 || fatal "usage: $0 CONFIGURATION SRC_LANG TRG_LANG"
 	test -f "$1" || fatal "config file '$1' does not exist"
 	configfile=$1
-	configname=$(basename $configfile .conf)
 	src=${2,,}
 	trg=${3,,}
-	source "$1"
+	configname=$(perl -pe 's{(?:.*/)?([^\.]*)(?:\..*)?}{\1}' <<< $configfile)
+	source "$configfile"
 	lang1=${lang1,,}
 	lang2=${lang2,,}
 	map check_config_variable workdir treexdir treexsharedir \

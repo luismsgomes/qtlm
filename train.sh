@@ -17,8 +17,8 @@ function init {
 	test $# == 1 || fatal "please give the configuration filename as argument"
 	test -f "$1" || fatal "config file '$1' does not exist"
 	configfile=$1
-	configname=$(basename $configfile .conf)
-	source "$1"
+	configname=$(perl -pe 's{(?:.*/)?([^\.]*)(?:\..*)?}{\1}' <<< $configfile)
+	source "$configfile"
 	map check_config_variable workdir treexdir treexsharedir \
 		lang1 lang2 corpus num_procs rm_giza_files running_on_a_big_machine \
 		sort_mem static_train_opts maxent_train_opts
@@ -223,7 +223,7 @@ function train_langpair {
 	for factor in lemma formeme; do
 		d="$treex_share/data/models/transfer/$src-$trg/$configname/$factor"
 		create_dir "$d"
-		pushd $treex_share/models/$configname/$src-$trg/$factor
+		pushd "$d"
 			ln -fs "$d/static.model.gz"
 			ln -fs "$d/maxent.model.gz"
 		popd
