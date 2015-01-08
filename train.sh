@@ -221,7 +221,7 @@ function train_langpair {
 	done
 	wait
 	for factor in lemma formeme; do
-		d="$treex_share/data/models/transfer_$configname/$src-$trg/$factor"
+		d="$treex_share/data/models/transfer/$src-$trg/$configname/$factor"
 		create_dir "$d"
 		pushd $treex_share/models/$configname/$src-$trg/$factor
 			ln -fs "$d/static.model.gz"
