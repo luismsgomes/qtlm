@@ -45,9 +45,8 @@ function init {
 }
 
 function translate {
-	create_dir translated
-	session="$(date '+%F_%T')_${src}-${trg}"
-	treex_out="$workdir/translated/$session"
+	session_dir="$workdir/sessions/$src-$trg/$(date '+%Y%m%d_%H%M%S')"
+	create_dir "$session_dir"
 	$treexdir/bin/treex \
 		Util::SetGlobal if_missing_bundles=ignore \
 		Read::Sentences \
@@ -76,10 +75,10 @@ function translate {
 		Write::Treex \
 			storable=1 \
 			to="." \
-			substitute="{noname}{$treex_out/}" \
+			substitute="{noname}{$session_dir/}" \
 		Write::Sentences \
 			selector=trg \
-			language=$trg 2> "translated/$session.stderr"
+			language=$trg 2> "$session_dir/stderr.txt"
 }
 
 function stderr {
