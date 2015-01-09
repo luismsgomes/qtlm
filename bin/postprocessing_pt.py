@@ -1,4 +1,8 @@
 #! /usr/bin/env python3
+#
+# January 2015, Luís Gomes <luismsgomes@gmail.com>
+#
+#
 
 import re, sys
 
@@ -161,37 +165,33 @@ def _contractions_sub_callback(matchobj):
 def redo_contractions(text):
 	return _contractions_regex.subn(_contractions_sub_callback, text)[0]
 
-
 _extrawhitespace_regex = re.compile(r'''[‘“«({\[] | [,\.:;?!\]})»”’…]''')
 
 def _extrawhitespace_sub_callback(matchobj):
 	return matchobj.group(0).strip()
 
 _doublequotes_regex = re.compile(r'''(^| )" ([^"]+) "( |$)''')
-
-def _doublequotes_sub_callback(matchobj):
-	return '"'.join([matchobj.group(1), matchobj.group(2), matchobj.group(3)])
+_doublequotes_replace = r'\1"\2"\3'
 
 _singlequotes_regex = re.compile(r'''(^| )' (.+) '( |$)''')
-
-def _singlequotes_sub_callback(matchobj):
-	return "'".join([matchobj.group(1), matchobj.group(2), matchobj.group(3)])
+_singlequotes_replace = r"\1'\2'\3"
 
 _numbers_regex = re.compile(r'''([0-9]+) ([%ºª]|\.[oa]s?\.?|°)''', re.I)
+_numbers_replace = r'\1\2'
 
-def _numbers_sub_callback(matchobj):
-	return matchobj.group(1)+matchobj.group(2)
+_mesoclisis_regex = re.compile(r'(\w+)-CL-(\w+)\s+-(\w+)')
+_mesoclisis_replace = r'\1-\3-\2'
 
-_clitics_regex = re.compile(r''' -(?:me|se|lhes?|á|ão|l?[ao]s?|iam?|n[ao]s?)\b''')
-def _clitics_sub_callback(matchobj):
-	return matchobj.group(0).strip()
+_enclisis_regex = re.compile(r'(\w+)#?\s+(-\w+)')
+_enclisis_replace = r'\1\2'
 
 def untokenize(text):
 	text = _extrawhitespace_regex.subn(_extrawhitespace_sub_callback, text)[0]
-	text = _singlequotes_regex.subn(_singlequotes_sub_callback, text)[0]
-	text = _doublequotes_regex.subn(_doublequotes_sub_callback, text)[0]
-	text = _numbers_regex.subn(_numbers_sub_callback, text)[0]
-	text = _clitics_regex.subn(_clitics_sub_callback, text)[0]
+	text = _singlequotes_regex.subn(_singlequotes_replace, text)[0]
+	text = _doublequotes_regex.subn(_doublequotes_replace, text)[0]
+	text = _numbers_regex.subn(_numbers_replace, text)[0]
+	text = _mesoclisis_regex.subn(_mesoclisis_replace, text)[0]
+	text = _enclisis_regex.subn(_enclisis_replace, text)[0]
 	return text
 
 if __name__ == '__main__':
