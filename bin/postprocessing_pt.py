@@ -164,22 +164,35 @@ def redo_contractions(text):
 
 _extrawhitespace_regex = re.compile(r'''[‘“«({\[] | [,\.:;?!\]})»”’…]''')
 
-_doublequotes_regex = re.compile(r'''(^| )" ([^"]+) "( |$)''')
-_singlequotes_regex = re.compile(r'''(^| )' (.+) '( |$)''')
-
 def _extrawhitespace_sub_callback(matchobj):
 	return matchobj.group(0).strip()
 
-def _singlequotes_sub_callback(matchobj):
-	return "'".join([matchobj.group(1), matchobj.group(2), matchobj.group(3)])
+_doublequotes_regex = re.compile(r'''(^| )" ([^"]+) "( |$)''')
 
 def _doublequotes_sub_callback(matchobj):
 	return '"'.join([matchobj.group(1), matchobj.group(2), matchobj.group(3)])
 
+_singlequotes_regex = re.compile(r'''(^| )' (.+) '( |$)''')
+
+def _singlequotes_sub_callback(matchobj):
+	return "'".join([matchobj.group(1), matchobj.group(2), matchobj.group(3)])
+
+_numbers_regex = re.compile(r'''([0-9]+) ([%ºª]|\.[oa]s?\.?|°)''', re.I)
+
+def _numbers_sub_callback(matchobj):
+	return matchobj.group(1)+matchobj.group(2)
+
+_clitics_regex = re.compile(r''' -(?:me|se|lhes?|á|ão|l?[ao]s?|iam?|n[ao]s?)\b''')
+def _clitics_sub_callback(matchobj):
+	return matchobj.group(0).strip()
+
 def untokenize(text):
 	text = _extrawhitespace_regex.subn(_extrawhitespace_sub_callback, text)[0]
 	text = _singlequotes_regex.subn(_singlequotes_sub_callback, text)[0]
-	return _doublequotes_regex.subn(_doublequotes_sub_callback, text)[0]
+	text = _doublequotes_regex.subn(_doublequotes_sub_callback, text)[0]
+	text = _numbers_regex.subn(_numbers_sub_callback, text)[0]
+	text = _clitics_regex.subn(_clitics_sub_callback, text)[0]
+	return text
 
 if __name__ == '__main__':
 	for line in sys.stdin:
