@@ -155,7 +155,7 @@ _contractions_regex = re.compile('|'.join(map(re.escape, _contractions)), re.I)
 
 def _contractions_sub_callback(matchobj):
 	s = matchobj.group(0)
-	r = _contractions.get(s, None)
+	r = _contractions.get(s.lower(), None)
 	return r if s.islower() else r.upper() if s.isupper() else r.capitalized()
 
 def redo_contractions(text):
