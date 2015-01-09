@@ -78,7 +78,16 @@ function translate {
 			substitute="{noname}{$session_dir/}" \
 		Write::Sentences \
 			selector=trg \
-			language=$trg 2> "$session_dir/stderr.txt"
+			language=$trg 2> "$session_dir/stderr.txt" |
+	postprocessing
+}
+
+function postprocessing {
+	if test -f $mydir/bin/postprocessing_$trg.py; then
+		$mydir/bin/postprocessing_$trg.py
+	else
+		cat
+	fi
 }
 
 function stderr {
