@@ -139,7 +139,7 @@ function a2t {
 					language=$lang1 \
 					to_selector=src \
 					to_language=$lang2 \
-				Align::ReverseAlignment2 \
+				Align::ReverseAlignment \
 					selector=src \
 					language=$lang1 \
 					layer=a \
