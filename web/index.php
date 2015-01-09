@@ -2,7 +2,6 @@
 
 	//		 				CONFIGURATON
 
-
 	$root = "/home/luis/qtleap_pilot1";
 
 
