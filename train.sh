@@ -137,7 +137,7 @@ function a2t {
     find batches -name "a2t_*" -delete
     rm -f todo.a2t
     comm -23 \
-        <(sed 's/$/.streex/' corpus/parts.txt) \
+        <(find atrees -name '*.streex' -printf '%f\n' | sort) \
         <(find ttrees -name '*.streex' -printf '%f\n' | sort) \
         > todo.a2t
     if test -s todo.a2t; then
