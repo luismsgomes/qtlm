@@ -1,8 +1,8 @@
 lang1='en'
 lang2='pt'
 
-treexdir='/home/luis/code/tectomt/treex'
-gizadir='/home/luis/code/tectomt/share/installed_tools/giza'
+treexdir='$HOME/code/tectomt/treex'
+gizadir='$HOME/code/tectomt/share/installed_tools/giza'
 num_procs=32
 rm_giza_files=false
 sort_mem=50%
