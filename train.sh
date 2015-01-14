@@ -19,9 +19,13 @@ function init {
     configfile=$1
     configname=$(perl -pe 's{(?:.*/)?([^\.]*)(?:\..*)?}{\1}' <<< $configfile)
     source "$configfile"
-    map check_config_variable workdir treexdir treexsharedir \
+    map check_config_variable workdir treexdir \
         lang1 lang2 corpus num_procs rm_giza_files running_on_a_big_machine \
-        sort_mem static_train_opts maxent_train_opts
+        sort_mem static_train_opts maxent_train_opts train_host after_train
+
+    if test "$train_host" != "$(hostname)"; then
+        fatal "configuration '$configname' must be trained at '$train_host'"
+    fi
 
     for lang in $lang1 $lang2; do
         for step in w2a a2t; do
@@ -33,7 +37,6 @@ function init {
     create_dir "$workdir"
     pushd "$workdir"
     create_dir logs
-    treex_share=$(perl -e 'use Treex::Core::Config; my ($d) = Treex::Core::Config->resource_path(); print "$d\n";')
 }
 
 function get_corpus {
@@ -241,14 +244,9 @@ function train_langpair {
         $running_on_a_big_machine || wait
     done
     wait
-    for factor in lemma formeme; do
-        d="$treex_share/data/models/transfer/$src-$trg/$configname/$factor"
-        create_dir "$d"
-        pushd "$d"
-            ln -fs "$workdir/$src-$trg/$factor/static.model.gz"
-            ln -fs "$workdir/$src-$trg/$factor/maxent.model.gz"
-        popd
-    done
+    if test -n "$after_train"; then
+        $after_train
+    fi
     stderr "$(date '+%F %T') finished train $src-$trg"
 }
 
@@ -309,7 +307,7 @@ function create_dir {
 }
 
 function check_config_variable {
-    test -n "$$1" || fatal "config variable '$1' is not set"
+    eval "test \"\${$1+x}\" == 'x' || fatal 'config variable \"\$$1\" is not set'"
 }
 
 main "$@"

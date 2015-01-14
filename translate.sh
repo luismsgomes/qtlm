@@ -19,8 +19,8 @@ function init {
 	source "$configfile"
 	lang1=${lang1,,}
 	lang2=${lang2,,}
-	map check_config_variable workdir treexdir treexsharedir \
-		lang1 lang2 corpus num_procs running_on_a_big_machine
+	map check_config_variable workdir treexdir share_url \
+		lang1 lang2 corpus num_procs
 	if test "$src" != "$lang1" -a "$src" != "$lang2"; then
 		fatal "invalid SRC_LANG ($src); expected either ${^^lang1} or ${lang2^^}"
 	fi
@@ -40,7 +40,18 @@ function init {
 		test -f "$scen" ||
 			fatal "missing ${step^^} scenario for ${trg^^}: $scen"
 	done
-	test -d "$workdir" || fatal "directory $workdir does not exist"
+    share_dir=$(perl -e 'use Treex::Core::Config; my ($d) = Treex::Core::Config->resource_path(); print "$d\n";')
+    for model in {lemma,formeme}/{static,maxent}; do
+        f="data/models/transfer/$src-$trg/$configname/$model.model.gz"
+        if ! test -f "$share_dir/$f"; then
+            create_dir "$(dirname "$share_dir/$f")"
+            create_dir "$workdir/logs"
+            stderr "downloading $model model from $share_url/$f"
+            wget -a "$workdir/logs/wget.txt" "$share_url/$f" -O "$share_dir/$f"
+            stderr "finished"
+        fi
+    done
+    create_dir "$workdir"
 	pushd "$workdir"
 }
 
@@ -119,7 +130,7 @@ function create_dir {
 }
 
 function check_config_variable {
-	test -n "$$1" || fatal "config variable '$1' is not set"
+    eval "test \"\${$1+x}\" == 'x' || fatal 'config variable \"\$$1\" is not set'"
 }
 
 main "$@"
