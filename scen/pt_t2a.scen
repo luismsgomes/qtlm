@@ -27,4 +27,5 @@ T2A::AddSentFinalPunct
 T2A::PT::GenerateWordforms
 Util::Eval anode='$.set_tag(join " ", $.get_iset_values())'
 T2A::DeleteSuperfluousAuxCP
+T2A::PT::PrepositionContraction
 T2A::CapitalizeSentStart
