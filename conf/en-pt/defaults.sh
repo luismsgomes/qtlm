@@ -10,7 +10,6 @@ sort_mem=50%
 running_on_a_big_machine=true
 train_host="qtleap-worker"
 share_url="http://194.117.45.198:4062/~luis/qtleap/share"
-
 after_train="create_model_symlinks"
 
 function create_model_symlinks {
@@ -26,7 +25,6 @@ function create_model_symlinks {
     done
 }
 
-
 static_train_opts="--instances 10000 --min_instances 2 --min_per_class 1"
 static_train_opts="$static_train_opts --class_coverage 1"
 
@@ -40,3 +38,7 @@ maxent_train_opts="$maxent_train_opts --learner_params 'smooth_sigma 0.99'"
 
 lemma_maxent_train_opts="$maxent_train_opts"
 formeme_maxent_train_opts="$maxent_train_opts"
+
+eval_sets="$HOME/corpora/europarl/ep.1k.enpt.gz"
+eval_sets="$HOME/corpora/qtleap/qtleap_2q.enpt.gz $eval_sets"
+eval_sets="$HOME/corpora/qtleap/qtleap_2a.enpt.gz $eval_sets"
