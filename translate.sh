@@ -1,4 +1,8 @@
 #! /bin/bash
+#
+# January 2015, Luís Gomes <luismsgomes@gmail.com>
+#
+#
 
 function main {
 	init "$@"

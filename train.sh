@@ -1,4 +1,8 @@
 #! /bin/bash
+#
+# January 2015, Luís Gomes <luismsgomes@gmail.com>
+#
+#
 
 function main {
     init "$@"
@@ -43,15 +47,12 @@ function init {
 function get_corpus {
     test -f corpus/parts.txt && return 0
     stderr "$(date '+%F %T')  started get_corpus"
-    corpusf1=${corpus/\{lang\}/$lang1}
-    corpusf2=${corpus/\{lang\}/$lang2}
-    test -f "$corpusf1" || fatal "corpus file '$corpusf1' does not exist"
-    test -f "$corpusf2" || fatal "corpus file '$corpusf2' does not exist"
+    test -f "$corpus" || fatal "corpus file '$corpus' does not exist"
     create_dir batches corpus/{$lang1,$lang2}
 
     SPLITOPTS="-d -a 8 -l 200 --additional-suffix .txt"
-    paste <(zcat "$corpusf1") <(zcat "$corpusf2") |
-    gawk '$1 !~ /^\s*$/ && $2 !~ /^\s*$/' FS=$'\t' |
+    zcat "$corpus" |
+    $mydir/bin/prune_unaligned_sentpairs.py |
     tee >(cut -f 1 | split $SPLITOPTS - corpus/$lang1/part_) |
           cut -f 2 | split $SPLITOPTS - corpus/$lang2/part_
 

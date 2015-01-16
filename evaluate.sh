@@ -1,4 +1,8 @@
 #! /bin/bash
+#
+# January 2015, Luís Gomes <luismsgomes@gmail.com>
+#
+#
 
 function main {
     init "$@"
@@ -73,14 +77,13 @@ function evaluate {
             popd
             numlinesout=$(wc -l < $session_dir/$set_name.$trg.mt)
         fi
-                    paste $session_dir/$set_name.{$src,$trg,$trg.mt} |
-                    $mydir/bin/tsv_to_html.py \
-                        > $session_dir/$set_name.$src-$trg-mt_$trg.html
-
+        paste $session_dir/$set_name.{$src,$trg,$trg.mt} |
+        $mydir/bin/tsv_to_html.py \
+            > $session_dir/$set_name.$src-$trg-mt_$trg.html
         if test $numlinesin != $numlinesout; then
             fatal "translation output has different number of lines than input"
         fi
-        CONFIG_JSON="{\"srclang\":\"$src\",\"trglang\":\"$trg\",\"setid\":\"$set_name\",\"sysid\":\"qtleap\",\"refid\":\"human\"}"
+        CONFIG_JSON="{\"srclang\":\"$src\",\"trglang\":\"$trg\",\"setid\":\"$set_name\",\"sysid\":\"qtleap-$configname-$src-$trg\",\"refid\":\"human\"}"
         DOCID_REGEX=".*($set_name).*"
         $mydir/bin/txt_to_mteval_xml.py src "$CONFIG_JSON" "$DOCID_REGEX" \
             $session_dir/$set_name.$src > $session_dir/$set_name.$src.xml
