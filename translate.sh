@@ -10,6 +10,7 @@ function init {
 	set -e # abort on error
 	progname=$0
 	mydir=$(cd $(dirname $0); pwd)
+    . $mydir/lib/bash_functions.sh
 	test $# == 3 || fatal "usage: $0 CONFIGURATION SRC_LANG TRG_LANG"
 	test -f "$1" || fatal "config file '$1' does not exist"
 	configfile=$1
@@ -52,12 +53,16 @@ function init {
         fi
     done
     create_dir "$workdir"
-	pushd "$workdir"
+	pushd "$workdir" >&2
 }
 
 function translate {
-	session_dir="$workdir/sessions/$src-$trg/$(date '+%Y%m%d_%H%M%S')"
-	create_dir "$session_dir"
+    now=$(date '+%Y%m%d_%H%M%S')
+    session_dir="$workdir/translations/$src-$trg/$now"
+    create_dir "$session_dir"
+    pushd "$workdir/translations/$src-$trg" >&2
+        ln -sfT "$now" last >&2
+    popd >&2
 	$treexdir/bin/treex \
 		Util::SetGlobal if_missing_bundles=ignore \
 		Read::Sentences \
@@ -99,38 +104,6 @@ function postprocessing {
 	else
 		cat
 	fi
-}
-
-function stderr {
-	echo "$progname: $@" >&2
-}
-
-function fatal {
-	stderr "$@; aborting" >&2
-	exit 1
-}
-
-function map {
-	test $# -ge 2 ||
-		fatal "map function requires at least two arguments; $# given"
-	cmd=$1
-	shift
-	for arg in "$@"; do
-		$cmd "$arg"
-	done
-}
-
-function create_dir {
-	for d in "$@"; do
-		if ! test -d "$d" ; then
-			mkdir -vp "$d"
-			test -d "$d" || fatal "failed to create '$d'"
-		fi
-	done
-}
-
-function check_config_variable {
-    eval "test \"\${$1+x}\" == 'x' || fatal 'config variable \"\$$1\" is not set'"
 }
 
 main "$@"
