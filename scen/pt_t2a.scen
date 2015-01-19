@@ -7,7 +7,7 @@ T2T::SetClauseNumber
 
 # and do the synthesis
 T2A::CopyTtree
-T2A::MarkSubject
+T2A::PT::MarkSubject
 T2A::PT::InitMorphcat
 T2A::PT::AddArticles
 T2A::PT::AddPrepos
