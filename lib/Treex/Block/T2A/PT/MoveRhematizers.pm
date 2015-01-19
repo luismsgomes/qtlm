@@ -18,7 +18,7 @@ sub process_anode {
     my @articles = ("os","as");
 
     my $lemma = $rhematizer->lemma;
-    if("@pronouns" =~ /$lemma/){
+    if($lemma =~ /^tod[oa]s$/i){
 
         my $article = $rhematizer->get_left_neighbor();
         my $article_lemma = undef;
