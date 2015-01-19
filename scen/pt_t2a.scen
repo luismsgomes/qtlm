@@ -7,7 +7,7 @@ T2T::SetClauseNumber
 
 # and do the synthesis
 T2A::CopyTtree
-T2A::MarkSubject
+T2A::PT::MarkSubject
 T2A::PT::InitMorphcat
 T2A::PT::AddArticles
 T2A::PT::AddPrepos
@@ -27,4 +27,5 @@ T2A::AddSentFinalPunct
 T2A::PT::GenerateWordforms
 Util::Eval anode='$.set_tag(join " ", $.get_iset_values())'
 T2A::DeleteSuperfluousAuxCP
+T2A::PT::PrepositionContraction
 T2A::CapitalizeSentStart

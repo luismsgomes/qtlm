@@ -93,7 +93,7 @@ function translate {
 		"$mydir/scen/${trg}_t2a.scen" \
 		"$mydir/scen/${trg}_a2w.scen" \
 		Write::Treex \
-			storable=1 \
+			storable=0 \
 			to="." \
 			substitute="{noname}{$session_dir/}" \
 		Write::Sentences \
