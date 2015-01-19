@@ -44,8 +44,13 @@ sub best_form_of_lemma {
     my ( $self, $lemma, $iset ) = @_;
 
     if ($lemma eq ""){ 
-        print STDERR "->Warning, Lemma is null";
+        print STDERR "\n->Warning, Lemma is null";
         return "null"; 
+    }
+
+    if ($lemma !~ /^[a-zA-Z]+$/){
+        print STDERR "\n->Warning, Lemma $lemma";
+        return $lemma;
     }
 
     my $pos     = $iset->pos;
@@ -59,7 +64,7 @@ sub best_form_of_lemma {
         my $tense   = $iset->tense;
         my $person  = $iset->person || '1';
         my $form    = $PTFORM{"$mood $tense"} || 'pi';
-       
+        
         my $response = $self->_conjugator->conjugate($lemma, $form, $person, $number);
         
         if(ucfirst($lemma) eq $lemma){
@@ -71,10 +76,10 @@ sub best_form_of_lemma {
     elsif ($pos =~/noun|adj/){
 
         #Salta os endereços electrónicos
-        #if ($lemma =~ /http:\/\//) { return $lemma; }
-        #if ($lemma =~ /https:\/\//) { return $lemma; }
-        #if ($lemma =~ /\./) { return $lemma; }
-        #if ($lemma =~ /www\./) { return $lemma; }
+        if ($lemma =~ /http:\/\//) { return $lemma; }
+        if ($lemma =~ /https:\/\//) { return $lemma; }
+        if ($lemma =~ /\./) { return $lemma; }
+        if ($lemma =~ /www\./) { return $lemma; }
 
         #TODO: Martelada, perguntar And. e Nuno como resolver isto: $pos = adj|noun
         my $number  = $number;
@@ -89,7 +94,6 @@ sub best_form_of_lemma {
             $superlative = "true";
         }
 
-        
         my $response = $self->_inflector->inflect( lc $lemma, $pos, $gender, $number,$superlative, $diminutive);
 
         if(ucfirst($lemma) eq $lemma){
