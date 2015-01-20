@@ -94,8 +94,7 @@ function evaluate {
         $mydir/bin/mteval-v13a.pl \
             -s $session_dir/$set_name.$src.xml \
             -r $session_dir/$set_name.$trg.xml \
-            -t $session_dir/$set_name.$trg.mt.xml \
-            -c |
+            -t $session_dir/$set_name.$trg.mt.xml |
         tee $session_dir/$set_name.$src-$trg.eval.txt
     done
 }
