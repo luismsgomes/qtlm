@@ -48,6 +48,9 @@ function init {
     share_dir=$(perl -e 'use Treex::Core::Config; my ($d) = Treex::Core::Config->resource_path(); print "$d\n";')
     for model in {lemma,formeme}/{static,maxent}; do
         f="data/models/transfer/$src-$trg/$configname/$model.model.gz"
+        if ${update_models:-false} && test -f "$share_dir/$f"; then
+            rm -f "$share_dir/$f"
+        fi
         if ! test -f "$share_dir/$f"; then
             create_dir "$(dirname "$share_dir/$f")"
             create_dir "$workdir/logs"
