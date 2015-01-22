@@ -1,5 +1,7 @@
 Util::SetGlobal selector=trg language=en
 
+T2T::EN2PT::MoveAdjsAfterNouns
+
 T2A::DeleteGeneratedNodes
 T2A::CopyTtree
 T2A::EN::InitMorphcat
