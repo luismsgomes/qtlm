@@ -17,10 +17,10 @@ function create_model_symlinks {
         for langpair in $lang1-$lang2 $lang2-$lang1; do
             d="$HOME/public_html/qtleap/share/data/models/transfer/$langpair/$configname/$factor"
             mkdir -p "$d"
-            pushd "$d"
+            pushd "$d" >&2
                 ln -fs "$workdir/$langpair/$factor/static.model.gz"
                 ln -fs "$workdir/$langpair/$factor/maxent.model.gz"
-            popd
+            popd >&2
         done
     done
 }
@@ -40,5 +40,7 @@ lemma_maxent_train_opts="$maxent_train_opts"
 formeme_maxent_train_opts="$maxent_train_opts"
 
 eval_sets="$HOME/corpora/europarl/ep.1k.enpt.gz"
+eval_sets="$HOME/corpora/qtleap/qtleap_1q.enpt.gz $eval_sets"
+eval_sets="$HOME/corpora/qtleap/qtleap_1a.enpt.gz $eval_sets"
 eval_sets="$HOME/corpora/qtleap/qtleap_2q.enpt.gz $eval_sets"
 eval_sets="$HOME/corpora/qtleap/qtleap_2a.enpt.gz $eval_sets"
