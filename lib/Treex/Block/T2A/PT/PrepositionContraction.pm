@@ -141,10 +141,10 @@ sub process_zone {
 
     my $last_node;
     foreach my $node ( $a_root->get_descendants({ ordered => 1 }) ) {
-        if(defined $last_node){
+        if(defined $last_node && $last_node =~ /[[:alpha:]]/){
             
             my $first_lemma = $last_node->lemma;
-            $first_lemma =~ s/_//g;
+            $first_lemma =~ s/_//g or next;
 
             my $contraction = $CONTRACTION{$first_lemma . " " . $node->lemma};
 

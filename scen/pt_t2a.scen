@@ -9,6 +9,9 @@ T2T::SetClauseNumber
 # and do the synthesis
 T2A::CopyTtree
 
+T2A::PT::DropACT
+#A2A::BackupTree to_selector=DropACT
+
 T2A::PT::MarkSubject
 #A2A::BackupTree to_selector=MarkSubject
 
