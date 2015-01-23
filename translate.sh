@@ -65,11 +65,15 @@ function init {
 
 function translate {
     now=$(date '+%Y%m%d_%H%M%S')
-    session_dir="$workdir/translations/$src-$trg/$now"
-    create_dir "$session_dir"
-    pushd "$workdir/translations/$src-$trg" >&2
-        ln -sfT "$now" last >&2
-    popd >&2
+    session_dir=${session_dir:-$workdir/translations/$src-$trg/$now}
+    if ! test -d "$session_dir"; then
+        create_dir "$session_dir"
+        if test "$session_dir" == "$workdir/translations/$src-$trg/$now"; then
+            pushd "$workdir/translations/$src-$trg" >&2
+                ln -sfT "$now" last >&2
+            popd >&2
+        fi
+    fi
 	$treexdir/bin/treex \
 		Util::SetGlobal if_missing_bundles=ignore \
 		Read::Sentences \
