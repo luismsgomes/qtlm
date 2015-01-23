@@ -21,9 +21,9 @@ b { color: lightgray; }
 <table>''')
 
 clean = lambda sent: cgi.escape(sent).replace('\\n', '<b>&para;</b>')
-for line in sys.stdin:
+for idx,line in enumerate(sys.stdin):
     cols = line.rstrip('\n').split('\t')
-    print('<tr>', *[clean(col) for col in cols], sep='<td>')
+    print('<tr>', *[clean(col) for col in cols], sep='<td>',end='<td width=15px>' + str(idx + 1) + '</td>')
 
 print('''</table>
 </body>
