@@ -8,25 +8,64 @@ T2T::SetClauseNumber
 
 # and do the synthesis
 T2A::CopyTtree
+
 T2A::PT::MarkSubject
+#A2A::BackupTree to_selector=MarkSubject
+
 T2A::PT::InitMorphcat
+#A2A::BackupTree to_selector=InitMorphcat
+
+T2A::PT::AddGender
+#A2A::BackupTree to_selector=AddGender
+
+T2A::PT::FixPossessivePronouns
+#A2A::BackupTree to_selector=FixPossessivePronouns
+
 T2A::PT::AddArticles
+#A2A::BackupTree to_selector=AddArticles
+
 T2A::PT::AddPrepos
+#A2A::BackupTree to_selector=AddPrepos
+
 T2A::AddSubconjs
+#A2A::BackupTree to_selector=AddSubconjs
+
 T2A::AddCoordPunct
+#A2A::BackupTree to_selector=AddCoordPunct
+
 T2A::PT::AddComparatives
+#A2A::BackupTree to_selector=AddComparatives
+
 T2A::PT::MoveRhematizers
+#A2A::BackupTree to_selector=MoveRhematizers
 
 T2A::ImposeSubjpredAgr
+#A2A::BackupTree to_selector=ImposeSubjpredAgr
+
 T2A::ImposeAttrAgr
+#A2A::BackupTree to_selector=ImposeAttrAgr
+
 T2A::DropPersPronSb
+#A2A::BackupTree to_selector=DropPersPronSb
 
 T2A::ProjectClauseNumber
+#A2A::BackupTree to_selector=ProjectClauseNumber
+
 T2A::AddParentheses
+#A2A::BackupTree to_selector=AddParentheses
+
 T2A::AddSentFinalPunct
+#A2A::BackupTree to_selector=AddSentFinalPunct
 
 T2A::PT::GenerateWordforms
+#A2A::BackupTree to_selector=GenerateWordforms
+
 Util::Eval anode='$.set_tag(join " ", $.get_iset_values())'
+
 T2A::DeleteSuperfluousAuxCP
+#A2A::BackupTree to_selector=DeleteSuperfluousAuxCP
+
 T2A::PT::PrepositionContraction
+#A2A::BackupTree to_selector=PrepositionContraction
+
 T2A::CapitalizeSentStart
