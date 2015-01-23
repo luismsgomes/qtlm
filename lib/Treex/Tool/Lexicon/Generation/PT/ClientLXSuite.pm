@@ -44,12 +44,12 @@ sub best_form_of_lemma {
     my ( $self, $lemma, $iset ) = @_;
 
     if ($lemma eq ""){ 
-        print STDERR "\n->Warning, Lemma is null";
+        log_warn "Lemma is null";
         return "null"; 
     }
 
-    if ($lemma !~ /^[a-zA-Z]+$/){
-        print STDERR "\n->Warning, Lemma $lemma";
+    if ($lemma !~ /^[a-zA-Z0-9]+$/){
+        log_warn "Lemma $lemma is not alphanumeric";
         return $lemma;
     }
 
@@ -74,6 +74,11 @@ sub best_form_of_lemma {
         return $response;
     }
     elsif ($pos =~/noun|adj/){
+
+        #Ignora pronomes possessivos
+        if ($iset->prontype =~ m/prn/ && $iset->poss =~ m/poss/){
+            return $lemma;
+        }
 
         #Salta os endereços electrónicos
         if ($lemma =~ /http:\/\//) { return $lemma; }
