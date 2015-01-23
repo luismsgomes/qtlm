@@ -63,6 +63,7 @@ function evaluate_all {
         evaluate $eval_set &
         $running_on_a_big_machine || wait
     done
+    wait
 }
 
 function evaluate {
