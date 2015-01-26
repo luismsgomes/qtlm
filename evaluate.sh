@@ -13,7 +13,8 @@ function init {
     set -u # abort if trying to use uninitialized variable
     set -e # abort on error
     progname=$0
-    mydir=$(cd $(dirname $0); pwd)
+    cd $(dirname $0)
+    mydir=$(pwd)
     . $mydir/lib/bash_functions.sh
     test $# == 3 || fatal "usage: $0 CONFIGURATION SRC_LANG TRG_LANG"
     test -f "$1" || fatal "config file '$1' does not exist"
@@ -136,7 +137,7 @@ function evaluate {
             $session_dir/previous/$set_name.{$src,$trg,$trg.mt} \
             $session_dir/$set_name.$trg.mt \
             > $session_dir/$set_name.$trg.mt.inc
-        $mydir/comparegrams.py $trg $trg.mt > $session_dir/$set_name.$trg.mt.ngrams
+        $mydir/bin/comparegrams.py $trg $trg.mt > $session_dir/$set_name.$trg.mt.ngrams
     fi
     echo $session_dir/$set_name.$trg.mt.inc
 }

@@ -30,4 +30,4 @@ for tst in $tst1 $tst2; do
     fi
 done
 
-$mydir/compare_stats.pl --no-color 1 --hide-zero 1 $tst1.resume $tst2.resume
+$mydir/compare_stats.pl $tst1.resume $tst2.resume
