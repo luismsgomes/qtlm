@@ -1,6 +1,6 @@
 Util::SetGlobal selector=trg language=en
 
-T2T::EN2PT::MoveAdjsAfterNouns
+T2T::PT2EN::MoveAdjsBeforeNouns
 
 T2A::DeleteGeneratedNodes
 T2A::CopyTtree
