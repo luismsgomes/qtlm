@@ -1,5 +1,6 @@
 package Treex::Tool::Lexicon::Generation::PT::ClientLXSuite;
 use Moose;
+use utf8;
 use Treex::Tool::ProcessUtils;
 use Treex::Core::Common;
 use Treex::Core::Resource;
@@ -48,7 +49,7 @@ sub best_form_of_lemma {
         return "null"; 
     }
 
-    if ($lemma !~ /^[a-zA-Z0-9]+$/){
+    if ($lemma !~ /[[:alpha:]]/){
         log_warn "Lemma $lemma is not alphanumeric";
         return $lemma;
     }
@@ -105,6 +106,8 @@ sub best_form_of_lemma {
             $response = ucfirst($response);
         }
 
+        #Se não é permitido mudar o número não é permitido flexionar em número
+        return $lemma if $response =~ m/non-existing1/;
         return $response;
 
     }
