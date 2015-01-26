@@ -8,12 +8,19 @@ sub process_ttree {
     foreach my $tnode ( $troot->get_descendants ) {
         my $parent = $tnode->get_parent;
         if (( $tnode->formeme || "" ) =~ /^adj:/
+            and $tnode->t_lemma !~ /^(?:maior|menor|melhor|pior|grande|pequeno|óptimo|péssimo)$/i
             and ( ( $parent->formeme || "" ) =~ /^n:/ )
             and $tnode->precedes($tnode->get_parent)
             and not $tnode->get_children
             and not $tnode->is_member
             and not $tnode->is_parenthesis
             ) {
+                # Adj [Noun1 Noun2]  => [Noun1 Noun2] Adj
+                # Later, we transform [Noun1 Noun2] => [Noun2 de Noun1]
+                while (( ( $parent->get_parent->formeme || "" ) =~ /^n:/ )
+                    and $tnode->precedes($parent->get_parent)) {
+                    $parent = $parent->get_parent;
+                }
                 $tnode->shift_after_node($parent);
         }
     }

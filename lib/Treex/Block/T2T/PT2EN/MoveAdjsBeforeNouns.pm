@@ -8,12 +8,18 @@ sub process_ttree {
     foreach my $tnode ( $troot->get_descendants ) {
         my $parent = $tnode->get_parent;
         if (( $tnode->formeme || "" ) =~ /^adj:/
+            and $tnode->t_lemma !~ /^(?:best|worst|greatest|great|good|fine)$/i
             and ( ( $parent->formeme || "" ) =~ /^n:/ )
-            and $tnode->succeeds($tnode->get_parent)
+            and $tnode->succeeds($parent)
             and not $tnode->get_children
             and not $tnode->is_member
             and not $tnode->is_parenthesis
             ) {
+                while (( ( $parent->get_parent->formeme || "" ) =~ /^n:/ )
+                    and $tnode->succeeds($parent->get_parent)) {
+                    $parent = $parent->get_parent;
+                }
+
                 $tnode->shift_before_node($parent);
         }
     }
