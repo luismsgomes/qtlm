@@ -106,6 +106,8 @@ sub best_form_of_lemma {
             $response = ucfirst($response);
         }
 
+        #Se não é permitido mudar o número não é permitido flexionar em número
+        return $lemma if $response =~ m/non-existing1/;
         return $response;
 
     }
