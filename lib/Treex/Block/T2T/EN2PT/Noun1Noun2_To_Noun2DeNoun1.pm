@@ -1,4 +1,4 @@
-package Treex::Block::T2T::EN2PT::Noun1Noun2_To_Noun2DeNoun1
+package Treex::Block::T2T::EN2PT::Noun1Noun2_To_Noun2DeNoun1;
 use Moose;
 use Treex::Core::Common;
 extends 'Treex::Core::Block';
