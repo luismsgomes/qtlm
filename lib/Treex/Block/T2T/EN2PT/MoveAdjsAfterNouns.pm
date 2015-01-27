@@ -15,12 +15,6 @@ sub process_ttree {
             and not $tnode->is_member
             and not $tnode->is_parenthesis
             ) {
-                # Adj [Noun1 Noun2]  => [Noun1 Noun2] Adj
-                # Later, we transform [Noun1 Noun2] => [Noun2 de Noun1]
-                while (( ( $parent->get_parent->formeme || "" ) =~ /^n:/ )
-                    and $tnode->precedes($parent->get_parent)) {
-                    $parent = $parent->get_parent;
-                }
                 $tnode->shift_after_node($parent);
         }
     }

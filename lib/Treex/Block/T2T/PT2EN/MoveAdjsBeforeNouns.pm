@@ -15,11 +15,6 @@ sub process_ttree {
             and not $tnode->is_member
             and not $tnode->is_parenthesis
             ) {
-                while (( ( $parent->get_parent->formeme || "" ) =~ /^n:/ )
-                    and $tnode->succeeds($parent->get_parent)) {
-                    $parent = $parent->get_parent;
-                }
-
                 $tnode->shift_before_node($parent);
         }
     }
