@@ -49,8 +49,8 @@ sub best_form_of_lemma {
         return "null"; 
     }
 
-    if ($lemma !~ /[[:alpha:]]/){
-        log_warn "Lemma $lemma is not alphanumeric";
+    if ($lemma !~ /^\p{L}+$/u){
+        log_warn "Lemma $lemma has non-letter characters";
         return $lemma;
     }
 
@@ -92,10 +92,8 @@ sub best_form_of_lemma {
         }
 
         #Salta os endereços electrónicos
-        if ($lemma =~ /http:\/\//) { return $lemma; }
-        if ($lemma =~ /https:\/\//) { return $lemma; }
-        if ($lemma =~ /\./) { return $lemma; }
-        if ($lemma =~ /www\./) { return $lemma; }
+        if ($lemma =~ /^(?:https?|s?ftps?):\/\//) { return $lemma; }
+        if ($lemma =~ /^(?:www\.|[a-z0-9\.\-]+@[a-z0-9\-\.]+)/) { return $lemma; }
 
         #TODO: Martelada, perguntar And. e Nuno como resolver isto: $pos = adj|noun
         my $number  = $number;
