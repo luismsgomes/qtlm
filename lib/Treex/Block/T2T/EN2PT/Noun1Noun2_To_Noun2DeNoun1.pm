@@ -8,7 +8,7 @@ sub process_ttree {
     foreach my $tnode ( $troot->get_descendants ) {
         my $parent = $tnode->get_parent;
         if (( $tnode->formeme || "" ) =~ /^n:de+X/
-            and ( ( $parent->formeme || "" ) =~ /^n:/ )
+            and (( $parent->formeme || "" ) =~ /^n:/ )
             and $tnode->precedes($parent)) {
                 $tnode->shift_after_node($parent);
         }

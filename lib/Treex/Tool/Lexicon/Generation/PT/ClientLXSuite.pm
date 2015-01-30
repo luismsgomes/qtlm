@@ -29,7 +29,7 @@ my %PTNUMBER = (
     'plur' => 'p',
 );
 
-my %PTCATEGORY = ( 
+my %PTCATEGORY = (
     'adj' => 'ADJ',
     'noun' => 'CN',
 );
@@ -44,13 +44,13 @@ sub best_form_of_lemma {
 
     my ( $self, $lemma, $iset ) = @_;
 
-    if ($lemma eq ""){ 
+    if ($lemma eq ""){
         log_warn "Lemma is null";
-        return "null"; 
+        return "null";
     }
 
-    if ($lemma !~ /[[:alpha:]]/){
-        log_warn "Lemma $lemma is not alphanumeric";
+    if ($lemma !~ /^\p{L}+$/u){
+        log_warn "Lemma $lemma has non-letter characters";
         return $lemma;
     }
 
@@ -65,13 +65,13 @@ sub best_form_of_lemma {
         my $tense   = $iset->tense;
         my $person  = $iset->person || '1';
         my $form    = $PTFORM{"$mood $tense"} || 'pi';
-        
+
         my $response = $self->_conjugator->conjugate($lemma, $form, $person, $number);
-        
+
         if(ucfirst($lemma) eq $lemma){
             $response = ucfirst($response);
         }
-        
+
         return $response;
     }
     elsif ($pos =~/noun|adj/){
@@ -82,10 +82,8 @@ sub best_form_of_lemma {
         }
 
         #Salta os endereços electrónicos
-        if ($lemma =~ /http:\/\//) { return $lemma; }
-        if ($lemma =~ /https:\/\//) { return $lemma; }
-        if ($lemma =~ /\./) { return $lemma; }
-        if ($lemma =~ /www\./) { return $lemma; }
+        if ($lemma =~ /^(?:https?|s?ftps?):\/\//) { return $lemma; }
+        if ($lemma =~ /^(?:www\.|[a-z0-9\.\-]+@[a-z0-9\-\.]+)/) { return $lemma; }
 
         #TODO: Martelada, perguntar And. e Nuno como resolver isto: $pos = adj|noun
         my $number  = $number;
@@ -112,7 +110,7 @@ sub best_form_of_lemma {
 
     }
 
-    return $lemma; 
+    return $lemma;
 
 }
 
