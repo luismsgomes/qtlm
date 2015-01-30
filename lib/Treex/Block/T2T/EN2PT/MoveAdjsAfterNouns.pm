@@ -3,12 +3,65 @@ use Moose;
 use Treex::Core::Common;
 extends 'Treex::Core::Block';
 
+# A lista de adjectivos pré-nominais abaixo foi parcialmente extraída do
+#  ficheiro Excel SSLEX-AJ-V04.xls filtrando a coluna I (Postnominal Position)
+#  pelo valor "no" e a coluna N (Prenominal Position) pelo valor "prenominal".
+
+# Excluí algumas entradas da lista que me parecem mais pós-nominais que
+#  pré-nominais:
+
+my %prenominal_adjs = (
+    'custódio' => 1,
+    'demasiado' => 1,
+    'dito' => 1,
+    'ditoso' => 1,
+    'douto' => 1,
+    'ex-futuro' => 1,
+    'famigerado' => 1,
+   #'fino' => 1, # pode ser pós-nominal; exemplo: "pessoa fina"
+   #'forte' => 1, # pode ser pós-nominal; exemplos: "viga forte", "pessoa forte"
+    'futuro' => 1,
+    'grande' => 1,
+    'maior' => 1,
+    'mero' => 1,
+    'milhentos' => 1,
+    'presumível' => 1,
+    'pronto' => 1,
+    'reverendo' => 1,
+    'suposto' => 1,
+    'último' => 1,
+);
+
+my %ord = (
+    'primeiro' => 1,
+    'segundo' => 1,
+    'terceiro' => 1,
+    'quarto' => 1,
+    'quinto' => 1,
+    'sexto' => 1,
+    'sétimo' => 1,
+    'oitavo' => 1,
+    'nono' => 1,
+    'décimo' => 1,
+    'vigésimo' => 1,
+    'trigésimo' => 1,
+    'quadragésimo' => 1,
+    'quinquagésimo' => 1,
+    'hexagésimo' => 1,
+    'septuagésimo' => 1,
+    'octagésimo' => 1,
+    'nonagésimo' => 1,
+    'centésimo' => 1,
+    'milésimo' => 1,
+);
+
 sub process_ttree {
     my ( $self, $troot ) = @_;
     foreach my $tnode ( $troot->get_descendants ) {
         my $parent = $tnode->get_parent;
         if (( $tnode->formeme || "" ) =~ /^adj:/
-            and $tnode->t_lemma !~ /^(?:maior|menor|melhor|pior|grande|pequeno|óptimo|péssimo)$/i
+            and ! exists($prenominal_adjs{lc($tnode->t_lemma)})
+            and ! exists($ord{lc($tnode->t_lemma)})
             and ( ( $parent->formeme || "" ) =~ /^n:/ )
             and $tnode->precedes($tnode->get_parent)
             and not $tnode->get_children
