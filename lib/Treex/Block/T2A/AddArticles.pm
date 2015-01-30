@@ -21,8 +21,8 @@ sub process_tnode {
 
         my $parent = $anode->get_parent();
         my $def    = 'definite';
-        my $gender = $parent->iset->gender // '';
-        my $number = $parent->iset->number // '';
+        my $gender = $parent->iset->gender || 'masc';
+        my $number = $parent->iset->number || 'sing';
 
         my $form   = $self->article_form->{"$def $gender $number"} or return;
  
@@ -41,8 +41,8 @@ sub process_tnode {
 
     my $def    = $tnode->gram_definiteness or return;
     
-    my $gender = $anode->iset->gender // '';
-    my $number = $anode->iset->number // '';
+    my $gender = $anode->iset->gender || 'masc';
+    my $number = $anode->iset->number || 'sing';
     my $form   = $self->article_form->{"$def $gender $number"} or return;
  
     my $article = $anode->create_child({
