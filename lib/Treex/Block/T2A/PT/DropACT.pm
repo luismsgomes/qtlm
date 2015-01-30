@@ -7,10 +7,15 @@ extends 'Treex::Core::Block';
 sub process_tnode {
     my ( $self, $tnode ) = @_;
 
-    #TODO Verificar o que acontece com situações para alem do Senhor/Senhores, forçar verificação de lemma?
     if ($tnode->functor eq 'ACT'){
+
         my $a_node = $tnode->get_lex_anode() or return;
-        $a_node->remove();
+
+        if($a_node->lemma =~ m/(senhor|senhores|ser)/){
+        	$a_node->remove();
+        }
+
+
     }
     return;
 }
