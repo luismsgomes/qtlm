@@ -4,14 +4,20 @@ Util::SetGlobal lxsuite_host=localhost lxsuite_port=10000
 Util::SetGlobal lxsuite_key=nlx.qtleap.13417612987549387402
 
 
-T2T::EN2PT::MoveAdjsAfterNouns
 T2T::EN2PT::Noun1Noun2_To_Noun2DeNoun1
+T2T::EN2PT::MoveAdjsAfterNouns
 
 
 T2T::SetClauseNumber
 
 # and do the synthesis
 T2A::CopyTtree
+
+T2A::PT::ImposeLemma
+#A2A::BackupTree to_selector=ImposeLemma
+
+T2A::PT::ImposeFormeme
+#A2A::BackupTree to_selector=ImposeFormeme
 
 T2A::PT::DropACT
 #A2A::BackupTree to_selector=DropACT
@@ -24,6 +30,9 @@ T2A::PT::InitMorphcat
 
 T2A::PT::AddGender
 #A2A::BackupTree to_selector=AddGender
+
+T2A::PT::AddConditional
+#A2A::BackupTree to_selector=AddConditional
 
 T2A::PT::FixPossessivePronouns
 #A2A::BackupTree to_selector=FixPossessivePronouns

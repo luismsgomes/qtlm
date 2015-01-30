@@ -59,7 +59,7 @@ sub process_ttree {
     my ( $self, $troot ) = @_;
     foreach my $tnode ( $troot->get_descendants ) {
         my $parent = $tnode->get_parent;
-        if (( $tnode->formeme || "" ) =~ /^adj:/
+        if (( $tnode->formeme || "" ) =~ /^(?:adj:|n:attr)/
             and ! exists($prenominal_adjs{lc($tnode->t_lemma)})
             and ! exists($ord{lc($tnode->t_lemma)})
             and ( ( $parent->formeme || "" ) =~ /^n:/ )
@@ -68,6 +68,9 @@ sub process_ttree {
             and not $tnode->is_member
             and not $tnode->is_parenthesis
             ) {
+                # TODO: is this really needed n:attr => adj:attr?
+                $tnode->set_formeme("adj:attr") if $tnode->formeme =~ /^n:attr/;
+
                 $tnode->shift_after_node($parent);
         }
     }

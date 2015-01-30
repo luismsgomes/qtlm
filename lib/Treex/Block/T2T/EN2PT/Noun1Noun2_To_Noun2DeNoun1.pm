@@ -1,16 +1,23 @@
 package Treex::Block::T2T::EN2PT::Noun1Noun2_To_Noun2DeNoun1;
 use Moose;
 use Treex::Core::Common;
+use LX::Data::PT;
+use utf8;
+
 extends 'Treex::Core::Block';
+
+# say 'yes' if exists $LX::Data::PT::gentilicos{'português'};
 
 sub process_ttree {
     my ( $self, $troot ) = @_;
     foreach my $tnode ( $troot->get_descendants ) {
         my $parent = $tnode->get_parent;
-        if (( $tnode->formeme || "" ) =~ /^n:de+X/
+        if (( $tnode->formeme || "" ) =~ /^n:/
             and (( $parent->formeme || "" ) =~ /^n:/ )
-            and $tnode->precedes($parent)) {
+            and $tnode->precedes($parent)
+            and ! exists $LX::Data::PT::gentilicos{$tnode->t_lemma}) {
                 $tnode->shift_after_node($parent);
+                $tnode->set_formeme("n:de+X");
         }
     }
 }

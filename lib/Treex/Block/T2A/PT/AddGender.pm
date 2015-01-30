@@ -12,15 +12,28 @@ has generator => ( is => 'rw' );
 sub process_anode {
 	my ( $self, $anode ) = @_;
 
-	return if ($anode->lemma !~ /^[a-zA-Z]+$/);
+	return if ($anode->lemma !~ /^[[:alpha:]]+$/);
 
 	#TODO Tratamento de numerais
 	return if ($anode->iset->pos !~ m/(noun|adj)/);
 
 	my ( $forms, $lemmas, $postags, $cpostags, $feats ) = $self->generator->tokenize_and_tag($anode->lemma);
 
-	$anode->iset->set_gender('masc') 	if ($feats->[@$feats - 1] =~ /^m/);
-	$anode->iset->set_gender('fem') 	if ($feats->[@$feats - 1] =~ /^f/);
+	#Por defeito fica em masculino
+	if ($feats->[@$feats - 1] !~ /^(m|f)/){
+		log_warn $anode->lemma . " género por defeito...";
+		$anode->iset->set_gender('masc');
+	}
+	else{
+
+		$anode->iset->set_gender('masc') 	if ($feats->[@$feats - 1] =~ /^m/);
+		$anode->iset->set_gender('fem') 	if ($feats->[@$feats - 1] =~ /^f/);
+	}
+	
+
+
+	
+	
 
 	return;
 }

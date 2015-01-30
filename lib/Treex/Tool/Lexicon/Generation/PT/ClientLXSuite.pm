@@ -49,10 +49,12 @@ sub best_form_of_lemma {
         return "null";
     }
 
-    if ($lemma !~ /^\p{L}+$/u){
-        log_warn "Lemma $lemma has non-letter characters";
+    if ($lemma !~ /^[[:alpha:]]+$/u){
+        log_warn "Lemma $lemma has non-alphanumeric characters";
         return $lemma;
     }
+
+    return $lemma if ($lemma =~ /_/);
 
     my $pos     = $iset->pos;
     my $number  = $PTNUMBER{$iset->number || 'sing'};
@@ -66,12 +68,20 @@ sub best_form_of_lemma {
         my $person  = $iset->person || '1';
         my $form    = $PTFORM{"$mood $tense"} || 'pi';
 
+        if($mood =~ m/imp/){
+            $form   = 'pc';
+            $person = '3';
+        }
+        
         my $response = $self->_conjugator->conjugate($lemma, $form, $person, $number);
 
         if(ucfirst($lemma) eq $lemma){
             $response = ucfirst($response);
         }
 
+        #Ocorreu qualquer erro no conjugador...
+        return $lemma if $response =~ m/<NULL>/;
+        
         return $response;
     }
     elsif ($pos =~/noun|adj/){
