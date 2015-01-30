@@ -13,6 +13,12 @@ T2T::SetClauseNumber
 # and do the synthesis
 T2A::CopyTtree
 
+T2A::PT::ImposeLemma
+#A2A::BackupTree to_selector=ImposeLemma
+
+T2A::PT::ImposeFormeme
+#A2A::BackupTree to_selector=ImposeFormeme
+
 T2A::PT::DropACT
 #A2A::BackupTree to_selector=DropACT
 
