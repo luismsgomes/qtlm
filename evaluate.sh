@@ -96,13 +96,13 @@ function evaluate {
             grep -P '^[0-9]+\.s?treex(\.gz)?$' \
                 > $t_session_dir/list.txt
 
-            $treexdir/bin/treex \
-                Read::Treex \
-                    from=@$t_session_dir/list.txt \
-                Write::Treex \
-                    storable=0 \
-                    to=$session_dir/$set_name.treex.gz \
-                2> "$session_dir/$set_name.treex.stderr.txt"
+            #$treexdir/bin/treex \
+            #    Read::Treex \
+            #        from=@$t_session_dir/list.txt \
+            #    Write::Treex \
+            #        storable=0 \
+            #        to=$session_dir/$set_name.treex.gz \
+            #    2> "$session_dir/$set_name.treex.stderr.txt"
 
             paste $session_dir/$set_name.{$src,$trg,$trg.mt} |
             $mydir/bin/tsv_to_html.py \

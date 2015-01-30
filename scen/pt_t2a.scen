@@ -25,6 +25,9 @@ T2A::PT::InitMorphcat
 T2A::PT::AddGender
 #A2A::BackupTree to_selector=AddGender
 
+T2A::PT::AddConditional
+#A2A::BackupTree to_selector=AddConditional
+
 T2A::PT::FixPossessivePronouns
 #A2A::BackupTree to_selector=FixPossessivePronouns
 
