@@ -68,6 +68,10 @@ sub process_ttree {
             and not $tnode->is_member
             and not $tnode->is_parenthesis
             ) {
+                while (($parent->get_parent->formeme || "" ) =~ /^n:/
+                       and $tnode->precedes($parent->get_parent)) {
+                    $parent = $parent->get_parent;
+                }
                 # TODO: is this really needed n:attr => adj:attr?
                 $tnode->set_formeme("adj:attr") if $tnode->formeme =~ /^n:attr/;
 

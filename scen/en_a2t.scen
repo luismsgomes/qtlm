@@ -40,3 +40,6 @@ A2T::EN::FixRelClauseNoRelPron
 A2T::EN::MarkReferentialIt resolver_type=nada threshold=0.5 suffix=nada_0.5 # you need Treex::External::NADA installed for this
 A2T::EN::FindTextCoref
 
+
+# Luís: added 2015-02-02
+A2T::EN::FixAdjNAttrNSub
