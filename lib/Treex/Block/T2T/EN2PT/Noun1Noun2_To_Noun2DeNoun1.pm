@@ -12,12 +12,15 @@ sub process_ttree {
     my ( $self, $troot ) = @_;
     foreach my $tnode ( $troot->get_descendants ) {
         my $parent = $tnode->get_parent;
-        if (( $tnode->formeme || "" ) =~ /^n:/
-            and (( $parent->formeme || "" ) =~ /^n:/ )
-            and $tnode->precedes($parent)
-            and ! exists $LX::Data::PT::gentilicos{$tnode->t_lemma}) {
-                $tnode->shift_after_node($parent);
+        if (( $tnode->formeme || "" ) =~ /^n:(?:attr|de\+X)/ and
+                (( $parent->formeme || "" ) =~ /^n:/ ) and
+                $tnode->precedes($parent)) {
+            $tnode->shift_after_node($parent);
+
+            if ($tnode->formeme =~ /^n:attr/ and
+                    !exists $LX::Data::PT::gentilicos{$tnode->t_lemma}) {
                 $tnode->set_formeme("n:de+X");
+            }
         }
     }
 }
@@ -36,6 +39,10 @@ Treex::Block::T2T::EN2PT::Noun1Noun2_To_Noun2DeNoun1
 
 Example:
     text tokenization => tokenização de texto
+
+Exceptions:
+    gentílicos:
+        portuguese researcher => investigador português
 
 
 =head1 AUTHORS
