@@ -41,5 +41,4 @@ A2T::EN::MarkReferentialIt resolver_type=nada threshold=0.5 suffix=nada_0.5 # yo
 A2T::EN::FindTextCoref
 
 
-# Luís: added 2015-02-02
-A2T::EN::FixAdjNAttrNSub
+A2T::EN::FixAdjNattrN
