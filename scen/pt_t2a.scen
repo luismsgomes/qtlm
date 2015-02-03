@@ -3,6 +3,8 @@ Util::SetGlobal selector=trg language=pt
 Util::SetGlobal lxsuite_host=localhost lxsuite_port=10000
 Util::SetGlobal lxsuite_key=nlx.qtleap.13417612987549387402
 
+T2T::FixQuoteFormeme
+
 T2T::EN2PT::Noun1Noun2_To_Noun2DeNoun1
 T2T::EN2PT::MoveAdjsAfterNouns
 
