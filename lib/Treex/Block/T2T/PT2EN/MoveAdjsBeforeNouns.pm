@@ -3,6 +3,7 @@ use Moose;
 use Treex::Core::Common;
 extends 'Treex::Core::Block';
 
+
 sub process_ttree {
     my ( $self, $troot ) = @_;
     foreach my $tnode ( $troot->get_descendants ) {
@@ -10,7 +11,7 @@ sub process_ttree {
         if (( $tnode->formeme || "" ) =~ /^adj:/
             and $tnode->t_lemma !~ /^(?:best|worst|greatest|great|good|fine)$/i
             and ( ( $parent->formeme || "" ) =~ /^n:/ )
-            and $tnode->succeeds($parent)
+            and $tnode->follows($parent)
             and not $tnode->get_children
             and not $tnode->is_member
             and not $tnode->is_parenthesis
