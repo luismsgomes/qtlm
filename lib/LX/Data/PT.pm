@@ -1,5 +1,11 @@
 package LX::Data::PT;
 use utf8;
+#
+#                    Assorted Portuguese word lists
+#
+#  2015, Luís Gomes <luis.gomes@di.fc.ul.pt>, <luismsgomes@gmail.com>
+#
+
 
 %LX::Data::PT::gentilicos = (
     'aacheniano' => 1,
@@ -1455,3 +1461,23 @@ use utf8;
 );
 
 1;
+
+__END__
+
+=encoding utf-8
+
+=head1 NAME
+
+LX::Data::EN
+
+=head1 DESCRIPTION
+
+Assorted Portuguese word lists.
+
+=head1 AUTHORS
+
+Luís Gomes <luis.gomes@di.fc.ul.pt>, <luismsgomes@gmail.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright © 2014 by NLX Group, Universidade de Lisboa
