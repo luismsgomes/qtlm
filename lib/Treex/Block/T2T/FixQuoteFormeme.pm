@@ -4,9 +4,9 @@ use Treex::Core::Common;
 extends 'Treex::Core::Block';
 
 sub process_tnode {
-    my ( $self ) = @_;
-    if (( $self->t_lemma || "" ) =~ /^[«»`''"]$/ ) {
-        $self->set_formeme('x');
+    my ( $self, $tnode ) = @_;
+    if (( $tnode->t_lemma || "" ) =~ /^[«»`''"]$/ ) {
+        $tnode->set_formeme('x');
     }
 }
 
