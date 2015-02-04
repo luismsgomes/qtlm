@@ -5,13 +5,22 @@ extends 'Treex::Core::Block';
 
 
 sub process_tnode {
-    my ( $self, $tnode ) = @_;
+    my ( $self, $t_node ) = @_;
 
-    if ($tnode->functor eq 'ACT'){
+    if ($t_node->functor eq 'ACT'){
 
-        my $a_node = $tnode->get_lex_anode() or return;
+        my $a_node = $t_node->get_lex_anode() or return;
 
-        if($a_node->lemma =~ m/(senhor|senhores|ser)/){
+        if($a_node->lemma =~ m/(senhor|senhores|ser|-lhes|ques|tratar|não|que)/){
+        	
+            if($t_node->get_attr('gram/verbmod') ne 'imp'){
+                my $t_parent = $t_node->get_parent;
+                $t_parent->set_attr( 'gram/person', $t_node->get_attr('gram/person') );
+                $t_parent->set_attr( 'gram/gender', $t_node->get_attr('gram/gender') );
+                $t_parent->set_attr( 'gram/number', $t_node->get_attr('gram/number') );
+            }
+
+            #$t_node->remove();
         	$a_node->remove();
         }
 
