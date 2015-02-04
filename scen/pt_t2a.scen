@@ -40,6 +40,12 @@ T2A::PT::FixPossessivePronouns
 T2A::PT::AddArticles
 #A2A::BackupTree to_selector=AddArticles
 
+T2A::PT::AddAuxVerbModalTense
+#A2A::BackupTree to_selector=AddAuxVerbModalTense
+
+T2A::PT::AddVerbNegation
+#A2A::BackupTree to_selector=AddVerbNegation
+
 T2A::PT::AddPrepos
 #A2A::BackupTree to_selector=AddPrepos
 
