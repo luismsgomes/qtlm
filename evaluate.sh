@@ -137,7 +137,7 @@ function evaluate {
             $session_dir/previous/$set_name.{$src,$trg,$trg.mt} \
             $session_dir/$set_name.$trg.mt \
             > $session_dir/$set_name.$trg.mt.inc
-        $mydir/bin/comparegrams.py $trg $trg.mt \
+        $mydir/bin/comparegrams.py $session_dir/$set_name.{$trg,$trg.mt} \
             > $session_dir/$set_name.$trg.mt.ngrams
 
     fi
