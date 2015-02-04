@@ -17,7 +17,7 @@ sub process_anode {
 	#TODO Tratamento de numerais
 	return if ($anode->iset->pos !~ m/(noun|adj)/);
 
-	my ( $forms, $lemmas, $postags, $cpostags, $feats ) = $self->generator->tokenize_and_tag($anode->lemma);
+	my ( $forms, $lemmas, $postags, $cpostags, $feats ) = $self->generator->tokenize_and_tag(lc $anode->lemma);
 
 	#Por defeito fica em masculino
 	if ($feats->[@$feats - 1] !~ /^(m|f)/){
