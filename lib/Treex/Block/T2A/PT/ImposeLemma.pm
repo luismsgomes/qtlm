@@ -24,6 +24,11 @@ sub process_tnode {
         $a_node->set_attr('lemma', 'clique' );
     }
 
+    if ($tnode->t_lemma eq 'factura'){
+        $tnode->set_attr('t_lemma', 'separador' );
+        $a_node->set_attr('lemma', 'separador' );
+    }
+
     return;
 }
 
