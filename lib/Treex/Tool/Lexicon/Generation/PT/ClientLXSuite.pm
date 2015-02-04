@@ -71,6 +71,7 @@ sub best_form_of_lemma {
         if($mood =~ m/imp/){
             $form   = 'pc';
             $person = '3';
+            $number = 'sing';
         }
         
         my $response = $self->_conjugator->conjugate($lemma, $form, $person, $number);
