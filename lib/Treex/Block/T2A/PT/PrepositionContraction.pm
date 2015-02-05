@@ -141,22 +141,30 @@ sub process_zone {
 
     my $last_node;
     foreach my $node ( $a_root->get_descendants({ ordered => 1 }) ) {
-        if(defined $last_node && $last_node =~ /[[:alpha:]]/){
+
+        if(defined $last_node){
+            if( $last_node->lemma =~ /^[[:alpha:]]+$/){
             
-            my $first_lemma = $last_node->lemma;
-            $first_lemma =~ s/_//g or next;
+                my $first_lemma = $last_node->lemma;
+                $first_lemma =~ s/_//g;
 
-            my $contraction = $CONTRACTION{$first_lemma . " " . $node->lemma};
+                my $contraction = $CONTRACTION{(lc $first_lemma) . " " . (lc $node->lemma)};
 
-            if(defined $contraction){
+                if(defined $contraction){
 
-                $last_node->set_form($contraction);
-        
-                #TODO Can I delete the node? What if it has child nodes?
-                #Clears child node form and lemma 
-                $node->set_form(undef);
-                $node->set_lemma(undef);
+                    if(ucfirst($first_lemma) eq $first_lemma){
+                        $last_node->set_form(ucfirst($contraction));
+                    }
+                    else{
+                        $last_node->set_form($contraction);
+                    }
             
+                    #TODO Can I delete the node? What if it has child nodes?
+                    #Clears child node form and lemma 
+                    $node->set_form(undef);
+                    $node->set_lemma(undef);
+            
+                }
             }
         }
 
