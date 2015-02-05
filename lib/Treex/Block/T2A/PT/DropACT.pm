@@ -11,8 +11,18 @@ sub process_tnode {
 
         my $a_node = $t_node->get_lex_anode() or return;
 
-        if($a_node->lemma =~ m/(senhor|senhores|ser|-lhes|ques|tratar|não|que)/){
+        if($a_node->lemma =~ /^que$/){
+            my $parent = $a_node->get_parent();
+
+            if($parent->get_attr('gram/verbmod') eq 'imp' ){
+                $a_node->remove();
+                return;
+            }
+        }
+
+        if($a_node->lemma =~ m/(senhor|senhores|ser|-lhes|ques|tratar|não)/){
         	
+
             if($t_node->get_attr('gram/verbmod') ne 'imp'){
                 my $t_parent = $t_node->get_parent;
                 $t_parent->set_attr( 'gram/person', $t_node->get_attr('gram/person') );
