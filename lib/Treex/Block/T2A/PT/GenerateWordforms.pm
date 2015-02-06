@@ -16,6 +16,15 @@ sub process_anode {
     my ( $self, $anode ) = @_;
     return if defined $anode->form;
 
+    my ($tnode) = $anode->get_referencing_nodes('a/lex.rf');
+
+    if(defined $tnode){
+        if(defined $tnode->t_lemma_origin){
+            return if($tnode->t_lemma_origin eq 'clone'); 
+        }
+    }
+
+
     #return $anode->set_form($anode->lemma) if (defined $anode->afun) && ($anode->afun eq 'Sb');
     if ((defined $anode->afun) && ($anode->afun eq 'Sb')){
     	print STDERR "->Warning, Afun=Sb, Lemma: ", $anode->lemma,"\n";

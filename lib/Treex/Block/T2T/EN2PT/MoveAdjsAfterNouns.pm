@@ -67,6 +67,7 @@ sub process_ttree {
             and not $tnode->get_children
             and not $tnode->is_member
             and not $tnode->is_parenthesis
+            and not (($tnode->gram_sempos // '' ) =~ /pron/)
             ) {
                 while (($parent->get_parent->formeme || "" ) =~ /^n:/
                        and $tnode->precedes($parent->get_parent)) {

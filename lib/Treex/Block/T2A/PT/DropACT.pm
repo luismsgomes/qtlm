@@ -12,7 +12,7 @@ sub process_tnode {
         my $a_node = $t_node->get_lex_anode() or return;
 
         if($a_node->lemma =~ /^que$/){
-            my $parent = $a_node->get_parent();
+            my $parent = $t_node->get_parent();
 
             if($parent->get_attr('gram/verbmod') eq 'imp' ){
                 $a_node->remove();

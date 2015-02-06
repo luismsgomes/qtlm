@@ -57,7 +57,7 @@ sub process_tnode {
 
 
     #Força preposição 'de' quando se tem um nó 'ter' com pelo menos um nó filho verbo
-    if ($tnode->t_lemma =~ m/(ter|clique|carregar)/){
+    if ($tnode->t_lemma =~ m/(ter|clique|clicar|carregar)/){
 
         #Verifica se tem nó filho e sendo este verbo
         foreach my $node ( $tnode->get_children({ following_only=>1 }) ) {
@@ -71,7 +71,7 @@ sub process_tnode {
 
             }
 
-            if($tnode->t_lemma =~ m/(clique|carregar)/){
+            if($tnode->t_lemma =~ m/(clique|clicar|carregar)/){
                 #TODO Manter POS? n?
                 $node->set_attr('formeme', 'n:em+X' );
 
