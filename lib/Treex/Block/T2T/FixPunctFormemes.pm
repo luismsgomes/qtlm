@@ -1,11 +1,11 @@
-package Treex::Block::T2T::FixQuoteFormeme;
+package Treex::Block::T2T::FixPunctFormemes;
 use Moose;
 use Treex::Core::Common;
 extends 'Treex::Core::Block';
 
 sub process_tnode {
     my ( $self, $tnode ) = @_;
-    if (( $tnode->t_lemma || "" ) =~ /^[«»`''"]$/ ) {
+    if (( $tnode->t_lemma || "" ) =~ /^[\(\)\[\]\{\}<>«»`''"]$/ ) {
         $tnode->set_formeme('x');
     }
 }
@@ -18,13 +18,11 @@ __END__
 
 =head1 NAME
 
-Treex::Block::T2T::FixQuoteFormeme
+Treex::Block::T2T::FixPunctFormemes
 
 =head1 DESCRIPTION
 
-    Force formeme x for quotes:
-        Adj -> NAttr1 -> N2
-
+    Force formeme x for quotes.
 
 
 =head1 AUTHORS
