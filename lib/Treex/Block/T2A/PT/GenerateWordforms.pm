@@ -20,7 +20,12 @@ sub process_anode {
 
     if(defined $tnode){
         if(defined $tnode->t_lemma_origin){
-            return if($tnode->t_lemma_origin eq 'clone'); 
+
+
+            if($tnode->t_lemma_origin eq 'clone'){
+                $anode->set_form($tnode->t_lemma);
+                return;
+            }
         }
     }
 
