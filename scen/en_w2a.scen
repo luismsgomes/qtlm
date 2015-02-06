@@ -2,7 +2,7 @@ Util::SetGlobal selector=src language=en
 
 ## to m-layer
 W2A::EN::Tokenize
-W2A::EN::NormalizeForms
+W2A::NormalizeForms
 W2A::EN::FixTokenization
 W2A::EN::TagMorce
 W2A::EN::FixTags
@@ -14,7 +14,7 @@ A2N::EN::NameTag
 A2N::EN::DistinguishPersonalNames
 
 # to a-layer
-W2A::MarkChunks
+W2A::MarkChunks min_quotes=3
 W2A::EN::ParseMST model=conll_mcd_order2_0.01.model
 W2A::EN::SetIsMemberFromDeprel
 W2A::EN::RehangConllToPdtStyle
