@@ -23,10 +23,8 @@ sub process_zone {
 
     $sentence =~ s/ +/ /g;
     $sentence =~ s/ ([!,.?:;])/$1/g;
-    $sentence =~ s/(``)/"/g;
-    $sentence =~ s/(["”’])\./\.$1/g;
-    $sentence =~ s/ ([’”])/$1/g;
-    $sentence =~ s/([‘“]) /$1/g;
+    $sentence =~ s/`` *| *''/"/g;
+    $sentence =~ s/"\./\."/g;
 
     $sentence =~ s/ ?([\.,]) ?([’”"])/$1$2/g;    # spaces around punctuation
 
@@ -38,7 +36,7 @@ sub process_zone {
     if ( $sentence =~ /^\(/ ) {
         $sentence =~ s/\)\./.)/;
     }
-    
+
     # HACKS:
     $sentence =~ s/muito muito/muito, muito/g;
 
