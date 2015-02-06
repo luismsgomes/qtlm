@@ -73,25 +73,6 @@ sub best_form_of_lemma {
             $person = '3';
             $number = 's';
         }
-        
-
-        #post -> fut
-        if($mood eq 'ind' && $tense eq 'fut'){
-            $form = 'fi';
-            $person = '3';
-            $number = 's';
-        }
-
-
-        #cdn -> cnd
-        #sim -> pres
-        #TODO: Puxar deontmond da t-tree
-        if($mood eq 'cnd' && $tense eq 'pres'){
-            $form = 'fi';
-            $person = '3';
-            $number = 's';
-        }
-        
 
         my $response = $self->_conjugator->conjugate($lemma, $form, $person, $number);
 

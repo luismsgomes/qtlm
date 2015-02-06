@@ -32,6 +32,7 @@ my %gram2iset = (
     'numbertype=ord'   => 'numtype=ord',
     'numbertype=frac'  => 'numtype=frac',
     'numbertype=kind'  => 'numtype=gen',
+    'numbertype=set'   => 'numtype=sets',
 
     'person=1' => 'person=1',
     'person=2' => 'person=2',
@@ -65,8 +66,6 @@ sub process_tnode {
 
     # Part-of-speech
     # Use mlayer_pos, if available, otherwise try sempos or syntpos from formeme
-
-
     my $mlayer_pos = $t_node->get_attr('mlayer_pos');
     #desactiva m-layer
     if (undef and defined($mlayer_pos) and $mlayer_pos !~ /^[xX]$/ ) {
@@ -77,6 +76,7 @@ sub process_tnode {
         my $syntpos = $t_node->formeme;
         $syntpos =~ s/:.*//;
         my $pos = $syntpos2pos{$syntpos};
+        $pos = 'adj' if ( ( $t_node->gram_sempos // '' ) =~ /adj/ );
         $pos = 'num' if ( ( $t_node->gram_sempos // '' ) =~ /quant/ );
         $a_node->iset->set_pos($pos) if $pos;
     }
@@ -99,6 +99,8 @@ sub process_tnode {
         # and we can mark possessive pronouns.
         if ( $t_node->formeme =~ /poss$/ ) {
             $a_node->iset->set_poss('poss');
+            $a_node->iset->set_possgender( $a_node->iset->gender );
+            $a_node->iset->set_gender('');
         }
     }
     
