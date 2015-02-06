@@ -68,12 +68,31 @@ sub best_form_of_lemma {
         my $person  = $iset->person || '1';
         my $form    = $PTFORM{"$mood $tense"} || 'pi';
 
-        if($mood =~ m/imp/){
+        if($mood eq 'imp'){
             $form   = 'pc';
             $person = '3';
-            $number = 'sing';
+            $number = 's';
         }
         
+
+        #post -> fut
+        if($mood eq 'ind' && $tense eq 'fut'){
+            $form = 'fi';
+            $person = '3';
+            $number = 's';
+        }
+
+
+        #cdn -> cnd
+        #sim -> pres
+        #TODO: Puxar deontmond da t-tree
+        if($mood eq 'cnd' && $tense eq 'pres'){
+            $form = 'fi';
+            $person = '3';
+            $number = 's';
+        }
+        
+
         my $response = $self->_conjugator->conjugate($lemma, $form, $person, $number);
 
         if(ucfirst($lemma) eq $lemma){
@@ -81,14 +100,14 @@ sub best_form_of_lemma {
         }
 
         #Ocorreu qualquer erro no conjugador...
-        return $lemma if $response =~ m/<NULL>/;
+        return $lemma if $response eq '<NULL>';
         
         return $response;
     }
-    elsif ($pos =~/noun|adj/){
+    elsif ($pos =~/^(noun|adj)$/){
 
         #Ignora pronomes possessivos
-        if ($iset->prontype =~ m/prn/ && $iset->poss =~ m/poss/){
+        if ($iset->prontype eq 'prn' && $iset->poss eq 'poss'){
             return $lemma;
         }
 
@@ -116,7 +135,7 @@ sub best_form_of_lemma {
         }
 
         #Se não é permitido mudar o número não é permitido flexionar em número
-        return $lemma if $response =~ m/non-existing1/;
+        return $lemma if $response eq 'non-existing1';
         return $response;
 
     }
