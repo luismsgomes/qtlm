@@ -1,3 +1,5 @@
 Util::SetGlobal selector=trg language=pt
 
+Misc::JoinBundles
+
 A2W::PT::ConcatenateTokens
