@@ -5,7 +5,7 @@ extends 'Treex::Core::Block';
 
 sub process_tnode {
     my ( $self, $tnode ) = @_;
-    if (( $tnode->t_lemma || "" ) =~ /^(?:\(|\)|-LRB-|-RRB-|``|''|<|>)$/ ) {
+    if (( $tnode->t_lemma || "" ) =~ /^(?:\p{P}+|-LRB-|-RRB-)$/ ) {
         $tnode->set_formeme('x');
     }
 }
