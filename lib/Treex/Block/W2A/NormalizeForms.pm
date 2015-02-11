@@ -16,6 +16,9 @@ sub process_anode {
                 !$previous_anode->no_space_after ) {
             $anode->set_form('``');
             $anode->set_lemma('``');
+        } else {
+            $anode->set_form("''");
+            $anode->set_lemma("''");
         }
     }
     elsif ( $anode->form eq '[' ) {
@@ -34,7 +37,7 @@ sub process_anode {
         $anode->set_form('``');
         $anode->set_lemma('``');
     }
-    elsif ( $anode->form =~ /["”»]/ ) {
+    elsif ( $anode->form =~ /[”»]/ ) {
         $anode->set_form("''");
         $anode->set_lemma("''");
     }
@@ -54,12 +57,12 @@ __END__
 
 =head1 NAME
 
-Treex::Block::W2A::NormalizeForms - normalize some wordforms
+Treex::Block::W2A::NormalizeForms
 
 =head1 DESCRIPTION
 
-Some forms are normalized, for example all the quotation marks
-get the normalized form `` and ''.
+Some forms are normalized, such as quotes « » and “ ”, which are all converted
+ to the normalized forms `` and ''.
 
 =over 4
 
@@ -71,7 +74,14 @@ get the normalized form `` and ''.
 
 Luís Gomes <luismsgomes@gmail.com>
 
+David Mareček <marecek@ufal.mff.cuni.cz>
+
 =head1 COPYRIGHT AND LICENSE
 
-Copyright © 2014 by NLX Group, Universidade de Lisboa
+Copyright © 2015 by NLX Group, Universidade de Lisboa
 
+Copyright © 2010 - 2011 by Institute of Formal and Applied Linguistics, Charles
+ University in Prague
+
+This module is free software; you can redistribute it and/or modify it under
+ the same terms as Perl itself.
