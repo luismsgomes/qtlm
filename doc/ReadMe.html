@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title></title>
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="data:text/css,body%20%7B%0Amargin%3A%20auto%3B%0Apadding%2Dright%3A%201em%3B%0Apadding%2Dleft%3A%201em%3B%0Amax%2Dwidth%3A%2044em%3B%0Aborder%2Dleft%3A%201px%20solid%20black%3B%0Aborder%2Dright%3A%201px%20solid%20black%3B%0Acolor%3A%20black%3B%0Afont%2Dfamily%3A%20Verdana%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%20100%25%3B%0Aline%2Dheight%3A%20140%25%3B%0Acolor%3A%20%23333%3B%0A%7D%0Apre%20%7B%0Aborder%3A%201px%20dotted%20gray%3B%0Abackground%2Dcolor%3A%20%23ececec%3B%0Acolor%3A%20%231111111%3B%0Apadding%3A%200%2E5em%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20monospace%3B%0A%7D%0Ah1%20a%2C%20h2%20a%2C%20h3%20a%2C%20h4%20a%2C%20h5%20a%20%7B%0Atext%2Ddecoration%3A%20none%3B%0Acolor%3A%20%237a5ada%3B%0A%7D%0Ah1%2C%20h2%2C%20h3%2C%20h4%2C%20h5%20%7B%20font%2Dfamily%3A%20verdana%3B%0Afont%2Dweight%3A%20bold%3B%0Aborder%2Dbottom%3A%201px%20dotted%20black%3B%0Acolor%3A%20%237a5ada%3B%20%7D%0Ah1%20%7B%0Afont%2Dsize%3A%20130%25%3B%0A%7D%0A%0Ah2%20%7B%0Afont%2Dsize%3A%20110%25%3B%0A%7D%0A%0Ah3%20%7B%0Afont%2Dsize%3A%2095%25%3B%0A%7D%0A%0Ah4%20%7B%0Afont%2Dsize%3A%2090%25%3B%0Afont%2Dstyle%3A%20italic%3B%0A%7D%0A%0Ah5%20%7B%0Afont%2Dsize%3A%2090%25%3B%0Afont%2Dstyle%3A%20italic%3B%0A%7D%0A%0Ah1%2Etitle%20%7B%0Afont%2Dsize%3A%20200%25%3B%0Afont%2Dweight%3A%20bold%3B%0Apadding%2Dtop%3A%200%2E2em%3B%0Apadding%2Dbottom%3A%200%2E2em%3B%0Atext%2Dalign%3A%20left%3B%0Aborder%3A%20none%3B%0A%7D%0A%0Adt%20code%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Add%20p%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0A%0A%23footer%20%7B%0Apadding%2Dtop%3A%201em%3B%0Afont%2Dsize%3A%2070%25%3B%0Acolor%3A%20gray%3B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%0A%2F%2A%20Numbered%20headings%3A%20%2A%2F%0Abody%20%7B%0Acounter%2Dreset%3A%20h2counter%3B%0A%7D%0Ah1%20%7B%0Acounter%2Dreset%3A%20h2counter%3B%0A%7D%0Ah2%3Abefore%20%7B%0Acontent%3A%20counter%28h2counter%29%20%22%2E%5C0000a0%5C0000a0%22%3B%0Acounter%2Dincrement%3A%20h2counter%3B%0Acounter%2Dreset%3A%20h3counter%3B%0A%7D%0Ah3%3Abefore%20%7B%0Acontent%3A%20counter%28h2counter%29%20%22%2E%22%20counter%28h3counter%29%20%22%2E%5C0000a0%5C0000a0%22%3B%0Acounter%2Dincrement%3A%20h3counter%3B%0A%7D%0A" rel="stylesheet">
+</head>
+<body>
+<nav id="TOC">
+<ul>
+<li><a href="#qtleap-infra-structure-sub-project">QTLeap Infra-Structure (Sub-)Project</a><ul>
+<li><a href="#usage-examples">Usage Examples</a><ul>
+<li><a href="#training">Training</a></li>
+<li><a href="#translation">Translation</a></li>
+<li><a href="#evaluation">Evaluation</a></li>
+<li><a href="#snapshots">Snapshots</a></li>
+</ul></li>
+<li><a href="#configuration">Configuration</a><ul>
+<li><a href="#environment">Environment</a></li>
+<li><a href="#host-configuration">Host Configuration</a></li>
+<li><a href="#dataset-configuration">Dataset Configuration</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="qtleap-infra-structure-sub-project"><a href="#TOC">QTLeap Infra-Structure (Sub-)Project</a></h1>
+<h2 id="usage-examples"><a href="#TOC">Usage Examples</a></h2>
+<p>For all the following commands the <code>$QTLEAP_CONF</code> variable must be defined in the environment. This value in this variable has three components separated by a forward slash (<code>/</code>):</p>
+<ol type="1">
+<li>the language pair (in the form of <code>$L1-$L2</code>);</li>
+<li>the training dataset name;</li>
+<li>a date formated as <code>YYYY-MM-DD</code></li>
+</ol>
+<p>Example: <code>QTLEAP_CONF=en-pt/ep/2015-02-12</code></p>
+<p>The two languages must be lexicographically ordered (<code>en-pt</code> is OK, <code>pt-en</code> is not). The same configuration file is used for both translation directions. According to the <code>$QTLEAP_CONF</code> variable defined above, the file <code>conf/en-pt/datasets/ep.sh</code> must exist (see <code>CONFIGURATION</code> section below for further details). The date suffix (in this case <code>2015-02-12</code>) indicates when the transfer models were trained.</p>
+<h3 id="training"><a href="#TOC">Training</a></h3>
+<p>Training transfer models (both translation directions are trained in parallel):</p>
+<pre><code>./train.sh</code></pre>
+<h3 id="translation"><a href="#TOC">Translation</a></h3>
+<p>Translating from English to Portuguese (reads one sentence per line from <code>STDIN</code> and writes one sentence per line on <code>STDOUT</code>):</p>
+<pre><code>./translate.sh en pt</code></pre>
+<h3 id="evaluation"><a href="#TOC">Evaluation</a></h3>
+<p>Evaluating the current pipeline on a specific evaluation set (in this example <code>qtleap_2a</code>):</p>
+<pre><code>./evaluate.sh en pt qtleap_2a</code></pre>
+<p>For this command to succeed the file <code>conf/en-pt/testsets/qtleap_2a.sh</code> must exist and define a variable named <code>testset_qtleap_2a</code> as follows:</p>
+<pre><code>testset_qtleap_2a=&quot;$HOME/corpora/qtleap/batch2_answers.en-pt.gz&quot;</code></pre>
+<p>Evaluating the current pipeline on all configured evaluation sets:</p>
+<pre><code>./evaluate.sh en pt</code></pre>
+<p>This will translate and evaluate all testsets configured in files within <code>conf/en-pt/testsets</code>.</p>
+<h3 id="snapshots"><a href="#TOC">Snapshots</a></h3>
+<p>Saving a snapshot of all current evaluations, the current mercurial and svn revision numbers as well as patch of the uncommited changes on both repositories:</p>
+<pre><code>./snapshot.sh save &quot;brief description of what changed since last snapshot&quot;</code></pre>
+<p>This command will save all current evaluations into a directory, plus a copy of the configuration file, a reference (date) to the transfer models and the mercurial and svn revision numbers of <code>~/code/qtleap</code> and <code>~/code/tectomt</code>. Furthermore, uncommited changes to the repositories are also saved in the form of a unified diff, allowing us to recover the current source code in full extent. <em>WARNING</em>: only files already tracked by mercurial and SVN will be included in the unified diff of every snapshot, ie, all files appearing with a question mark when you issue the commands <code>hg status</code> or <code>svn status</code> <em>WILL NOT</em> be included in the diff.</p>
+<p>Listing all saved snapshots, from the most recent to the oldest:</p>
+<pre><code>./snapshot.sh list</code></pre>
+<p>Compare current translations and evaluations with last snapshot:</p>
+<pre><code>./snapshot.sh compare</code></pre>
+<p>Compare current translations and evaluations with a specific snapshot (in this case 2015-01-20):</p>
+<pre><code>./snapshot.sh compare 2015-01-20</code></pre>
+<h2 id="configuration"><a href="#TOC">Configuration</a></h2>
+<p>Configuration files are kept in directory <code>conf</code>.</p>
+<h3 id="environment"><a href="#TOC">Environment</a></h3>
+<p>The shell environment is configured by including the <code>conf/env.sh</code> file from your <code>~/.bashrc</code> as follows:</p>
+<pre><code>source $HOME/code/qtleap/conf/env.sh</code></pre>
+<p>This file defines and exports the following variables: <code>PATH</code>, <code>PERL5LIB</code>, <code>TMT_ROOT</code>, and <code>TREEX_CONFIG</code>. If you installed the qtleap and tectomt repositories into the recommended place (<code>~/code/qtleap</code> and <code>~/code/tectomt</code>), then you don’t have to change this file.</p>
+<h3 id="host-configuration"><a href="#TOC">Host Configuration</a></h3>
+<p>The file <code>conf/hosts/$(hostname).sh</code> will be used if it exists, else the file <code>conf/hosts/default.sh</code> is used instead. Either of these files must define the following variables:</p>
+<pre><code>gizadir     Where GIZA++ has been installed.
+            (default: &quot;$TMT_ROOT/share/installed_tools/giza&quot;)
+
+num_procs   The maximum number of concurrent processes that should be
+            executed. Specify a number lower than the number of available
+            processors in your machine. (default: 1)
+
+rm_giza_files (true|false)
+            If true then GIZA models are removed after the aligment is
+            produced. (default: false)
+
+sort_mem    How much memory can we use for sorting ? (default: 50%)
+
+running_on_a_big_machine (true|false)
+            Set this to true only if your machine has enough memory to run
+            several concurrent analysis pipelines (for example a machine
+            with 32 cores and 256 GB RAM).  (default: false)</code></pre>
+<h3 id="dataset-configuration"><a href="#TOC">Dataset Configuration</a></h3>
+<p>The file <code>conf/datasets/$L1-$L2/$dataset.sh</code> must define the following variables:</p>
+<pre><code>train_hostname
+            The hostname of the machine where the transfer models are to
+            be trained. This must be the exact string returned by the
+            hostname command.  It is used as a safety guard to prevent
+            training on a sub-resourced machine.
+
+conf/$L1-$L2/testsets/$testset.sh
+conf/$L1-$L2/datasets/$dataset.sh
+
+
+workdir     the directory where all data is kept
+            (for example &quot;$HOME/qtleap_pilot1/ep&quot;)</code></pre>
+</body>
+</html>
