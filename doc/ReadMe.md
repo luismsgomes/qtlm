@@ -55,14 +55,15 @@ This will translate and evaluate all testsets configured in files within
 ### Snapshots
 
 Saving a snapshot of all current evaluations, the current mercurial and svn
- revision numbers as well as patch of the uncommited changes on both
+ revision numbers as well as a patch of the uncommited changes on both
  repositories:
 
     ./snapshot.sh save "brief description of what changed since last snapshot"
 
 This command will save all current evaluations into a directory, plus a copy of
  the configuration file, a reference (date) to the transfer models and the
- mercurial and svn revision numbers of `~/code/qtleap` and `~/code/tectomt`.
+ mercurial and svn revision numbers of `~/code/qtleap` and `~/code/tectomt` and
+ the configured remote lxsuite service.
 Furthermore, uncommited changes to the repositories are also saved in the form
  of a unified diff, allowing us to recover the current source code in full
  extent.
@@ -130,21 +131,80 @@ The file `conf/hosts/$(hostname).sh` will be used if it exists, else the file
 
 ### Dataset Configuration
 
-The file `conf/datasets/$L1-$L2/$dataset.sh` must define the following
- variables:
+A dataset is a combination of parallel corpora that is used to train the
+ transfer models.  For each `DATASET` we must create a respective file
+ `conf/datasets/L1-L2/DATASET.sh` and it must define the following variables:
 
     train_hostname
                 The hostname of the machine where the transfer models are to
                 be trained. This must be the exact string returned by the
                 hostname command.  It is used as a safety guard to prevent
-                training on a sub-resourced machine.
+                training on a sub-resourced machine. You may specify an `*` to
+                allow training of this dataset on any machine.
 
-    conf/$L1-$L2/testsets/$testset.sh
-    conf/$L1-$L2/datasets/$dataset.sh
-
+    dataset     A list of files (may be gzipped), each containing
+                tab-separated pairs of human translated sentences.
+                Example: `dataset="$HOME/corpora/europarl/ep.enpt.gz"`
 
     workdir     the directory where all data is kept
-                (for example "$HOME/qtleap_pilot1/ep")
+                Example: `workdir="$HOME/qtleap_pilot1/ep"`
+
+    lemma_static_train_opts
+    lemma_maxent_train_opts
+    formeme_static_train_opts
+    formeme_maxent_train_opts
+                These are the options affecting the behaviour of the machine
+                learning algorithm for training each transfer model. Refer to:
+                `$TMT_ROOT/treex/training/mt/transl_models/train.pl`
+                Example:
+
+                static_train_opts="--instances 10000 \
+                    --min_instances 2 \
+                    --min_per_class 1 \
+                    --class_coverage 1"
+
+                maxent_train_opts="--instances 10000 \
+                    --min_instances 10 \
+                    --min_per_class 2 \
+                    --class_coverage 1 \
+                    --feature_column 2 \
+                    --feature_cut 2 \
+                    --learner_params 'smooth_sigma 0.99'"
+
+                lemma_static_train_opts="$static_train_opts"
+                formeme_static_train_opts="$static_train_opts"
+
+                lemma_maxent_train_opts="$maxent_train_opts"
+                formeme_maxent_train_opts="$maxent_train_opts"
+
+### Testset Configuration
+
+A testset is a combination of parallel corpora that is used to test the
+ whole pipeline.  For each `TESTSET` we must create a respective file
+ `conf/datasets/L1-L2/TESTSET.sh` and it must define the following variables:
+
+    testset     A list of files (may be gzipped), each containing
+                tab-separated pairs of human translated sentences.
+                Example: `testset="$HOME/corpora/qtleap/qtleap_1a.gz"`
+
+### Treex Configuration
+
+Treex configuration for each user is kept in `conf/treex/$USER/config.yaml`.
+If you wonder why we don't simply use `conf/treex/$USER.yaml`, it is because
+Treex expects its configuration file to be named `config.yaml`.
+
+Here's my Treex configuration (`conf/treex/luis/config.yaml`) for guidance:
+
+    ---
+    resource_path:
+      - /home/luis/code/tectomt/share
+    share_dir: /home/luis/code/tectomt/share
+    share_url: http://ufallab.ms.mff.cuni.cz/tectomt/share
+    tmp_dir: /tmp
+    pml_schema_dir: /home/luis/code/tectomt/treex/lib/Treex/Core/share/tred_extension/treex/resources
+    tred_dir: /home/luis/tred
+    tred_extension_dir: /home/luis/code/tectomt/treex/lib/Treex/Core/share/tred_extension
+
 
 
 
