@@ -75,7 +75,7 @@ function translate {
             popd >&2
         fi
     fi
-	$treexdir/bin/treex \
+	$TMT_ROOT/treex/bin/treex \
 		Util::SetGlobal if_missing_bundles=ignore \
 		Read::Sentences \
 			skip_empty=1 \

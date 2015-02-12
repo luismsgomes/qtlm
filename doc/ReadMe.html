@@ -12,7 +12,7 @@
 <body>
 <nav id="TOC">
 <ul>
-<li><a href="#qtleap-infra-structure-sub-project">QTLeap Infra-Structure (Sub-)Project</a><ul>
+<li><a href="#easier-qtleap">Easier QTLeap</a><ul>
 <li><a href="#usage-examples">Usage Examples</a><ul>
 <li><a href="#training">Training</a></li>
 <li><a href="#translation">Translation</a></li>
@@ -20,16 +20,40 @@
 <li><a href="#snapshots">Snapshots</a></li>
 </ul></li>
 <li><a href="#configuration">Configuration</a><ul>
-<li><a href="#environment">Environment</a></li>
-<li><a href="#host-configuration">Host Configuration</a></li>
-<li><a href="#dataset-configuration">Dataset Configuration</a></li>
-<li><a href="#testset-configuration">Testset Configuration</a></li>
+<li><a href="#environment-configuration">Environment Configuration</a></li>
+<li><a href="#host-configuration">Host Configuration</a><ul>
+<li><a href="#work_dir">$work_dir</a></li>
+<li><a href="#num_procs">$num_procs</a></li>
+<li><a href="#sort_mem">$sort_mem</a></li>
+<li><a href="#big_machine">$big_machine</a></li>
+<li><a href="#giza_dir">$giza_dir</a></li>
+</ul></li>
+<li><a href="#sharing-configuration">Sharing Configuration</a><ul>
+<li><a href="#upload_ssh_">$upload_ssh_*</a></li>
+<li><a href="#download_http_">$download_http_*</a></li>
+</ul></li>
+<li><a href="#dataset-configuration">Dataset Configuration</a><ul>
+<li><a href="#dataset_files">$dataset_files</a></li>
+<li><a href="#train_hostname">$train_hostname</a></li>
+<li><a href="#train_opts">$*_train_opts</a></li>
+<li><a href="#rm_giza_files">$rm_giza_files</a></li>
+</ul></li>
+<li><a href="#testset-configuration">Testset Configuration</a><ul>
+<li><a href="#testset_files">$testset_files</a></li>
+</ul></li>
 <li><a href="#treex-configuration">Treex Configuration</a></li>
 </ul></li>
 </ul></li>
 </ul>
 </nav>
-<h1 id="qtleap-infra-structure-sub-project"><a href="#TOC">QTLeap Infra-Structure (Sub-)Project</a></h1>
+<h1 id="easier-qtleap"><a href="#TOC">Easier QTLeap</a></h1>
+<p>The purpose of these scripts is to make life easier for developers working on QTLeap.</p>
+<p>Comments and suggestions for improvement are very welcome (<script type="text/javascript">
+<!--
+h='&#100;&#x69;&#46;&#102;&#x63;&#46;&#x75;&#108;&#46;&#112;&#116;';a='&#64;';n='&#108;&#x75;&#x69;&#x73;&#46;&#x67;&#x6f;&#x6d;&#x65;&#x73;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+'a'+'>');
+// -->
+</script><noscript>luis.gomes at di dot fc dot ul dot pt</noscript>).</p>
 <h2 id="usage-examples"><a href="#TOC">Usage Examples</a></h2>
 <p>For all the following commands the <code>$QTLEAP_CONF</code> variable must be defined in the environment. This value in this variable has three components separated by a forward slash (<code>/</code>):</p>
 <ol type="1">
@@ -38,7 +62,7 @@
 <li>a date formated as <code>YYYY-MM-DD</code></li>
 </ol>
 <p>Example: <code>QTLEAP_CONF=en-pt/ep/2015-02-12</code></p>
-<p>The two languages must be lexicographically ordered (<code>en-pt</code> is OK, <code>pt-en</code> is not). The same configuration file is used for both translation directions. According to the <code>$QTLEAP_CONF</code> variable defined above, the file <code>conf/en-pt/datasets/ep.sh</code> must exist (see <code>CONFIGURATION</code> section below for further details). The date suffix (in this case <code>2015-02-12</code>) indicates when the transfer models were trained.</p>
+<p>The two languages must be lexicographically ordered (<code>en-pt</code> is OK, <code>pt-en</code> is not). The same configuration file is used for both translation directions. According to the <code>$QTLEAP_CONF</code> variable defined above, the file <code>conf/datasets/en-pt/ep.sh</code> must exist (see <a href="#dataset-configuration">Dataset Configuration</a> section below for further details). The date suffix (in this case <code>2015-02-12</code>) indicates when the transfer models were trained.</p>
 <h3 id="training"><a href="#TOC">Training</a></h3>
 <p>Training transfer models (both translation directions are trained in parallel):</p>
 <pre><code>./train.sh</code></pre>
@@ -48,15 +72,14 @@
 <h3 id="evaluation"><a href="#TOC">Evaluation</a></h3>
 <p>Evaluating the current pipeline on a specific evaluation set (in this example <code>qtleap_2a</code>):</p>
 <pre><code>./evaluate.sh en pt qtleap_2a</code></pre>
-<p>For this command to succeed the file <code>conf/en-pt/testsets/qtleap_2a.sh</code> must exist and define a variable named <code>testset_qtleap_2a</code> as follows:</p>
-<pre><code>testset_qtleap_2a=&quot;$HOME/corpora/qtleap/batch2_answers.en-pt.gz&quot;</code></pre>
+<p>For this command to succeed the file <code>conf/testsets/en-pt/qtleap_2a.sh</code> must exist and define a variable named <code>testset_files</code> as described below in <a href="#testset-configuration">Testset Configuration</a> section.</p>
 <p>Evaluating the current pipeline on all configured evaluation sets:</p>
 <pre><code>./evaluate.sh en pt</code></pre>
 <p>This will translate and evaluate all testsets configured in files within <code>conf/en-pt/testsets</code>.</p>
 <h3 id="snapshots"><a href="#TOC">Snapshots</a></h3>
 <p>Saving a snapshot of all current evaluations, the current mercurial and svn revision numbers as well as a patch of the uncommited changes on both repositories:</p>
 <pre><code>./snapshot.sh save &quot;brief description of what changed since last snapshot&quot;</code></pre>
-<p>This command will save all current evaluations into a directory, plus a copy of the configuration file, a reference (date) to the transfer models and the mercurial and svn revision numbers of <code>~/code/qtleap</code> and <code>~/code/tectomt</code> and the configured remote lxsuite service. Furthermore, uncommited changes to the repositories are also saved in the form of a unified diff, allowing us to recover the current source code in full extent. <em>WARNING</em>: only files already tracked by mercurial and SVN will be included in the unified diff of every snapshot, ie, all files appearing with a question mark when you issue the commands <code>hg status</code> or <code>svn status</code> <em>WILL NOT</em> be included in the diff.</p>
+<p>This command will save all current evaluations into a directory, plus a copy of the configuration file, a reference (date) to the transfer models and the mercurial and svn revision numbers of <code>~/code/eqtleap</code> and <code>~/code/tectomt</code> and the configured remote lxsuite service. Furthermore, uncommited changes to the repositories are also saved in the form of a unified diff, allowing us to recover the current source code in full extent. <em>WARNING</em>: only files already tracked by mercurial and SVN will be included in the unified diff of every snapshot, ie, all files appearing with a question mark when you issue the commands <code>hg status</code> or <code>svn status</code> <em>WILL NOT</em> be included in the diff.</p>
 <p>Listing all saved snapshots, from the most recent to the oldest:</p>
 <pre><code>./snapshot.sh list</code></pre>
 <p>Compare current translations and evaluations with last snapshot:</p>
@@ -65,77 +88,69 @@
 <pre><code>./snapshot.sh compare 2015-01-20</code></pre>
 <h2 id="configuration"><a href="#TOC">Configuration</a></h2>
 <p>Configuration files are kept in directory <code>conf</code>.</p>
-<h3 id="environment"><a href="#TOC">Environment</a></h3>
-<p>The shell environment is configured by including the <code>conf/env.sh</code> file from your <code>~/.bashrc</code> as follows:</p>
-<pre><code>source $HOME/code/qtleap/conf/env.sh</code></pre>
-<p>This file defines and exports the following variables: <code>PATH</code>, <code>PERL5LIB</code>, <code>TMT_ROOT</code>, and <code>TREEX_CONFIG</code>. If you installed the qtleap and tectomt repositories into the recommended place (<code>~/code/qtleap</code> and <code>~/code/tectomt</code>), then you don’t have to change this file.</p>
+<h3 id="environment-configuration"><a href="#TOC">Environment Configuration</a></h3>
+<p>The shell environment is configured by sourcing <code>conf/env/default.sh</code> into your from your <code>~/.bashrc</code> as follows:</p>
+<pre><code>source $HOME/code/eqtleap/conf/env/default.sh</code></pre>
+<p>This file defines and exports the following variables: <code>PATH</code>, <code>PERL5LIB</code>, <code>TMT_ROOT</code>, and <code>TREEX_CONFIG</code>. If you installed the qtleap and tectomt repositories into the recommended place (<code>~/code/eqtleap</code> and <code>~/code/tectomt</code>), then you don’t have to change this file. Else, you should create a file with your username (<code>conf/env/$USER.sh</code>) and source it from your <code>~/.bashrc</code> like this:</p>
+<pre><code>source $HOME/code/eqtleap/conf/env/$USER.sh</code></pre>
 <h3 id="host-configuration"><a href="#TOC">Host Configuration</a></h3>
 <p>The file <code>conf/hosts/$(hostname).sh</code> will be used if it exists, else the file <code>conf/hosts/default.sh</code> is used instead. Either of these files must define the following variables:</p>
-<pre><code>gizadir     Where GIZA++ has been installed.
-            (default: &quot;$TMT_ROOT/share/installed_tools/giza&quot;)
-
-num_procs   The maximum number of concurrent processes that should be
-            executed. Specify a number lower than the number of available
-            processors in your machine. (default: 1)
-
-rm_giza_files (true|false)
-            If true then GIZA models are removed after the aligment is
-            produced. (default: false)
-
-sort_mem    How much memory can we use for sorting ? (default: 50%)
-
-running_on_a_big_machine (true|false)
-            Set this to true only if your machine has enough memory to run
-            several concurrent analysis pipelines (for example a machine
-            with 32 cores and 256 GB RAM).  (default: false)</code></pre>
+<h4 id="work_dir"><a href="#TOC">$work_dir</a></h4>
+<p>The directory where all data is kept. Example: <code>work_dir=&quot;$HOME/qtleap_pilot1&quot;</code></p>
+<h4 id="num_procs"><a href="#TOC">$num_procs</a></h4>
+<p>The maximum number of concurrent processes that should be executed. Specify a number lower than the number of available processors in your machine. (default: <code>2</code>)</p>
+<h4 id="sort_mem"><a href="#TOC">$sort_mem</a></h4>
+<p>How much memory can we use for sorting? (default: 50%)</p>
+<h4 id="big_machine"><a href="#TOC">$big_machine</a></h4>
+<p>Set this to <code>true</code> only if your machine has enough memory to run several concurrent analysis pipelines (for example a machine with 32 cores and 256 GB RAM). (default: <code>false</code>)</p>
+<h4 id="giza_dir"><a href="#TOC">$giza_dir</a></h4>
+<p>Where GIZA++ has been installed. (default: <code>&quot;$TMT_ROOT/share/installed_tools/giza&quot;</code>)</p>
+<h3 id="sharing-configuration"><a href="#TOC">Sharing Configuration</a></h3>
+<p>Corpora and transfer models are downloaded/uploaded automatically, without user intervention. All data is stored in a central server, which is configured in <code>conf/sharing.sh</code>:</p>
+<h4 id="upload_ssh_"><a href="#TOC">$upload_ssh_*</a></h4>
+<p>These variables configure SSH access for automatic uploading of transfer models after training. Example:</p>
+<pre><code>upload_ssh_user=&quot;lgomes&quot;
+upload_ssh_host=&quot;nlx-server.di.fc.ul.pt&quot;
+upload_ssh_port=22
+upload_ssh_path=&quot;public_html/qtleap/share&quot;</code></pre>
+<h4 id="download_http_"><a href="#TOC">$download_http_*</a></h4>
+<p>These variables configure HTTP access for automatic downloading of datasets, testsets, and transfer models as needed. Example:</p>
+<pre><code>download_http_base_url=&quot;http://nlx-server.di.fc.ul.pt/~lgomes/qtleap/share&quot;
+download_http_user=&quot;qtleap&quot;
+download_http_password=&quot;paeltqtleap&quot;</code></pre>
 <h3 id="dataset-configuration"><a href="#TOC">Dataset Configuration</a></h3>
 <p>A dataset is a combination of parallel corpora that is used to train the transfer models. For each <code>DATASET</code> we must create a respective file <code>conf/datasets/L1-L2/DATASET.sh</code> and it must define the following variables:</p>
-<pre><code>train_hostname
-            The hostname of the machine where the transfer models are to
-            be trained. This must be the exact string returned by the
-            hostname command.  It is used as a safety guard to prevent
-            training on a sub-resourced machine. You may specify an `*` to
-            allow training of this dataset on any machine.
+<h4 id="dataset_files"><a href="#TOC">$dataset_files</a></h4>
+<p>A list of files (may be gzipped), each containing tab-separated pairs of human translated sentences. The file paths specfied here must be relative to <code>$download_base_url</code> configured in <code>conf/sharing.sh</code>.</p>
+<p>Example: <code>dataset=&quot;corpora/europarl/ep.enpt.gz&quot;</code></p>
+<h4 id="train_hostname"><a href="#TOC">$train_hostname</a></h4>
+<p>The hostname of the machine where the transfer models are to be trained. This must be the exact string returned by the hostname command. It is used as a safety guard to prevent training on an under-resourced machine. You may use an <code>*</code> to allow training of this dataset on any machine.</p>
+<h4 id="train_opts"><a href="#TOC">$*_train_opts</a></h4>
+<p>These are the options affecting the behaviour of the machine learning algorithm for training each transfer model. Four variables must be defined: <code>$lemma_static_train_opts</code>, <code>$lemma_maxent_train_opts</code>, <code>$formeme_static_train_opts</code>, and <code>$formeme_maxent_train_opts</code>. Refer to <code>$TMT_ROOT/treex/training/mt/transl_models/train.pl</code> for further details. Example:</p>
+<pre><code>static_train_opts=&quot;--instances 10000 \
+    --min_instances 2 \
+    --min_per_class 1 \
+    --class_coverage 1&quot;
 
-dataset     A list of files (may be gzipped), each containing
-            tab-separated pairs of human translated sentences.
-            Example: `dataset=&quot;$HOME/corpora/europarl/ep.enpt.gz&quot;`
+maxent_train_opts=&quot;--instances 10000 \
+    --min_instances 10 \
+    --min_per_class 2 \
+    --class_coverage 1 \
+    --feature_column 2 \
+    --feature_cut 2 \
+    --learner_params 'smooth_sigma 0.99'&quot;
 
-workdir     the directory where all data is kept
-            Example: `workdir=&quot;$HOME/qtleap_pilot1/ep&quot;`
+lemma_static_train_opts=&quot;$static_train_opts&quot;
+formeme_static_train_opts=&quot;$static_train_opts&quot;
 
-lemma_static_train_opts
-lemma_maxent_train_opts
-formeme_static_train_opts
-formeme_maxent_train_opts
-            These are the options affecting the behaviour of the machine
-            learning algorithm for training each transfer model. Refer to:
-            `$TMT_ROOT/treex/training/mt/transl_models/train.pl`
-            Example:
-
-            static_train_opts=&quot;--instances 10000 \
-                --min_instances 2 \
-                --min_per_class 1 \
-                --class_coverage 1&quot;
-
-            maxent_train_opts=&quot;--instances 10000 \
-                --min_instances 10 \
-                --min_per_class 2 \
-                --class_coverage 1 \
-                --feature_column 2 \
-                --feature_cut 2 \
-                --learner_params 'smooth_sigma 0.99'&quot;
-
-            lemma_static_train_opts=&quot;$static_train_opts&quot;
-            formeme_static_train_opts=&quot;$static_train_opts&quot;
-
-            lemma_maxent_train_opts=&quot;$maxent_train_opts&quot;
-            formeme_maxent_train_opts=&quot;$maxent_train_opts&quot;</code></pre>
+lemma_maxent_train_opts=&quot;$maxent_train_opts&quot;
+formeme_maxent_train_opts=&quot;$maxent_train_opts&quot;</code></pre>
+<h4 id="rm_giza_files"><a href="#TOC">$rm_giza_files</a></h4>
+<p>If <code>true</code> then GIZA models are removed after the aligment is produced.</p>
 <h3 id="testset-configuration"><a href="#TOC">Testset Configuration</a></h3>
 <p>A testset is a combination of parallel corpora that is used to test the whole pipeline. For each <code>TESTSET</code> we must create a respective file <code>conf/datasets/L1-L2/TESTSET.sh</code> and it must define the following variables:</p>
-<pre><code>testset     A list of files (may be gzipped), each containing
-            tab-separated pairs of human translated sentences.
-            Example: `testset=&quot;$HOME/corpora/qtleap/qtleap_1a.gz&quot;`</code></pre>
+<h4 id="testset_files"><a href="#TOC">$testset_files</a></h4>
+<p>A list of files (may be gzipped), each containing tab-separated pairs of human translated sentences. The file paths specfied here must be relative to <code>$download_base_url</code> configured in <code>conf/sharing.sh</code>. Example: <code>testset=&quot;corpora/qtleap/qtleap_1a.gz&quot;</code></p>
 <h3 id="treex-configuration"><a href="#TOC">Treex Configuration</a></h3>
 <p>Treex configuration for each user is kept in <code>conf/treex/$USER/config.yaml</code>. If you wonder why we don’t simply use <code>conf/treex/$USER.yaml</code>, it is because Treex expects its configuration file to be named <code>config.yaml</code>.</p>
 <p>Here’s my Treex configuration (<code>conf/treex/luis/config.yaml</code>) for guidance:</p>

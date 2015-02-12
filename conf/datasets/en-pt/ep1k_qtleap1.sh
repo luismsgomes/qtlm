@@ -1,11 +1,14 @@
 
-dataset_files="corpora/europarl/ep.enpt.gz"
+dataset_files="\
+    corpora/europarl/ep.1k.enpt.gz \
+    corpora/qtleap/qtleap_1a.enpt.gz \
+    corpora/qtleap/qtleap_1q.enpt.gz "
 
-train_hostname="qtleap-worker"
+train_hostname="*"
 
 static_train_opts="\
     --instances 10000 \
-    --min_instances 2 \
+    --min_instances 1 \
     --min_per_class 1 \
     --class_coverage 1"
 lemma_static_train_opts="$static_train_opts"
@@ -13,7 +16,7 @@ formeme_static_train_opts="$static_train_opts"
 
 maxent_train_opts="\
     --instances 10000 \
-    --min_instances 10 \
+    --min_instances 5 \
     --min_per_class 2 \
     --class_coverage 1 \
     --feature_column 2 \
@@ -22,5 +25,4 @@ maxent_train_opts="\
 lemma_maxent_train_opts="$maxent_train_opts"
 formeme_maxent_train_opts="$maxent_train_opts"
 
-rm_giza_files=false
-
+rm_giza_files=true

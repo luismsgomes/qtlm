@@ -4,41 +4,57 @@
 #
 #
 
+usage=<<END
+usage:
+    $0
+    $0 clean
+    $0 save "some description"
+END
+
 function main {
     init "$@"
     evaluate_all
 }
 
 function init {
-    set -u # abort if trying to use uninitialized variable
-    set -e # abort on error
-    progname=$0
-    cd $(dirname $0)
-    mydir=$(pwd)
-    . $mydir/lib/bash_functions.sh
-    test $# == 3 || fatal "usage: $0 CONFIGURATION SRC_LANG TRG_LANG"
-    test -f "$1" || fatal "config file '$1' does not exist"
-    configfile=$1
-    src=${2,,}
-    trg=${3,,}
-    configname=$(perl -pe 's{(?:.*/)?([^\.]*)(?:\..*)?}{\1}' <<< $configfile)
-    source "$configfile"
-    lang1=${lang1,,}
-    lang2=${lang2,,}
-    map check_config_variable num_procs treexdir workdir lang1 lang2 eval_sets \
-        running_on_a_big_machine
-    if test "$src" != "$lang1" -a "$src" != "$lang2"; then
-        fatal "invalid SRC_LANG ($src); expected either ${^^lang1} or ${lang2^^}"
+    mydir=$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)
+    source "$mydir/lib/bash_functions.sh"
+    set_pedantic_bash_options
+    check_lang1_lang2_variables
+    check_src_trg_variables
+    if test -f "conf/defaults.sh"; then
+        source "conf/defaults.sh"
+    else
+        stderr "config file 'conf/defaults.sh' does not exist; skipping"
     fi
-    if test "$trg" != "$lang1" -a "$trg" != "$lang2"; then
-        fatal "invalid SRC_LANG ($trg); expected either ${^^lang1} or ${lang2^^}"
+    if test -f "conf/$lang1-$lang2/defaults.sh"; then
+        source "conf/$lang1-$lang2/defaults.sh"
+    else
+        stderr "config file 'conf/$lang1-$lang2/defaults.sh' does not exist; skipping"
     fi
-    if test "$src" == "$trg"; then
-        fatal "SRC_LANG and TRG_LANG must be different"
+    if test -f "conf/$lang1-$lang2/$conf.sh"; then
+        source "conf/$conf.sh"
+    else
+        fatal "config file 'conf/$lang1-$lang2/$conf.sh' does not exist"
     fi
-    share_dir=$(perl -e 'use Treex::Core::Config; my ($d) = Treex::Core::Config->resource_path(); print "$d\n";')
+    check_required_variables treexdir workdir num_procs eval_sets running_on_a_big_machine
+    share_dir=$(get_treex_share_dir)
     create_dir "$workdir"
-    pushd "$workdir" >&2
+    if test $# == 0; then
+        cmd=evaluate_all
+    elif test $# == 1 && test "$1" == "clean"; then
+        cmd=clean
+    elif test $# == 2 && test "$1" == "save"; then
+        cmd=save
+        description=$2
+    else
+        echo "$usage" >&2
+        exit 1
+    fi
+}
+
+function clean {
+
 }
 
 function evaluate_all {
@@ -108,7 +124,7 @@ function evaluate {
     if test $numlinesin != $numlinesout; then
         fatal "translation output has different number of lines than input"
     fi
-    CONFIG_JSON="{\"srclang\":\"$src\",\"trglang\":\"$trg\",\"setid\":\"$set_name\",\"sysid\":\"qtleap-$configname-$src-$trg\",\"refid\":\"human\"}"
+    CONFIG_JSON="{\"srclang\":\"$src\",\"trglang\":\"$trg\",\"setid\":\"$set_name\",\"sysid\":\"qtleap-$conf-$src-$trg\",\"refid\":\"human\"}"
     DOCID_REGEX=".*($set_name).*"
     $mydir/bin/txt_to_mteval_xml.py src "$CONFIG_JSON" "$DOCID_REGEX" \
         $session_dir/$set_name.$src > $session_dir/$set_name.$src.xml

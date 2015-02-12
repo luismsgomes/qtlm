@@ -1,9 +1,9 @@
 
-dataset="\
-    $HOME/corpora/europarl/ep.10k.enpt.gz \
-    $HOME/corpora/qtleap/qtleap_1a.enpt.gz \
-    $HOME/corpora/qtleap/qtleap_1q.enpt.gz "
-workdir="$HOME/qtleap_pilot1/ep10k_qtleap1"
+dataset_files="\
+    corpora/europarl/ep.10k.enpt.gz \
+    corpora/qtleap/qtleap_1a.enpt.gz \
+    corpora/qtleap/qtleap_1q.enpt.gz "
+
 train_hostname="*"
 
 static_train_opts="\
@@ -24,3 +24,5 @@ maxent_train_opts="\
     --learner_params 'smooth_sigma 0.99'"
 lemma_maxent_train_opts="$maxent_train_opts"
 formeme_maxent_train_opts="$maxent_train_opts"
+
+rm_giza_files=true

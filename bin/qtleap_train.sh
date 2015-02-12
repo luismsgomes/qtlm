@@ -1,6 +1,6 @@
 #! /bin/bash
 #
-# January 2015, Luís Gomes <luismsgomes@gmail.com>
+#  January 2015, Luís Gomes <luismsgomes@gmail.com>
 #
 #
 
@@ -14,34 +14,25 @@ function main {
 }
 
 function init {
-    set -u # abort if trying to use uninitialized variable
-    set -e # abort on error
-    progname=$0
-    cd $(dirname $0)
-    mydir=$(pwd)
-    . $mydir/lib/bash_functions.sh
-    test $# == 1 || fatal "please give the configuration filename as argument"
-    test -f "$1" || fatal "config file '$1' does not exist"
-    configfile=$1
-    configname=$(perl -pe 's{(?:.*/)?([^\.]*)(?:\..*)?}{\1}' <<< $configfile)
-    source "$configfile"
-    map check_config_variable workdir treexdir \
-        lang1 lang2 corpus num_procs rm_giza_files running_on_a_big_machine \
-        sort_mem static_train_opts maxent_train_opts train_host after_train
+    my_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
+    source "$my_dir/lib/bash/utils.sh"
+    source "$my_dir/lib/bash/qtleap.sh"
+    set_pedantic_bash_options
+    check_config
 
-    if test "$train_host" != "$(hostname)"; then
-        fatal "configuration '$configname' must be trained at '$train_host'"
+    if [[ $(hostname) != $train_hostname ]]; then
+        fatal "dataset '$dataset/$lang1-$lang2' must be trained at '$train_hostname'"
     fi
 
     for lang in $lang1 $lang2; do
         for step in w2a a2t; do
-            scen="$mydir/scen/${lang}_${step}.scen"
+            scen="$my_dir/scen/${lang}_${step}.scen"
             test -f "$scen" ||
                 fatal "missing ${step^^} scenario for ${lang^^}: $scen"
         done
     done
-    create_dir "$workdir"
-    pushd "$workdir"
+    create_dir "$work_dir"
+    pushd "$work_dir"
     create_dir logs
 }
 
@@ -53,7 +44,7 @@ function get_corpus {
 
     SPLITOPTS="-d -a 8 -l 200 --additional-suffix .txt"
     zcat "$corpus" |
-    $mydir/bin/prune_unaligned_sentpairs.py |
+    $my_dir/bin/prune_unaligned_sentpairs.py |
     tee >(cut -f 1 | split $SPLITOPTS - corpus/$lang1/part_) |
           cut -f 2 | split $SPLITOPTS - corpus/$lang2/part_
 
@@ -89,8 +80,8 @@ function w2a {
                 Read::AlignedSentences \
                     ${lang1}_src=@corpus/$lang1/batch_$batch.txt \
                     ${lang2}_src=@corpus/$lang2/batch_$batch.txt \
-                "$mydir/scen/${lang1}_w2a.scen" \
-                "$mydir/scen/${lang2}_w2a.scen" \
+                "$my_dir/scen/${lang1}_w2a.scen" \
+                "$my_dir/scen/${lang2}_w2a.scen" \
                 Write::Treex \
                     storable=1 \
                     substitute='{^.*/([^\/]*)\.streex}{atrees/$1.streex}' \
@@ -117,7 +108,7 @@ function w2a {
 }
 
 function align {
-    test -f lemmas.gz || fatal "$workdir/lemmas.gz does not exist"
+    test -f lemmas.gz || fatal "$work_dir/lemmas.gz does not exist"
     test lemmas.gz -nt alignments.gz || return 0
     stderr "$(date '+%F %T')  started align"
     create_dir align_tmp
@@ -170,8 +161,8 @@ function a2t {
                     selector=src \
                     language=$lang1 \
                     layer=a \
-                "$mydir/scen/${lang1}_a2t.scen" \
-                "$mydir/scen/${lang2}_a2t.scen" \
+                "$my_dir/scen/${lang1}_a2t.scen" \
+                "$my_dir/scen/${lang2}_a2t.scen" \
                 Align::T::CopyAlignmentFromAlayer \
                     selector=src \
                     language=$lang1 \
@@ -247,9 +238,7 @@ function train_langpair {
         $running_on_a_big_machine || wait
     done
     wait
-    if test -n "$after_train"; then
-        $after_train
-    fi
+    create_model_symlinks
     stderr "$(date '+%F %T') finished train $src-$trg"
 }
 
@@ -277,6 +266,21 @@ function train_formeme {
         $modeltype $train_opts $src-$trg/formeme/$modeltype.model.gz \
         >& logs/train_${src}-${trg}_formeme_$modeltype.log
     stderr "$(date '+%F %T') finished training $modeltype $src-$trg formemes transfer model"
+}
+
+function create_model_symlinks {
+    for factor in lemma formeme; do
+        for langpair in $lang1-$lang2 $lang2-$lang1; do
+            file="data/models/transfer/$langpair-$conf-$factor-static.model.gz"
+            share_ssh_dir
+            d="$HOME//data/models/transfer/$langpair/$conf/$factor"
+                scp -P "$share_ssh_port" \
+                    "$work_dir/$file" \
+                    "$share_ssh_user@$share_ssh_host:$share_ssh_path/data/models/transfer/$langpair/$conf/$factor/static.model.gz"
+                ln -fs "$work_dir/$langpair/$factor/maxent.model.gz"
+            popd >&2
+        done
+    done
 }
 
 main "$@"
