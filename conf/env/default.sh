@@ -1,5 +1,6 @@
 
-export PATH="$HOME/code/eqtleap/bin:$HOME/code/tectomt/treex/bin:$HOME/code/tectomt/tools/general:$PATH"
-export PERL5LIB="$HOME/code/eqtleap/lib/perl5:$HOME/code/tectomt/treex/lib:$HOME/code/tectomt/libs/other:$HOME/code/tectomt/libs/core:$PERL5LIB"
+export QTLEAP_ROOT="$HOME/code/qtleap"
+export TREEX_CONFIG="$QTLEAP_ROOT/conf/treex/$USER"
 export TMT_ROOT="$HOME/code/tectomt"
-export TREEX_CONFIG="$HOME/code/eqtleap/conf/treex/$USER"
+export PATH="$QTLEAP_ROOT/bin:$TMT_ROOT/treex/bin:$TMT_ROOT/tools/general:$PATH"
+export PERL5LIB="$QTLEAP_ROOT/lib/perl5:$TMT_ROOT/treex/lib:$TMT_ROOT/libs/other:$TMT_ROOT/libs/core:$PERL5LIB"
