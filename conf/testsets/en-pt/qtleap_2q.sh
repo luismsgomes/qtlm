@@ -1,1 +1,1 @@
-testset="$HOME/corpora/qtleap/qtleap_2q.enpt.gz"
+testset="corpora/qtleap/qtleap_2q.enpt.gz"

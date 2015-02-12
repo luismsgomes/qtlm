@@ -1,1 +1,1 @@
-testset="$HOME/corpora/europarl/ep.1k.enpt.gz"
+testset="corpora/europarl/ep.1k.enpt.gz"
