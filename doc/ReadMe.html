@@ -22,7 +22,6 @@
 <li><a href="#configuration">Configuration</a><ul>
 <li><a href="#environment-configuration">Environment Configuration</a></li>
 <li><a href="#host-configuration">Host Configuration</a><ul>
-<li><a href="#work_dir">$work_dir</a></li>
 <li><a href="#num_procs">$num_procs</a></li>
 <li><a href="#sort_mem">$sort_mem</a></li>
 <li><a href="#big_machine">$big_machine</a></li>
@@ -62,41 +61,39 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+
 <li>a date formated as <code>YYYY-MM-DD</code></li>
 </ol>
 <p>Example: <code>QTLEAP_CONF=en-pt/ep/2015-02-12</code></p>
-<p>The two languages must be lexicographically ordered (<code>en-pt</code> is OK, <code>pt-en</code> is not). The same configuration file is used for both translation directions. According to the <code>$QTLEAP_CONF</code> variable defined above, the file <code>conf/datasets/en-pt/ep.sh</code> must exist (see <a href="#dataset-configuration">Dataset Configuration</a> section below for further details). The date suffix (in this case <code>2015-02-12</code>) indicates when the transfer models were trained.</p>
+<p>The two languages must be lexicographically ordered (<code>en-pt</code> is OK, <code>pt-en</code> is not). The same configuration file is used for both translation directions. According to the <code>$QTLEAP_CONF</code> variable defined above, the file <code>$QTLEAP_ROOT/conf/datasets/en-pt/ep.sh</code> must exist (see <a href="#dataset-configuration">Dataset Configuration</a> section below for further details). The date suffix (in this case <code>2015-02-12</code>) indicates when the transfer models were trained.</p>
 <h3 id="training"><a href="#TOC">Training</a></h3>
 <p>Training transfer models (both translation directions are trained in parallel):</p>
-<pre><code>./train.sh</code></pre>
+<pre><code>qtleap_train</code></pre>
 <h3 id="translation"><a href="#TOC">Translation</a></h3>
 <p>Translating from English to Portuguese (reads one sentence per line from <code>STDIN</code> and writes one sentence per line on <code>STDOUT</code>):</p>
-<pre><code>./translate.sh en pt</code></pre>
+<pre><code>qtleap_translate en pt</code></pre>
 <h3 id="evaluation"><a href="#TOC">Evaluation</a></h3>
 <p>Evaluating the current pipeline on a specific evaluation set (in this example <code>qtleap_2a</code>):</p>
-<pre><code>./evaluate.sh en pt qtleap_2a</code></pre>
-<p>For this command to succeed the file <code>conf/testsets/en-pt/qtleap_2a.sh</code> must exist and define a variable named <code>testset_files</code> as described below in <a href="#testset-configuration">Testset Configuration</a> section.</p>
+<pre><code>qtleap_evaluate en pt qtleap_2a</code></pre>
+<p>For this command to succeed the file <code>$QTLEAP_ROOT/conf/testsets/en-pt/qtleap_2a.sh</code> must exist and define a variable named <code>testset_files</code> as described below in <a href="#testset-configuration">Testset Configuration</a> section.</p>
 <p>Evaluating the current pipeline on all configured evaluation sets:</p>
-<pre><code>./evaluate.sh en pt</code></pre>
-<p>This will translate and evaluate all testsets configured in files within <code>conf/en-pt/testsets</code>.</p>
+<pre><code>qtleap_evaluate en pt</code></pre>
+<p>This will translate and evaluate all testsets configured in files within <code>$QTLEAP_ROOT/conf/en-pt/testsets</code>.</p>
 <h3 id="snapshots"><a href="#TOC">Snapshots</a></h3>
 <p>Saving a snapshot of all current evaluations, the current mercurial and svn revision numbers as well as a patch of the uncommited changes on both repositories:</p>
-<pre><code>./snapshot.sh save &quot;brief description of what changed since last snapshot&quot;</code></pre>
-<p>This command will save all current evaluations into a directory, plus a copy of the configuration file, a reference (date) to the transfer models and the mercurial and svn revision numbers of <code>~/code/eqtleap</code> and <code>~/code/tectomt</code> and the configured remote lxsuite service. Furthermore, uncommited changes to the repositories are also saved in the form of a unified diff, allowing us to recover the current source code in full extent. <em>WARNING</em>: only files already tracked by mercurial and SVN will be included in the unified diff of every snapshot, ie, all files appearing with a question mark when you issue the commands <code>hg status</code> or <code>svn status</code> <em>WILL NOT</em> be included in the diff.</p>
+<pre><code>qtleap_snapshot save &quot;brief description of what changed since last snapshot&quot;</code></pre>
+<p>This command will save all current evaluations into a directory, plus a copy of the configuration file, a reference (date) to the transfer models and the mercurial and svn revision numbers of <code>$QTLEAP_ROOT</code> and <code>$TMT_ROOT</code> and the configured remote lxsuite service. Furthermore, uncommited changes to the repositories are also saved in the form of a unified diff, allowing us to recover the current source code in full extent. <em>WARNING</em>: only files already tracked by mercurial and SVN will be included in the unified diff of every snapshot, ie, all files appearing with a question mark when you issue the commands <code>hg status</code> or <code>svn status</code> <em>WILL NOT</em> be included in the diff.</p>
 <p>Listing all saved snapshots, from the most recent to the oldest:</p>
-<pre><code>./snapshot.sh list</code></pre>
+<pre><code>qtleap_snapshot list</code></pre>
 <p>Compare current translations and evaluations with last snapshot:</p>
-<pre><code>./snapshot.sh compare</code></pre>
+<pre><code>qtleap_snapshot compare</code></pre>
 <p>Compare current translations and evaluations with a specific snapshot (in this case 2015-01-20):</p>
-<pre><code>./snapshot.sh compare 2015-01-20</code></pre>
+<pre><code>qtleap_snapshot compare 2015-01-20</code></pre>
 <h2 id="configuration"><a href="#TOC">Configuration</a></h2>
 <p>Configuration files are kept in directory <code>conf</code>.</p>
 <h3 id="environment-configuration"><a href="#TOC">Environment Configuration</a></h3>
-<p>The shell environment is configured by sourcing <code>conf/env/default.sh</code> into your from your <code>~/.bashrc</code> as follows:</p>
-<pre><code>source $HOME/code/eqtleap/conf/env/default.sh</code></pre>
-<p>This file defines and exports the following variables: <code>PATH</code>, <code>PERL5LIB</code>, <code>TMT_ROOT</code>, and <code>TREEX_CONFIG</code>. If you installed the qtleap and tectomt repositories into the recommended place (<code>~/code/eqtleap</code> and <code>~/code/tectomt</code>), then you don’t have to change this file. Else, you should create a file with your username (<code>conf/env/$USER.sh</code>) and source it from your <code>~/.bashrc</code> like this:</p>
-<pre><code>source $HOME/code/eqtleap/conf/env/$USER.sh</code></pre>
+<p>The shell environment is configured by sourcing <code>$QTLEAP_ROOT/conf/env/default.sh</code> into your from your <code>~/.bashrc</code> as follows:</p>
+<pre><code>source $QTLEAP_ROOT/conf/env/default.sh</code></pre>
+<p>This file defines and exports the following variables: <code>PATH</code>, <code>PERL5LIB</code>, <code>TMT_ROOT</code>, and <code>TREEX_CONFIG</code>. If you installed the qtleap and tectomt repositories into the recommended place (<code>~/code/eqtleap</code> and <code>~/code/tectomt</code>), then you don’t have to change this file. Else, you should create a file with your username (<code>$QTLEAP_ROOT/conf/env/$USER.sh</code>) and source it from your <code>~/.bashrc</code> like this:</p>
+<pre><code>source $QTLEAP_ROOT/conf/env/$USER.sh</code></pre>
 <h3 id="host-configuration"><a href="#TOC">Host Configuration</a></h3>
-<p>The file <code>conf/hosts/$(hostname).sh</code> will be used if it exists, else the file <code>conf/hosts/default.sh</code> is used instead. Either of these files must define the following variables:</p>
-<h4 id="work_dir"><a href="#TOC">$work_dir</a></h4>
-<p>The directory where all data is kept. Example: <code>work_dir=&quot;$HOME/qtleap_pilot1&quot;</code></p>
+<p>The file <code>$QTLEAP_ROOT/conf/hosts/$(hostname).sh</code> will be used if it exists, else the file <code>$QTLEAP_ROOT/conf/hosts/default.sh</code> is used instead. Either of these files must define the following variables:</p>
 <h4 id="num_procs"><a href="#TOC">$num_procs</a></h4>
 <p>The maximum number of concurrent processes that should be executed. Specify a number lower than the number of available processors in your machine. (default: <code>2</code>)</p>
 <h4 id="sort_mem"><a href="#TOC">$sort_mem</a></h4>
@@ -106,7 +103,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+
 <h4 id="giza_dir"><a href="#TOC">$giza_dir</a></h4>
 <p>Where GIZA++ has been installed. (default: <code>&quot;$TMT_ROOT/share/installed_tools/giza&quot;</code>)</p>
 <h3 id="sharing-configuration"><a href="#TOC">Sharing Configuration</a></h3>
-<p>Corpora and transfer models are downloaded/uploaded automatically, without user intervention. All data is stored in a central server, which is configured in <code>conf/sharing.sh</code>:</p>
+<p>Corpora and transfer models are downloaded/uploaded automatically, without user intervention. All data is stored in a central server, which is configured in <code>$QTLEAP_ROOT/conf/sharing.sh</code>:</p>
 <h4 id="upload_ssh_"><a href="#TOC">$upload_ssh_*</a></h4>
 <p>These variables configure SSH access for automatic uploading of transfer models after training. Example:</p>
 <pre><code>upload_ssh_user=&quot;lgomes&quot;
@@ -119,9 +116,9 @@ upload_ssh_path=&quot;public_html/qtleap/share&quot;</code></pre>
 download_http_user=&quot;qtleap&quot;
 download_http_password=&quot;paeltqtleap&quot;</code></pre>
 <h3 id="dataset-configuration"><a href="#TOC">Dataset Configuration</a></h3>
-<p>A dataset is a combination of parallel corpora that is used to train the transfer models. For each <code>DATASET</code> we must create a respective file <code>conf/datasets/L1-L2/DATASET.sh</code> and it must define the following variables:</p>
+<p>A dataset is a combination of parallel corpora that is used to train the transfer models. For each <code>DATASET</code> we must create a respective file <code>$QTLEAP_ROOT/conf/datasets/L1-L2/DATASET.sh</code> and it must define the following variables:</p>
 <h4 id="dataset_files"><a href="#TOC">$dataset_files</a></h4>
-<p>A list of files (may be gzipped), each containing tab-separated pairs of human translated sentences. The file paths specfied here must be relative to <code>$download_base_url</code> configured in <code>conf/sharing.sh</code>.</p>
+<p>A list of files (may be gzipped), each containing tab-separated pairs of human translated sentences. The file paths specfied here must be relative to <code>$download_base_url</code> configured in <code>$QTLEAP_ROOT/conf/sharing.sh</code>.</p>
 <p>Example: <code>dataset=&quot;corpora/europarl/ep.enpt.gz&quot;</code></p>
 <h4 id="train_hostname"><a href="#TOC">$train_hostname</a></h4>
 <p>The hostname of the machine where the transfer models are to be trained. This must be the exact string returned by the hostname command. It is used as a safety guard to prevent training on an under-resourced machine. You may use an <code>*</code> to allow training of this dataset on any machine.</p>
@@ -148,12 +145,12 @@ formeme_maxent_train_opts=&quot;$maxent_train_opts&quot;</code></pre>
 <h4 id="rm_giza_files"><a href="#TOC">$rm_giza_files</a></h4>
 <p>If <code>true</code> then GIZA models are removed after the aligment is produced.</p>
 <h3 id="testset-configuration"><a href="#TOC">Testset Configuration</a></h3>
-<p>A testset is a combination of parallel corpora that is used to test the whole pipeline. For each <code>TESTSET</code> we must create a respective file <code>conf/datasets/L1-L2/TESTSET.sh</code> and it must define the following variables:</p>
+<p>A testset is a combination of parallel corpora that is used to test the whole pipeline. For each <code>TESTSET</code> we must create a respective file <code>$QTLEAP_ROOT/conf/datasets/L1-L2/TESTSET.sh</code> and it must define the following variables:</p>
 <h4 id="testset_files"><a href="#TOC">$testset_files</a></h4>
-<p>A list of files (may be gzipped), each containing tab-separated pairs of human translated sentences. The file paths specfied here must be relative to <code>$download_base_url</code> configured in <code>conf/sharing.sh</code>. Example: <code>testset=&quot;corpora/qtleap/qtleap_1a.gz&quot;</code></p>
+<p>A list of files (may be gzipped), each containing tab-separated pairs of human translated sentences. The file paths specfied here must be relative to <code>$download_base_url</code> configured in <code>$QTLEAP_ROOT/conf/sharing.sh</code>. Example: <code>testset=&quot;corpora/qtleap/qtleap_1a.gz&quot;</code></p>
 <h3 id="treex-configuration"><a href="#TOC">Treex Configuration</a></h3>
-<p>Treex configuration for each user is kept in <code>conf/treex/$USER/config.yaml</code>. If you wonder why we don’t simply use <code>conf/treex/$USER.yaml</code>, it is because Treex expects its configuration file to be named <code>config.yaml</code>.</p>
-<p>Here’s my Treex configuration (<code>conf/treex/luis/config.yaml</code>) for guidance:</p>
+<p>Treex configuration for each user is kept in <code>$QTLEAP_ROOT/conf/treex/$USER/config.yaml</code>. If you wonder why we don’t simply use <code>$QTLEAP_ROOT/conf/treex/$USER.yaml</code>, it is because Treex expects its configuration file to be named <code>config.yaml</code>.</p>
+<p>Here’s my Treex configuration (<code>$QTLEAP_ROOT/conf/treex/luis/config.yaml</code>) for guidance:</p>
 <pre><code>---
 resource_path:
   - /home/luis/code/tectomt/share
