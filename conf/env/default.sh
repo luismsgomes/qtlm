@@ -1,5 +1,5 @@
 
-export QTLEAP_ROOT="$HOME/code/qtleap"
+export QTLEAP_ROOT="$HOME/code/eqtleap"
 export TREEX_CONFIG="$QTLEAP_ROOT/conf/treex/$USER"
 export TMT_ROOT="$HOME/code/tectomt"
 export PATH="$QTLEAP_ROOT/bin:$TMT_ROOT/treex/bin:$TMT_ROOT/tools/general:$PATH"
