@@ -2,7 +2,7 @@
 #                     QTLEAP-SPECIFIC AUXILIARY FUNCTIONS
 
 function check_config {
-    check_required_variables QTLEAP_CONF
+    check_required_variables QTLEAP_CONF QTLEAP_ROOT
     lang_pair=${QTLEAP_CONF%/*/*}
     lang1=${lang_pair%-*}
     lang2=${lang_pair#*-}

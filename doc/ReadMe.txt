@@ -16,7 +16,7 @@ separated by a forward slash (/):
 
 1.  the language pair (in the form of $L1-$L2);
 2.  the training dataset name;
-3.  a date formated as YYYY-MM-DD
+3.  a date formatted as YYYY-MM-DD
 
 Example: QTLEAP_CONF=en-pt/ep/2015-02-12
 
@@ -34,12 +34,66 @@ parallel):
 
     qtleap_train
 
+The training process will create several files and sub-directories
+within the current directory, so generally you want to run this command
+on a newly created directory. For example, when training models for
+English-Portuguese, the following files and directories are created:
+
+    .
+    ├── [*] about.txt    # contains versioning information and $QTLEAP_CONF
+    ├── [*] qtleap.diff  # unified diff of the $QTLEAP_ROOT repository
+    ├── [*] tectomt.diff # unified diff of the $TMT_ROOT repository
+    ├── dataset_files/   # downloaded from central share server
+    ├── corpus/          # plain text split into chunks of 200 sentences
+    ├── lemmas.gz        # GIZA input files
+    ├── giza/            # GIZA itermediate files
+    ├── alignments.gz    # GIZA final alignments
+    ├── en2pt/           # models for EN to PT transfer
+    │   ├── formemes/
+    │   │   ├── [*] maxent.model.gz
+    │   │   └── [*] static.model.gz
+    │   ├── lemmas/
+    │   │   ├── [*] maxent.model.gz
+    │   │   └── [*] static.model.gz
+    │   └── vectors/     # input for machine learning
+    ├── pt2en/           # models for PT to EN transfer
+    │   ├── formemes/
+    │   │   ├── [*] maxent.model.gz
+    │   │   └── [*] static.model.gz
+    │   ├── lemmas/
+    │   │   ├── [*] maxent.model.gz
+    │   │   └── [*] static.model.gz
+    │   └── vectors/     # input for machine learning
+    ├── atrees/          # analytical-level trees
+    └── ttrees/          # tectogrammatical-level trees
+
+Here’s the contents of about.txt:
+
+    QTLEAP_CONF=en-pt/ep/2015-02-12
+    QTLEAP_ROOT_REV=139:f0dc245ff992
+    TMT_ROOT_REV=14390
+    LXSUITE_REV=143:e55fc226cb4d
+
+When training is finished, the files prefixed with [*] in the above tree
+are automatically uploaded to the share server into the directory
+$upload_ssh_path/$QTLEAP_CONF. See Sharing Configuration section for
+details about $upload_ssh_path and related variables.
+
 Translation
 
 Translating from English to Portuguese (reads one sentence per line from
 STDIN and writes one sentence per line on STDOUT):
 
     qtleap_translate en pt
+
+If you want to save the trees of each translated sentence into a file,
+then give a directory name as argument:
+
+    qtleap_translate en pt trees_dir
+
+This will read from STDIN and write to STDOUT as previously, but it will
+also create a file named trees_dir/###.treex.gz for each input line (###
+is replaced by the number of the line, starting with 001).
 
 Evaluation
 
@@ -58,23 +112,27 @@ Evaluating the current pipeline on all configured evaluation sets:
     qtleap_evaluate en pt
 
 This will translate and evaluate all testsets configured in files within
-$QTLEAP_ROOT/conf/en-pt/testsets.
+$QTLEAP_ROOT/conf/testsets/en-pt.
 
 Snapshots
 
 Saving a snapshot of all current evaluations, the current mercurial and
-svn revision numbers as well as a patch of the uncommited changes on
+SVN revision numbers as well as a patch of the uncommited changes on
 both repositories:
 
     qtleap_snapshot save "brief description of what changed since last snapshot"
 
-This command will save all current evaluations into a directory, plus a
-copy of the configuration file, a reference (date) to the transfer
-models and the mercurial and svn revision numbers of $QTLEAP_ROOT and
-$TMT_ROOT and the configured remote lxsuite service. Furthermore,
-uncommited changes to the repositories are also saved in the form of a
-unified diff, allowing us to recover the current source code in full
-extent. WARNING: only files already tracked by mercurial and SVN will be
+This command will create a new directory snapshots/YYYY-MM-DD within the
+current directory and it will copy all current evaluations into it. The
+value of the $QTLEAP_CONF variable is saved into snapshot_info.txt
+within the snapshot directory, as well as the current mercurial and SVN
+revision numbers of $QTLEAP_ROOT and $TMT_ROOT respectively, and the
+current revision of the remote lxsuite service. Furthermore, uncommited
+changes to the $QTLEAP_ROOT and $TMT_ROOT repositories are also saved in
+the form of a unified diff (qtleap.diff and tectomt.diff), allowing us
+to recover the current source code in full extent.
+
+WARNING: only files already tracked by mercurial and SVN will be
 included in the unified diff of every snapshot, ie, all files appearing
 with a question mark when you issue the commands hg status or svn status
 WILL NOT be included in the diff.
@@ -175,12 +233,12 @@ following variables:
 
 $dataset_files
 
-A list of files (may be gzipped), each containing tab-separated pairs of
-human translated sentences. The file paths specfied here must be
-relative to $download_base_url configured in
+A space-separated list of files (may be gzipped), each containing
+tab-separated pairs of human translated sentences. The file paths
+specfied here must be relative to $download_base_url configured in
 $QTLEAP_ROOT/conf/sharing.sh.
 
-Example: dataset="corpora/europarl/ep.enpt.gz"
+Example: dataset_files="corpora/europarl/ep.enpt.gz"
 
 $train_hostname
 
@@ -231,9 +289,9 @@ following variables:
 
 $testset_files
 
-A list of files (may be gzipped), each containing tab-separated pairs of
-human translated sentences. The file paths specfied here must be
-relative to $download_base_url configured in
+A space-separated list of files (may be gzipped), each containing
+tab-separated pairs of human translated sentences. The file paths
+specfied here must be relative to $download_base_url configured in
 $QTLEAP_ROOT/conf/sharing.sh. Example:
 testset="corpora/qtleap/qtleap_1a.gz"
 
@@ -242,7 +300,7 @@ Treex Configuration
 Treex configuration for each user is kept in
 $QTLEAP_ROOT/conf/treex/$USER/config.yaml. If you wonder why we don’t
 simply use $QTLEAP_ROOT/conf/treex/$USER.yaml, it is because Treex
-expects its configuration file to be named config.yaml.
+expects its configuration file to be named exactly config.yaml.
 
 Here’s my Treex configuration ($QTLEAP_ROOT/conf/treex/luis/config.yaml)
 for guidance:
