@@ -1,5 +1,9 @@
 #! /bin/bash
 
+echo "this script is not usable yet. sorry" >&2
+exit 1
+
+
 qtleap_dir="$HOME/code/qtleap"
 qtleap_url="ssh://hg@bitbucket.org/luismsgomes/qtleap"
 tectomt_svn_username="luis.gomes"

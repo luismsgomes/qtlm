@@ -5,7 +5,7 @@
 #
 
 function main {
-    init "$@"
+    init
     get_corpus
     w2a
     align
@@ -14,9 +14,9 @@ function main {
 }
 
 function init {
-    my_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")/.."; pwd)
-    source "$my_dir/lib/bash/utils.sh"
-    source "$my_dir/lib/bash/qtleap.sh"
+    source "$TMT_ROOT/lib/bash/utils.sh" || exit 1
+    source "$TMT_ROOT/lib/bash/qtleap.sh" || exit 1
+
     set_pedantic_bash_options
     check_config
 
@@ -26,7 +26,7 @@ function init {
 
     for lang in $lang1 $lang2; do
         for step in w2a a2t; do
-            scen="$my_dir/scen/${lang}_${step}.scen"
+            scen="$QTLEAP_ROOT/scen/$lang1-$lang2/${lang}_${step}.scen"
             test -f "$scen" ||
                 fatal "missing ${step^^} scenario for ${lang^^}: $scen"
         done
@@ -44,7 +44,7 @@ function get_corpus {
 
     SPLITOPTS="-d -a 8 -l 200 --additional-suffix .txt"
     zcat "$corpus" |
-    $my_dir/bin/prune_unaligned_sentpairs.py |
+    $QTLEAP_ROOT/bin/prune_unaligned_sentpairs.py |
     tee >(cut -f 1 | split $SPLITOPTS - corpus/$lang1/part_) |
           cut -f 2 | split $SPLITOPTS - corpus/$lang2/part_
 
@@ -80,8 +80,8 @@ function w2a {
                 Read::AlignedSentences \
                     ${lang1}_src=@corpus/$lang1/batch_$batch.txt \
                     ${lang2}_src=@corpus/$lang2/batch_$batch.txt \
-                "$my_dir/scen/${lang1}_w2a.scen" \
-                "$my_dir/scen/${lang2}_w2a.scen" \
+                "$QTLEAP_ROOT/scen/$lang1-$lang2/${lang1}_w2a.scen" \
+                "$QTLEAP_ROOT/scen/$lang1-$lang2/${lang2}_w2a.scen" \
                 Write::Treex \
                     storable=1 \
                     substitute='{^.*/([^\/]*)\.streex}{atrees/$1.streex}' \
@@ -161,8 +161,8 @@ function a2t {
                     selector=src \
                     language=$lang1 \
                     layer=a \
-                "$my_dir/scen/${lang1}_a2t.scen" \
-                "$my_dir/scen/${lang2}_a2t.scen" \
+                "$QTLEAP_ROOT/scen/$lang1-$lang2/${lang1}_a2t.scen" \
+                "$QTLEAP_ROOT/scen/$lang1-$lang2/${lang2}_a2t.scen" \
                 Align::T::CopyAlignmentFromAlayer \
                     selector=src \
                     language=$lang1 \
