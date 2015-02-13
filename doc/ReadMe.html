@@ -158,7 +158,7 @@ LXSUITE_REV=143:e55fc226cb4d</code></pre>
 <h3 id="snapshots"><a href="#TOC">Snapshots</a></h3>
 <p>A snapshot is a bundle of current evaluations together with all information needed to recover the exact state of the current pipeline.</p>
 <h4 id="creating-a-snapshot"><a href="#TOC">Creating a snapshot</a></h4>
-<p>To create a snapshot first you must ensure that all configured testsets have been evaluated using the current <code>$QTLEAP_CONF</code>. Then you may run:</p>
+<p>To create a snapshot first you must ensure that all configured testsets have been evaluated using the current <code>$QTLEAP_CONF</code> for both translation directions. Then you may run:</p>
 <pre><code>qtleap_snapshot save &quot;brief description of what changed since last snapshot&quot;</code></pre>
 <p>This command will create a new directory <code>snapshots/YYYY-MM-DDL</code> (year, month, day, and a letter) within the current directory and it will copy all current evaluations into it.</p>
 <p>The value of the <code>$QTLEAP_CONF</code> variable is saved into <code>about.txt</code> within the snapshot directory, as well as the current mercurial and SVN revision numbers of <code>$QTLEAP_ROOT</code> and <code>$TMT_ROOT</code> respectively, and the current revision of the remote lxsuite service.</p>

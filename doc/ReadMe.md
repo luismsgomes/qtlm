@@ -176,7 +176,8 @@ needed to recover the exact state of the current pipeline.
 #### Creating a snapshot
 
 To create a snapshot first you must ensure that all configured testsets have
-been evaluated using the current `$QTLEAP_CONF`.  Then you may run:
+been evaluated using the current `$QTLEAP_CONF` for both translation directions.
+Then you may run:
 
     qtleap_snapshot save "brief description of what changed since last snapshot"
 
