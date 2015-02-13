@@ -150,12 +150,17 @@ To evaluate the current pipeline on all evaluation sets listed in
 
     qtleap_evaluate en pt
 
-If you change the synthesis and you want to re-evaluate the pipeline you may
-just repeat the above commands.  The script will reuse the `*.cache.treex.gz`
-and redo only the synthesis step, which is much faster than running the whole
-pipeline (analysis, transfer and synthesis).
+#### Cleaning cached intermediate trees
 
-However, if you have changed the analysis or transfer steps, then you should
+If you are developing the synthesis and you want to re-evaluate the pipeline you
+just repeat the above commands to re-synthesize the translations.
+
+The re-runs will be much faster than the first evaluation because
+`qtleap_evaluate` will reuse the previously created `*.cache.treex.gz` files
+(which contain the trees after analysis and transfer), and only the synthesis
+step is done.
+
+*However, if you have changed the analysis or transfer steps*, then you should
 remove the cached trees by running:
 
     qtleap_evaluate clean

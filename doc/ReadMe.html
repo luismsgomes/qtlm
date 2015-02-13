@@ -16,7 +16,9 @@
 <li><a href="#usage-examples">Usage Examples</a><ul>
 <li><a href="#training">Training</a></li>
 <li><a href="#translation">Translation</a></li>
-<li><a href="#evaluation">Evaluation</a></li>
+<li><a href="#evaluation">Evaluation</a><ul>
+<li><a href="#cleaning-cached-intermediate-trees">Cleaning cached intermediate trees</a></li>
+</ul></li>
 <li><a href="#snapshots">Snapshots</a><ul>
 <li><a href="#creating-a-snapshot">Creating a snapshot</a></li>
 <li><a href="#listing-snapshots">Listing snapshots</a></li>
@@ -147,8 +149,10 @@ LXSUITE_REV=143:e55fc226cb4d</code></pre>
     └── qtleap_2a.pt2en.resume  # output of Print::TranslationResume</code></pre>
 <p>To evaluate the current pipeline on all evaluation sets listed in <code>$QTLEAP_ROOT/conf/testsets/en-pt</code> just omit the evalset name:</p>
 <pre><code>qtleap_evaluate en pt</code></pre>
-<p>If you change the synthesis and you want to re-evaluate the pipeline you may just repeat the above commands. The script will reuse the <code>*.cache.treex.gz</code> and redo only the synthesis step, which is much faster than running the whole pipeline (analysis, transfer and synthesis).</p>
-<p>However, if you have changed the analysis or transfer steps, then you should remove the cached trees by running:</p>
+<h4 id="cleaning-cached-intermediate-trees"><a href="#TOC">Cleaning cached intermediate trees</a></h4>
+<p>If you are developing the synthesis and you want to re-evaluate the pipeline you just repeat the above commands to re-synthesize the translations.</p>
+<p>The re-runs will be much faster than the first evaluation because <code>qtleap_evaluate</code> will reuse the previously created <code>*.cache.treex.gz</code> files (which contain the trees after analysis and transfer), and only the synthesis step is done.</p>
+<p><em>However, if you have changed the analysis or transfer steps</em>, then you should remove the cached trees by running:</p>
 <pre><code>qtleap_evaluate clean</code></pre>
 <p>This will clean the cached trees for all configured testsets that have been already evaluated in the current directory.</p>
 <h3 id="snapshots"><a href="#TOC">Snapshots</a></h3>
