@@ -1460,6 +1460,15 @@ use utf8;
     'zuriquense' => 1,
 );
 
+@LX::Data::PT::exceptionsMoveAdjsAfterNouns=qw(outro outra outros outras 
+    este estes esta estas isto esse esses essa essas isso 
+    aquele aqueles aquela aquelas aquilo muito muitos 
+    muita muitas pouco poucos pouca poucas tanto tantos 
+    tanta tantas algum alguns alguma algumas vários várias 
+    bastante bastantes todo todos toda todas nenhum 
+    nenhuns nenhuma nenhumas cada quanto quantos quanta quantas);
+
+
 1;
 
 __END__
