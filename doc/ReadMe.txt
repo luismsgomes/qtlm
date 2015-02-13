@@ -21,7 +21,7 @@ separated by a forward slash (/):
 Example: QTLEAP_CONF=en-pt/ep/2015-02-12
 
 The two languages must be lexicographically ordered (en-pt is OK, pt-en
-is not). The same configuration file is used for both translation
+is not). The same configuration identifier is used for both translation
 directions. According to the $QTLEAP_CONF variable defined above, the
 file $QTLEAP_ROOT/conf/datasets/en-pt/ep.sh must exist (see Dataset
 Configuration section below for further details). The date suffix (in

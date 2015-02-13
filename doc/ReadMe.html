@@ -67,7 +67,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+
 <li>a date formatted as <code>YYYY-MM-DD</code></li>
 </ol>
 <p>Example: <code>QTLEAP_CONF=en-pt/ep/2015-02-12</code></p>
-<p>The two languages must be lexicographically ordered (<code>en-pt</code> is OK, <code>pt-en</code> is not). The same configuration file is used for both translation directions. According to the <code>$QTLEAP_CONF</code> variable defined above, the file <code>$QTLEAP_ROOT/conf/datasets/en-pt/ep.sh</code> must exist (see <a href="#dataset-configuration">Dataset Configuration</a> section below for further details). The date suffix (in this case <code>2015-02-12</code>) indicates when the transfer models were trained.</p>
+<p>The two languages must be lexicographically ordered (<code>en-pt</code> is OK, <code>pt-en</code> is not). The same configuration identifier is used for both translation directions. According to the <code>$QTLEAP_CONF</code> variable defined above, the file <code>$QTLEAP_ROOT/conf/datasets/en-pt/ep.sh</code> must exist (see <a href="#dataset-configuration">Dataset Configuration</a> section below for further details). The date suffix (in this case <code>2015-02-12</code>) indicates when the transfer models were trained.</p>
 <h3 id="training"><a href="#TOC">Training</a></h3>
 <p>Training transfer models (both translation directions are trained in parallel):</p>
 <pre><code>qtleap_train</code></pre>
