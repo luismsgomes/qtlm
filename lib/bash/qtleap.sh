@@ -12,28 +12,28 @@ function check_config {
     if test "$lang1" == "$lang2"; then
         fatal "\$lang1 and \$lang2 must be different"
     fi
-    tm_id=${QTLEAP_CONF#*-*/} # dataset/date
-    dataset=${tm_id%/*}
-    tm_date=${tm_id#*/}
-
-    # Host configuration
-    if test -f $my_dir/conf/hosts/$(hostname).sh; then
-        source $my_dir/conf/hosts/$(hostname).sh
-    else
-        source $my_dir/conf/hosts/default.sh
-    fi
-    check_required_variables work_dir num_procs sort_mem big_machine giza_dir
+    dataset_and_train_date=${QTLEAP_CONF#*-*/} # dataset/train_date
+    dataset=${dataset_and_train_date%/*}
+    train_date=${dataset_and_train_date#*/}
 
     # Sharing configuration
-    source $my_dir/conf/sharing.sh
+    source $QTLEAP_ROOT/conf/sharing.sh
     check_required_variables download_http_{base_url,user,password}
     check_required_variables upload_ssh_{user,host,port,path}
 
-    # Dataset configuration
-    if ! test -f $my_dir/conf/datasets/$lang1-$lang2/$dataset.sh; then
-        fatal "$my_dir/conf/datasets/$lang1-$lang2/$dataset.sh does not exist"
+    # Host configuration
+    if test -f $QTLEAP_ROOT/conf/hosts/$(hostname).sh; then
+        source $QTLEAP_ROOT/conf/hosts/$(hostname).sh
+    else
+        source $QTLEAP_ROOT/conf/hosts/default.sh
     fi
-    source $my_dir/conf/datasets/$lang1-$lang2/$dataset.sh
+    check_required_variables num_procs sort_mem big_machine giza_dir
+
+    # Dataset configuration
+    if ! test -f $QTLEAP_ROOT/conf/datasets/$lang1-$lang2/$dataset.sh; then
+        fatal "$QTLEAP_ROOT/conf/datasets/$lang1-$lang2/$dataset.sh does not exist"
+    fi
+    source $QTLEAP_ROOT/conf/datasets/$lang1-$lang2/$dataset.sh
     check_required_variables dataset_files train_hostname rm_giza_files \
         lemma_static_train_opts lemma_maxent_train_opts \
         formeme_static_train_opts formeme_maxent_train_opts
