@@ -64,7 +64,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+
 <ol type="1">
 <li>the language pair (in the form of <code>L1-L2</code>);</li>
 <li>the training dataset name;</li>
-<li>a date formatted as <code>YYYY-MM-DD</code></li>
+<li>the date when the transfer models were trained (formatted as <code>YYYY-MM-DD</code>)</li>
 </ol>
 <p>Example: <code>QTLEAP_CONF=en-pt/ep/2015-02-12</code></p>
 <p>The two languages must be lexicographically ordered (<code>en-pt</code> is OK, <code>pt-en</code> is not). The same configuration identifier is used for both translation directions. According to the <code>$QTLEAP_CONF</code> variable defined above, the file <code>$QTLEAP_ROOT/conf/datasets/en-pt/ep.sh</code> must exist (see <a href="#dataset-configuration">Dataset Configuration</a> section below for further details). The date suffix (in this case <code>2015-02-12</code>) indicates when the transfer models were trained.</p>
@@ -175,7 +175,7 @@ LXSUITE_REV=143:e55fc226cb4d</code></pre>
  * 2015-02-09a | 12.81 |  6.27 | added some exceptions to the rules
    2015-02-02a |  9.56 |  4.69 | some reordering rules for noun phrases
 ------------------------------------------------------------------------</code></pre>
-<p>Columns <code>en2pt</code> and <code>pt2en</code> show the average BLEU scores for the respective translation directions. Snapshots marked with an asterisk (<code>*</code>) exist both locally and on the server. Unmarked snapshots exist only on the server.</p>
+<p>Columns <code>en2pt</code> and <code>pt2en</code> show the average BLEU scores over all configured evalsets for both translation directions. Snapshots marked with an asterisk (<code>*</code>) exist both locally and on the server. Unmarked snapshots exist only on the server.</p>
 <h4 id="comparing-snapshots"><a href="#TOC">Comparing snapshots</a></h4>
 <p>To compare current translations/evaluations with the ones from last snapshot:</p>
 <pre><code>qtleap_snapshot compare</code></pre>

@@ -14,7 +14,7 @@ For all the following commands the `$QTLEAP_CONF` variable must be defined in
 
   1. the language pair (in the form of `L1-L2`);
   2. the training dataset name;
-  3. a date formatted as `YYYY-MM-DD`
+  3. the date when the transfer models were trained (formatted as `YYYY-MM-DD`)
 
 Example:  `QTLEAP_CONF=en-pt/ep/2015-02-12`
 
@@ -222,8 +222,8 @@ current `$QTLEAP_CONF`.  The list is presented as follows:
        2015-02-02a |  9.56 |  4.69 | some reordering rules for noun phrases
     ------------------------------------------------------------------------
 
-Columns `en2pt` and `pt2en` show the average BLEU scores for the respective
-translation directions.
+Columns `en2pt` and `pt2en` show the average BLEU scores over all configured
+evalsets for both translation directions.
 Snapshots marked with an asterisk (`*`) exist both locally and on the server.
 Unmarked snapshots exist only on the server.
 
