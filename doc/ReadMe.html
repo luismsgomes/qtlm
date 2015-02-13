@@ -17,7 +17,11 @@
 <li><a href="#training">Training</a></li>
 <li><a href="#translation">Translation</a></li>
 <li><a href="#evaluation">Evaluation</a></li>
-<li><a href="#snapshots">Snapshots</a></li>
+<li><a href="#snapshots">Snapshots</a><ul>
+<li><a href="#creating-a-snapshot">Creating a snapshot</a></li>
+<li><a href="#listing-snapshots">Listing snapshots</a></li>
+<li><a href="#comparing-snapshots">Comparing snapshots</a></li>
+</ul></li>
 </ul></li>
 <li><a href="#configuration">Configuration</a><ul>
 <li><a href="#environment-configuration">Environment Configuration</a></li>
@@ -56,7 +60,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+
 <h2 id="usage-examples"><a href="#TOC">Usage Examples</a></h2>
 <p>For all the following commands the <code>$QTLEAP_CONF</code> variable must be defined in the environment. This value in this variable has three components separated by a forward slash (<code>/</code>):</p>
 <ol type="1">
-<li>the language pair (in the form of <code>$L1-$L2</code>);</li>
+<li>the language pair (in the form of <code>L1-L2</code>);</li>
 <li>the training dataset name;</li>
 <li>a date formatted as <code>YYYY-MM-DD</code></li>
 </ol>
@@ -68,7 +72,9 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+
 <p>The training process will create several files and sub-directories within the current directory, so generally <em>you want to run this command on a newly created directory</em>. For example, when training models for English-Portuguese, the following files and directories are created:</p>
 <pre><code>.
 ├── [*] about.txt    # contains versioning information and $QTLEAP_CONF
+├── [*] qtleap.stat  # output of &quot;hg stat&quot; on $QTLEAP_ROOT repository
 ├── [*] qtleap.diff  # unified diff of the $QTLEAP_ROOT repository
+├── [*] tectomt.stat # output of &quot;svn stat&quot; on the $TMT_ROOT repository
 ├── [*] tectomt.diff # unified diff of the $TMT_ROOT repository
 ├── dataset_files/   # downloaded from central share server
 ├── corpus/          # plain text split into chunks of 200 sentences
@@ -102,33 +108,82 @@ LXSUITE_REV=143:e55fc226cb4d</code></pre>
 <h3 id="translation"><a href="#TOC">Translation</a></h3>
 <p>Translating from English to Portuguese (reads one sentence per line from <code>STDIN</code> and writes one sentence per line on <code>STDOUT</code>):</p>
 <pre><code>qtleap_translate en pt</code></pre>
-<p>If you want to save the trees of each translated sentence into a file, then give a directory name as argument:</p>
+<p>If you want to save the trees of each translated sentence (for debugging purposes for example), then give a directory name as argument:</p>
 <pre><code>qtleap_translate en pt trees_dir</code></pre>
 <p>This will read from <code>STDIN</code> and write to <code>STDOUT</code> as previously, but it will also create a file named <code>trees_dir/###.treex.gz</code> for each input line (<code>###</code> is replaced by the number of the line, starting with <code>001</code>).</p>
 <h3 id="evaluation"><a href="#TOC">Evaluation</a></h3>
 <p>Evaluating the current pipeline on a specific evaluation set (in this example <code>qtleap_2a</code>):</p>
 <pre><code>qtleap_evaluate en pt qtleap_2a</code></pre>
 <p>For this command to succeed the file <code>$QTLEAP_ROOT/conf/testsets/en-pt/qtleap_2a.sh</code> must exist and define a variable named <code>testset_files</code> as described below in <a href="#testset-configuration">Testset Configuration</a> section.</p>
-<p>Evaluating the current pipeline on all configured evaluation sets:</p>
+<p>A new directory <code>eval_qtleap_2a</code> will be created in the current directory with the following structure:</p>
+<pre><code>.
+└── eval_qtleap_2a
+    ├── about.txt               #
+    ├── qtleap_2a.en2pt.bleu    # output of `mteval-v13a.pl`
+    ├── qtleap_2a.en2pt.cache.treex.gz # trees before synthesis stage
+    ├── qtleap_2a.en2pt.final.treex.gz # final trees
+    ├── qtleap_2a.en2pt.html    # original, reference and MT side by side
+    ├── qtleap_2a.en2pt.ngrams  #
+    ├── qtleap_2a.en2pt.resume  # output of Print::TranslationResume
+    ├── qtleap_2a.en.txt        # original English text
+    ├── qtleap_2a.en.xml        # idem but in XML format for mteval-v13a.pl
+    ├── qtleap_2a.pt_mt.txt     # machine translated (English to Portuguese)
+    ├── qtleap_2a.pt_mt.xml     # idem but in XML format for mteval-v13a.pl
+    ├── qtleap_2a.pt.txt        # original Portuguese text
+    └── qtleap_2a.pt.xml        # idem but in XML format for mteval-v13a.pl</code></pre>
+<p>If you then evaluate on the other direction (Portuguese to English):</p>
+<pre><code>qtleap_evaluate pt en qtleap_2a</code></pre>
+<p>The following files will be added to the directory:</p>
+<pre><code>.
+└── eval_qtleap_2a
+    ...
+    ├── qtleap_2a.en_mt.txt     # machine translated (Portuguese to English)
+    ├── qtleap_2a.en_mt.xml     # idem but in XML format for mteval-v13a.pl
+    ├── qtleap_2a.pt2en.bleu    # output of `mteval-v13a.pl`
+    ├── qtleap_2a.pt2en.cache.treex.gz # trees before synthesis stage
+    ├── qtleap_2a.pt2en.final.treex.gz # final trees
+    ├── qtleap_2a.pt2en.html    # original, reference and MT side by side
+    ├── qtleap_2a.pt2en.ngrams  #
+    └── qtleap_2a.pt2en.resume  # output of Print::TranslationResume</code></pre>
+<p>To evaluate the current pipeline on all evaluation sets listed in <code>$QTLEAP_ROOT/conf/testsets/en-pt</code> just omit the evalset name:</p>
 <pre><code>qtleap_evaluate en pt</code></pre>
-<p>This will translate and evaluate all testsets configured in files within <code>$QTLEAP_ROOT/conf/testsets/en-pt</code>.</p>
+<p>If you change the synthesis and you want to re-evaluate the pipeline you may just repeat the above commands. The script will reuse the <code>*.cache.treex.gz</code> and redo only the synthesis step, which is much faster than running the whole pipeline (analysis, transfer and synthesis).</p>
+<p>However, if you have changed the analysis or transfer steps, then you should remove the cached trees by running:</p>
+<pre><code>qtleap_evaluate clean</code></pre>
+<p>This will clean the cached trees for all configured testsets that have been already evaluated in the current directory.</p>
 <h3 id="snapshots"><a href="#TOC">Snapshots</a></h3>
-<p>Saving a snapshot of all current evaluations, the current mercurial and SVN revision numbers as well as a patch of the uncommited changes on both repositories:</p>
+<p>A snapshot is a bundle of current evaluations together with all information needed to recover the exact state of the current pipeline.</p>
+<h4 id="creating-a-snapshot"><a href="#TOC">Creating a snapshot</a></h4>
+<p>To create a snapshot first you must ensure that all configured testsets have been evaluated using the current <code>$QTLEAP_CONF</code>. Then you may run:</p>
 <pre><code>qtleap_snapshot save &quot;brief description of what changed since last snapshot&quot;</code></pre>
-<p>This command will create a new directory <code>snapshots/YYYY-MM-DD</code> within the current directory and it will copy all current evaluations into it. The value of the <code>$QTLEAP_CONF</code> variable is saved into <code>snapshot_info.txt</code> within the snapshot directory, as well as the current mercurial and SVN revision numbers of <code>$QTLEAP_ROOT</code> and <code>$TMT_ROOT</code> respectively, and the current revision of the remote lxsuite service. Furthermore, uncommited changes to the <code>$QTLEAP_ROOT</code> and <code>$TMT_ROOT</code> repositories are also saved in the form of a unified diff (<code>qtleap.diff</code> and <code>tectomt.diff</code>), allowing us to recover the current source code in full extent.</p>
+<p>This command will create a new directory <code>snapshots/YYYY-MM-DDL</code> (year, month, day, and a letter) within the current directory and it will copy all current evaluations into it.</p>
+<p>The value of the <code>$QTLEAP_CONF</code> variable is saved into <code>about.txt</code> within the snapshot directory, as well as the current mercurial and SVN revision numbers of <code>$QTLEAP_ROOT</code> and <code>$TMT_ROOT</code> respectively, and the current revision of the remote lxsuite service.</p>
+<p>Furthermore, uncommited changes to the <code>$QTLEAP_ROOT</code> and <code>$TMT_ROOT</code> repositories are also saved in the form of a unified diff (<code>qtleap.diff</code> and <code>tectomt.diff</code>), allowing us to recover the current source code in full extent.</p>
 <p><em>WARNING</em>: only files already tracked by mercurial and SVN will be included in the unified diff of every snapshot, ie, all files appearing with a question mark when you issue the commands <code>hg status</code> or <code>svn status</code> <em>WILL NOT</em> be included in the diff.</p>
+<p>The snapshot is also uploaded to the configured share server, making it readily available for comparison and analysis to other users. The URL of a snapshot is <code>$download_http_base_url/snapshots/LANGPAIR/DATASET/YYYY-MM-DDL</code>, where <code>$download_http_base_url</code> is a configuration variable described in <a href="#sharing-configuration">Sharing Configuration</a>, and <code>LANGPAIR</code> and <code>DATASET</code> are the first two components of <code>$QTLEAP_CONF</code>.</p>
+<h4 id="listing-snapshots"><a href="#TOC">Listing snapshots</a></h4>
 <p>Listing all saved snapshots, from the most recent to the oldest:</p>
 <pre><code>qtleap_snapshot list</code></pre>
-<p>Compare current translations and evaluations with last snapshot:</p>
+<p>This will fetch an updated list of snapshots from the share server for the current <code>$QTLEAP_CONF</code>. The list is presented as follows:</p>
+<pre><code>------------------------------------------------------------------------
+ Snapshot      | en2pt | pt2en | Description
+---------------|-------|-------|----------------------------------------
+ * 2015-02-09a | 12.81 |  6.27 | added some exceptions to the rules
+   2015-02-02a |  9.56 |  4.69 | some reordering rules for noun phrases
+------------------------------------------------------------------------</code></pre>
+<p>Columns <code>en2pt</code> and <code>pt2en</code> show the average BLEU scores for the respective translation directions. Snapshots marked with an asterisk (<code>*</code>) exist both locally and on the server. Unmarked snapshots exist only on the server.</p>
+<h4 id="comparing-snapshots"><a href="#TOC">Comparing snapshots</a></h4>
+<p>To compare current translations/evaluations with the ones from last snapshot:</p>
 <pre><code>qtleap_snapshot compare</code></pre>
-<p>Compare current translations and evaluations with a specific snapshot (in this case 2015-01-20):</p>
+<p>To compare current translations/evaluations with a specific snapshot (in this case 2015-01-20):</p>
 <pre><code>qtleap_snapshot compare 2015-01-20</code></pre>
+<p>Note: if the specified snapshot does not exist locally (ie, it does not appear marked with an asterisk in the list of snapshots), then the comparison will take longer because the snapshot will be automatically downloaded from the server.</p>
 <h2 id="configuration"><a href="#TOC">Configuration</a></h2>
-<p>Configuration files are kept in directory <code>conf</code>.</p>
+<p>All configuration files are kept in directory <code>$QTLEAP_ROOT/conf</code>.</p>
 <h3 id="environment-configuration"><a href="#TOC">Environment Configuration</a></h3>
-<p>The shell environment is configured by sourcing <code>$QTLEAP_ROOT/conf/env/default.sh</code> into your from your <code>~/.bashrc</code> as follows:</p>
-<pre><code>source $QTLEAP_ROOT/conf/env/default.sh</code></pre>
-<p>This file defines and exports the following variables: <code>PATH</code>, <code>PERL5LIB</code>, <code>TMT_ROOT</code>, and <code>TREEX_CONFIG</code>. If you installed the qtleap and tectomt repositories into the recommended place (<code>~/code/eqtleap</code> and <code>~/code/tectomt</code>), then you don’t have to change this file. Else, you should create a file with your username (<code>$QTLEAP_ROOT/conf/env/$USER.sh</code>) and source it from your <code>~/.bashrc</code> like this:</p>
+<p>The shell environment is configured by sourcing <code>$QTLEAP_ROOT/conf/env/default.sh</code> from your <code>~/.bashrc</code> as follows:</p>
+<pre><code>source $HOME/code/qtleap/conf/env/default.sh</code></pre>
+<p>This file defines and exports the following variables: <code>QTLEAP_ROOT</code>, <code>TMT_ROOT</code>, <code>TREEX_CONFIG</code>, <code>PATH</code>, and <code>PERL5LIB</code>. If you installed the qtleap and tectomt repositories into the recommended place (<code>~/code/qtleap</code> and <code>~/code/tectomt</code>), then you don’t have to change this file. Else, you should create a file with your username (<code>$QTLEAP_ROOT/conf/env/$USER.sh</code>) and source it from your <code>~/.bashrc</code> like this:</p>
 <pre><code>source $QTLEAP_ROOT/conf/env/$USER.sh</code></pre>
 <h3 id="host-configuration"><a href="#TOC">Host Configuration</a></h3>
 <p>The file <code>$QTLEAP_ROOT/conf/hosts/$(hostname).sh</code> will be used if it exists, else the file <code>$QTLEAP_ROOT/conf/hosts/default.sh</code> is used instead. Either of these files must define the following variables:</p>
@@ -185,7 +240,8 @@ formeme_maxent_train_opts=&quot;$maxent_train_opts&quot;</code></pre>
 <h3 id="testset-configuration"><a href="#TOC">Testset Configuration</a></h3>
 <p>A testset is a combination of parallel corpora that is used to test the whole pipeline. For each <code>TESTSET</code> we must create a respective file <code>$QTLEAP_ROOT/conf/datasets/L1-L2/TESTSET.sh</code> and it must define the following variables:</p>
 <h4 id="testset_files"><a href="#TOC">$testset_files</a></h4>
-<p>A space-separated list of files (may be gzipped), each containing tab-separated pairs of human translated sentences. The file paths specfied here must be relative to <code>$download_base_url</code> configured in <code>$QTLEAP_ROOT/conf/sharing.sh</code>. Example: <code>testset=&quot;corpora/qtleap/qtleap_1a.gz&quot;</code></p>
+<p>A space-separated list of files (may be gzipped), each containing tab-separated pairs of human translated sentences. The file paths specfied here must be relative to <code>$download_base_url</code> configured in <code>$QTLEAP_ROOT/conf/sharing.sh</code>.</p>
+<p>Example: <code>testset=&quot;corpora/qtleap/qtleap_1a.gz&quot;</code></p>
 <h3 id="treex-configuration"><a href="#TOC">Treex Configuration</a></h3>
 <p>Treex configuration for each user is kept in <code>$QTLEAP_ROOT/conf/treex/$USER/config.yaml</code>. If you wonder why we don’t simply use <code>$QTLEAP_ROOT/conf/treex/$USER.yaml</code>, it is because Treex expects its configuration file to be named exactly <code>config.yaml</code>.</p>
 <p>Here’s my Treex configuration (<code>$QTLEAP_ROOT/conf/treex/luis/config.yaml</code>) for guidance:</p>
