@@ -16,7 +16,7 @@ sub process_tnode {
 
     #TODO: Passar para o bloco independente ::PT::AddArticles
     #Se for preposicao possessiva então adiciona o artigo como nó irmão
-    if ($anode->iset->prontype =~ m/prn/ && $anode->iset->poss =~ m/poss/)
+    if ($anode->iset->prontype =~ m/(prn|prs)/ && $anode->iset->poss =~ m/poss/)
     {
 
         my $parent = $anode->get_parent();
