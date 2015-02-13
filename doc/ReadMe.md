@@ -113,7 +113,7 @@ the following structure:
 
     .
     └── eval_qtleap_2a
-        ├── about.txt               #
+        ├── about.txt               # contains versioning information
         ├── qtleap_2a.en2pt.bleu    # output of `mteval-v13a.pl`
         ├── qtleap_2a.en2pt.cache.treex.gz # trees before synthesis stage
         ├── qtleap_2a.en2pt.final.treex.gz # final trees

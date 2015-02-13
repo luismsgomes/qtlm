@@ -9,3 +9,4 @@ pandoc --from markdown --to html5 \
 pandoc --from markdown --to plain \
     --smart --toc \
     --output doc/ReadMe.txt < doc/ReadMe.md
+
