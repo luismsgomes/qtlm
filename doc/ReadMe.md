@@ -375,10 +375,10 @@ A testset is a combination of parallel corpora that is used to test the
 #### \$testset_files
 A space-separated list of files (may be gzipped), each containing
 tab-separated pairs of human translated sentences.
-The file paths specfied here must be relative to `$download_base_url`
+The file paths specified here must be relative to `$download_base_url`
 configured in `$QTLEAP_ROOT/conf/sharing.sh`.
 
-Example: `testset="corpora/qtleap/qtleap_1a.gz"`
+Example: `testset_files="corpora/qtleap/qtleap_1a.gz"`
 
 
 ### Treex Configuration
