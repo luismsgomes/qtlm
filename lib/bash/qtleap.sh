@@ -61,3 +61,18 @@ function check_src_trg_variables {
     fi
 }
 
+function save_code_snapshot {
+    work_dir=$PWD
+    pushd $QTLEAP_ROOT 2> /dev/null
+    hg id   > "$work_dir/qtleap.id"
+    hg stat > "$work_dir/qtleap.stat"
+    hg diff > "$work_dir/qtleap.diff"
+    popd
+    pushd $TMT_ROOT 2> /dev/null
+    svn id   > "$work_dir/tectomt.id"
+    svn stat > "$work_dir/tectomt.stat"
+    svn diff > "$work_dir/tectomt.diff"
+    popd
+}
+
+
