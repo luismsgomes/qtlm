@@ -8,6 +8,15 @@ extends 'Treex::Core::Block';
 
 # say 'yes' if exists $LX::Data::PT::gentilicos{'português'};
 
+# TODO: exceptions to this rule
+# Examples:
+#
+#  word count -> contar palavras  ou  word count -> contagem de palavras
+#
+
+
+
+
 sub process_ttree {
     my ( $self, $troot ) = @_;
     foreach my $tnode ( $troot->get_descendants ) {
