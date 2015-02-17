@@ -1,16 +1,14 @@
 
-#                     QTLEAP-SPECIFIC AUXILIARY FUNCTIONS
-
-function check_config {
+function load_config {
     check_required_variables QTLEAP_CONF QTLEAP_ROOT
     lang_pair=${QTLEAP_CONF%/*/*}
     lang1=${lang_pair%-*}
     lang2=${lang_pair#*-}
-    if test "$lang1" > "$lang2"; then
-        fatal "\$lang1 and \$lang2 should be lexicographically ordered; please use $lang2-$lang1 instead."
+    if [[ "$lang1" > "$lang2" ]]; then
+        fatal "<lang1> and <lang2> should be lexicographically ordered; please use $lang2-$lang1 instead."
     fi
     if test "$lang1" == "$lang2"; then
-        fatal "\$lang1 and \$lang2 must be different"
+        fatal "<lang1> and <lang2> must be different"
     fi
     dataset_and_train_date=${QTLEAP_CONF#*-*/} # dataset/train_date
     dataset=${dataset_and_train_date%/*}
@@ -44,35 +42,38 @@ function get_treex_share_dir {
     perl -e 'use Treex::Core::Config; my ($d) = Treex::Core::Config->resource_path(); print "$d\n";'
 }
 
-function check_src_trg_variables {
+function check_src_trg {
     check_required_variables src trg
     # lowercase language names
     src=${src,,}
     trg=${trg,,}
 
     if test "$src" != "$lang1" -a "$src" != "$lang2"; then
-        fatal "invalid \$src ($src); expected either $lang1 or $lang2"
+        fatal "invalid <src> ($src); expected either $lang1 or $lang2"
     fi
     if test "$trg" != "$lang1" -a "$trg" != "$lang2"; then
-        fatal "invalid \$trg ($trg); expected either $lang1 or $lang2"
+        fatal "invalid <trg> ($trg); expected either $lang1 or $lang2"
     fi
     if test "$src" == "$trg"; then
-        fatal "\$src and \$trg must be different"
+        fatal "<src> and <trg> must be different"
     fi
 }
 
 function save_code_snapshot {
-    work_dir=$PWD
+    dest_dir="$1"
+    log "Saving '$QTLEAP_ROOT' snapshot to '$dest_dir'..."
     pushd $QTLEAP_ROOT > /dev/null
-    hg log -r . > "$work_dir/qtleap.info"
-    hg stat     > "$work_dir/qtleap.stat"
-    hg diff     > "$work_dir/qtleap.diff"
+    hg log -r . > "$dest_dir/qtleap.info"
+    hg stat     > "$dest_dir/qtleap.stat"
+    hg diff     > "$dest_dir/qtleap.diff"
     popd > /dev/null
+    log "Done."
+    log "Saving '$TMT_ROOT' snapshot to '$dest_dir'..."
     pushd $TMT_ROOT > /dev/null
-    svn info > "$work_dir/tectomt.info"
-    svn stat > "$work_dir/tectomt.stat"
-    svn diff > "$work_dir/tectomt.diff"
+    svn info > "$dest_dir/tectomt.info"
+    svn stat > "$dest_dir/tectomt.stat"
+    svn diff > "$dest_dir/tectomt.diff"
     popd > /dev/null
+    log "Done."
 }
-
 

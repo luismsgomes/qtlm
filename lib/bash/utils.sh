@@ -1,6 +1,4 @@
 
-#                     GENERAL AUXILIARY FUNCTIONS
-
 function stderr {
     echo "$progname: $@" >&2
 }
@@ -8,6 +6,7 @@ function stderr {
 function log {
     stderr "[$(date)] $@"
 }
+
 
 function fatal {
     stderr "$@; aborting"
@@ -37,7 +36,7 @@ function is_set {
     eval "test \"\${$1+x}\" == 'x'"
 }
 
-is_set progname || progname="$0"
+is_set progname || progname=$(basename "$0")
 
 function check_required_variables {
     ret=0
@@ -54,4 +53,12 @@ function set_pedantic_bash_options {
     set -u # abort if using unset variable
     set -e # abort if command exits with non-zero status
     trap 'stderr \"$BASH_COMMAND\" exited with code $?' ERR
+}
+
+function show_vars {
+    map show_var "$@" | tr $'\n' " "
+}
+
+function show_var {
+    eval "echo \"$1='\${$1}'\""
 }

@@ -1,0 +1,162 @@
+#! /bin/bash
+#? qtleap 0.1
+#?
+#? February 2015, Luís Gomes <luismsgomes@gmail.com>
+#?
+
+##? Usage: qtleap <command> <args>...
+##?
+##? List of commands:
+##?
+##?   train
+##?         Trains the transfer models for the current configuration.
+##?
+##?   evaluate <src> <trg> [testset]
+##?         Evaluates current pipeline using given testset or all configured
+##?         testsets if a testset is not specified.
+##?
+##?   clean
+##?         Cleans cache files from last evaluation. Use this if you changed
+##?         the <src> languages analysis.
+##?
+##?   save <description>
+##?         Saves a snapshot of the current evaluation. Requires that all
+##?         configured testsets have been evaluated (in both translation
+##?         directions).  Snapshots are uploaded to the share server.
+##?
+##?   list
+##?         Lists all snapshots in reverse chronological order.
+##?
+##?   compare [snapshot_id]
+##?         Compare current evaluations with specified snapshot (or with
+##?         latest snapshot if snapshot_id is not given).
+##?
+##?   translate <src> <trg>
+##?         Translates text from STDIN (expects one sentence per line) and
+##?         writes translations to STDOUT.
+##?
+##?   help
+##?         Shows this help.
+##?
+##?   version
+##?         Shows qtleap script version.
+##?
+
+function main {
+    source "$QTLEAP_ROOT/lib/bash/utils.sh" || exit 1
+    source "$QTLEAP_ROOT/lib/bash/qtleap.sh" || exit 1
+    set_pedantic_bash_options
+    load_config
+    if test $# == 0; then
+        stderr "no command given"
+        help
+        exit 1
+    fi
+    cmd=$1
+    shift
+    # set apropriate variables for each command from command line arguments
+    case $cmd in
+        train|clean|list|help|version)
+            if test $# -gt 0; then
+                fatal "command $cmd takes no arguments"
+            fi
+        ;;
+        evaluate)
+            if test $# -lt 2; then
+                fatal "command $cmd requires at least two arguments: <src> <trg>"
+            fi
+            src="$1"
+            trg="$2"
+            check_src_trg
+            if test $# -eq 2; then
+                cmd=evaluate_all
+            elif test $# == 3; then
+                testset_id="$3"
+            elif test $# > 3; then
+                fatal "too many arguments given for command $cmd"
+            fi
+        ;;
+        save)
+            if test $# -eq 0; then
+                fatal "command $cmd requires one argument: <description>"
+            elif test $# == 1; then
+                snapshot_description="$1"
+            else
+                fatal "too many arguments given for command $cmd"
+            fi
+        ;;
+        compare)
+            if test $# -eq 0; then
+                snapshot_id=$(get_latest_snapshot_id)
+            elif test $# == 1; then
+                snapshot_id="$1"
+            else
+                fatal "too many arguments given for command $cmd"
+            fi
+        ;;
+        translate)
+            if test $# -ne 2; then
+                fatal "command $cmd takes exactly two arguments: <src> <trg>"
+            fi
+            src="$1"
+            trg="$2"
+            check_src_trg
+        ;;
+        *)
+        stderr "invalid command \"$cmd\""
+        help
+        exit 1
+        ;;
+    esac
+    $cmd
+}
+
+function help {
+    grep "^##?" "$QTLEAP_ROOT/bin/qtleap" | cut -c 5-
+}
+
+function version {
+    grep "^#?"  "$QTLEAP_ROOT/bin/qtleap" | cut -c 4-
+}
+
+function train {
+    log starting train $(show_vars QTLEAP_CONF)
+    log finished train $(show_vars QTLEAP_CONF)
+}
+
+function evaluate {
+    log starting evaluate $(show_vars QTLEAP_CONF src trg testset_id)
+    log finished evaluate $(show_vars QTLEAP_CONF src trg testset_id)
+}
+
+function evaluate_all {
+    log starting evaluate_all $(show_vars QTLEAP_CONF src trg)
+    log finished evaluate_all $(show_vars QTLEAP_CONF src trg)
+}
+
+function clean {
+    log starting clean $(show_vars QTLEAP_CONF)
+    log finished clean $(show_vars QTLEAP_CONF)
+}
+
+function save {
+    log starting save $(show_vars QTLEAP_CONF snapshot_description)
+    log finished save $(show_vars QTLEAP_CONF snapshot_description)
+}
+
+function list {
+    log starting list $(show_vars QTLEAP_CONF)
+    log finished list $(show_vars QTLEAP_CONF)
+}
+
+function compare {
+    log starting save $(show_vars QTLEAP_CONF snapshot_id)
+    log finished save $(show_vars QTLEAP_CONF snapshot_id)
+}
+
+function translate {
+    log starting translate $(show_vars QTLEAP_CONF src trg)
+    log finished translate $(show_vars QTLEAP_CONF src trg)
+}
+
+main "$@"
