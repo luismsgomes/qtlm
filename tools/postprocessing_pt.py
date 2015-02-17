@@ -155,7 +155,7 @@ para_ os pròs
 _contractions = dict(entry.rsplit(None, 1)
 	for entry in _contractions.strip().split('\n'))
 
-_contractions_regex = re.compile('|'.join(map(re.escape, _contractions)), re.I)
+_contractions_regex = re.compile('\\b({})\\b'.format('|'.join(map(re.escape, _contractions))), re.I)
 
 def _contractions_sub_callback(matchobj):
 	s = matchobj.group(0)
