@@ -33,7 +33,7 @@ Training
 Training transfer models (both translation directions are trained in
 parallel):
 
-    qtleap_train
+    qtleap train
 
 The training process will create several files and sub-directories
 within the current directory, so generally you want to run this command
@@ -87,12 +87,12 @@ Translation
 Translating from English to Portuguese (reads one sentence per line from
 STDIN and writes one sentence per line on STDOUT):
 
-    qtleap_translate en pt
+    qtleap translate en pt
 
 If you want to save the trees of each translated sentence (for debugging
 purposes for example), then give a directory name as argument:
 
-    qtleap_translate en pt trees_dir
+    qtleap translate en pt trees_dir
 
 This will read from STDIN and write to STDOUT as previously, but it will
 also create a file named trees_dir/###.treex.gz for each input line (###
@@ -103,7 +103,7 @@ Evaluation
 Evaluating the current pipeline on a specific evaluation set (in this
 example qtleap_2a):
 
-    qtleap_evaluate en pt qtleap_2a
+    qtleap evaluate en pt qtleap_2a
 
 For this command to succeed the file
 $QTLEAP_ROOT/conf/testsets/en-pt/qtleap_2a.sh must exist and define a
@@ -131,7 +131,7 @@ with the following structure:
 
 If you then evaluate on the other direction (Portuguese to English):
 
-    qtleap_evaluate pt en qtleap_2a
+    qtleap evaluate pt en qtleap_2a
 
 The following files will be added to the directory:
 
@@ -150,7 +150,7 @@ The following files will be added to the directory:
 To evaluate the current pipeline on all evaluation sets listed in
 $QTLEAP_ROOT/conf/testsets/en-pt just omit the evalset name:
 
-    qtleap_evaluate en pt
+    qtleap evaluate en pt
 
 Cleaning cached intermediate trees
 
@@ -166,7 +166,7 @@ synthesis step is done.
 However, if you have changed the analysis or transfer steps, then you
 should remove the cached trees by running:
 
-    qtleap_evaluate clean
+    qtleap clean
 
 This will clean the cached trees for all configured testsets that have
 been already evaluated in the current directory.
@@ -182,7 +182,7 @@ To create a snapshot first you must ensure that all configured testsets
 have been evaluated using the current $QTLEAP_CONF for both translation
 directions. Then you may run:
 
-    qtleap_snapshot save "brief description of what changed since last snapshot"
+    qtleap save "brief description of what changed since last snapshot"
 
 This command will create a new directory snapshots/YYYY-MM-DDL (year,
 month, day, and a letter) within the current directory and it will copy
@@ -215,7 +215,7 @@ Listing snapshots
 
 Listing all saved snapshots, from the most recent to the oldest:
 
-    qtleap_snapshot list
+    qtleap list
 
 This will fetch an updated list of snapshots from the share server for
 the current $QTLEAP_CONF. The list is presented as follows:
@@ -237,12 +237,12 @@ Comparing snapshots
 To compare current translations/evaluations with the ones from last
 snapshot:
 
-    qtleap_snapshot compare
+    qtleap compare
 
 To compare current translations/evaluations with a specific snapshot (in
 this case 2015-01-20):
 
-    qtleap_snapshot compare 2015-01-20
+    qtleap compare 2015-01-20
 
 Note: if the specified snapshot does not exist locally (ie, it does not
 appear marked with an asterisk in the list of snapshots), then the
@@ -389,10 +389,10 @@ $testset_files
 
 A space-separated list of files (may be gzipped), each containing
 tab-separated pairs of human translated sentences. The file paths
-specfied here must be relative to $download_base_url configured in
+specified here must be relative to $download_base_url configured in
 $QTLEAP_ROOT/conf/sharing.sh.
 
-Example: testset="corpora/qtleap/qtleap_1a.gz"
+Example: testset_files="corpora/qtleap/qtleap_1a.gz"
 
 Treex Configuration
 
