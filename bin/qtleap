@@ -20,8 +20,9 @@
 ##?         the <src> languages analysis.
 ##?
 ##?   save <description>
-##?         Saves a snapshot of the current evaluation. Requires that all
-##?         configured testsets have been evaluated (in both translation
+##?         Saves a snapshot of the current evaluation. <description> should be
+##?         a brief description of what changed since last save. Requires that
+##?         all configured testsets have been evaluated (in both translation
 ##?         directions).  Snapshots are uploaded to the share server.
 ##?
 ##?   list
@@ -44,7 +45,10 @@
 
 function main {
     source "$QTLEAP_ROOT/lib/bash/utils.sh" || exit 1
-    source "$QTLEAP_ROOT/lib/bash/qtleap.sh" || exit 1
+    source "$QTLEAP_ROOT/lib/bash/qtleap/common.sh" || exit 1
+    #source "$QTLEAP_ROOT/lib/bash/qtleap/train.sh" || exit 1
+    source "$QTLEAP_ROOT/lib/bash/qtleap/evaluate.sh" || exit 1
+    #source "$QTLEAP_ROOT/lib/bash/qtleap/translate.sh" || exit 1
     set_pedantic_bash_options
     load_config
     if test $# == 0; then
@@ -71,7 +75,7 @@ function main {
             if test $# -eq 2; then
                 cmd=evaluate_all
             elif test $# == 3; then
-                testset_id="$3"
+                testset="$3"
             elif test $# > 3; then
                 fatal "too many arguments given for command $cmd"
             fi
@@ -117,46 +121,6 @@ function help {
 
 function version {
     grep "^#?"  "$QTLEAP_ROOT/bin/qtleap" | cut -c 4-
-}
-
-function train {
-    log starting train $(show_vars QTLEAP_CONF)
-    log finished train $(show_vars QTLEAP_CONF)
-}
-
-function evaluate {
-    log starting evaluate $(show_vars QTLEAP_CONF src trg testset_id)
-    log finished evaluate $(show_vars QTLEAP_CONF src trg testset_id)
-}
-
-function evaluate_all {
-    log starting evaluate_all $(show_vars QTLEAP_CONF src trg)
-    log finished evaluate_all $(show_vars QTLEAP_CONF src trg)
-}
-
-function clean {
-    log starting clean $(show_vars QTLEAP_CONF)
-    log finished clean $(show_vars QTLEAP_CONF)
-}
-
-function save {
-    log starting save $(show_vars QTLEAP_CONF snapshot_description)
-    log finished save $(show_vars QTLEAP_CONF snapshot_description)
-}
-
-function list {
-    log starting list $(show_vars QTLEAP_CONF)
-    log finished list $(show_vars QTLEAP_CONF)
-}
-
-function compare {
-    log starting save $(show_vars QTLEAP_CONF snapshot_id)
-    log finished save $(show_vars QTLEAP_CONF snapshot_id)
-}
-
-function translate {
-    log starting translate $(show_vars QTLEAP_CONF src trg)
-    log finished translate $(show_vars QTLEAP_CONF src trg)
 }
 
 main "$@"
