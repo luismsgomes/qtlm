@@ -1,4 +1,4 @@
-Util::SetGlobal selector=trg language=pt
+Util::SetGlobal language=pt
 
 Misc::JoinBundles
 

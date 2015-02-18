@@ -1,6 +1,5 @@
-Util::SetGlobal selector=trg language=en
+Util::SetGlobal language=en
 
 Misc::JoinBundles
 
 A2W::EN::ConcatenateTokens
-

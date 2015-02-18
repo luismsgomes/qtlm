@@ -1,4 +1,4 @@
-Util::SetGlobal selector=src language=pt
+Util::SetGlobal language=pt
 
 # a-layer to t-layer
 A2T::PT::MarkEdgesToCollapse

@@ -1,4 +1,8 @@
-Util::SetGlobal selector=trg language=pt
+Util::SetGlobal language=pt
+
+#Util::DefinedAttr tnode=t_lemma,formeme message="after TrLFCompounds"
+T2T::SelectCompatibleTlemmaFormeme
+T2T::SetClauseNumber
 
 Util::SetGlobal lxsuite_host=localhost lxsuite_port=10000
 Util::SetGlobal lxsuite_key=nlx.qtleap.13417612987549387402
@@ -10,11 +14,9 @@ T2T::EN2PT::Noun1Noun2_To_Noun2DeNoun1
 T2T::EN2PT::MoveAdjsAfterNouns
 #T2T::EN2PT::DropNumberSign
 T2T::EN2PT::FixPersPron
-T2T::EN2PT::FixGrammatemes
 
-T2T::SetClauseNumber
+#T2T::EN2PT::FixGrammatemes
 
-# and do the synthesis
 T2A::CopyTtree
 
 T2A::PT::ImposeLemma
@@ -33,7 +35,6 @@ T2A::PT::InitMorphcat
 #A2A::BackupTree to_selector=InitMorphcat
 
 T2A::PT::SecondPersonPoliteness
-
 
 T2A::PT::AddGender
 #A2A::BackupTree to_selector=AddGender

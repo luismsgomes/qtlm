@@ -1,4 +1,8 @@
-Util::SetGlobal selector=trg language=en
+Util::SetGlobal language=en
+
+#Util::DefinedAttr tnode=t_lemma,formeme message="after TrLFCompounds"
+T2T::SelectCompatibleTlemmaFormeme
+T2T::SetClauseNumber
 
 T2T::PT2EN::MoveAdjsBeforeNouns
 
