@@ -16,8 +16,9 @@ function fatal {
 function map {
     test $# -ge 2 ||
         fatal "map function requires at least two arguments; $# given"
-    cmd=$1
+    local cmd=$1
     shift
+    local arg
     for arg in "$@"; do
         $cmd "$arg"
     done
@@ -39,7 +40,7 @@ function is_set {
 is_set progname || progname=$(basename "$0")
 
 function check_required_variables {
-    ret=0
+    local ret=0
     for var in $@; do
         if ! is_set $var; then
             stderr "variable \"\$$var\" is not set"
