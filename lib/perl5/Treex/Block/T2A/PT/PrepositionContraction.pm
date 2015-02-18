@@ -143,27 +143,27 @@ sub process_zone {
     foreach my $node ( $a_root->get_descendants({ ordered => 1 }) ) {
 
         if(defined $last_node){
-            if( $last_node->lemma =~ /^[[:alpha:]]+$/){
-            
-                my $first_lemma = $last_node->lemma;
-                $first_lemma =~ s/_//g;
+            if( $last_node->form =~ /^[[:alpha:]]+$/){
 
-                my $contraction = $CONTRACTION{(lc $first_lemma) . " " . (lc $node->lemma)};
+                my $first_form = $last_node->form;
+                $first_form =~ s/_//g;
+
+                my $contraction = $CONTRACTION{(lc $first_form) . " " . (lc $node->form)};
 
                 if(defined $contraction){
 
-                    if(ucfirst($first_lemma) eq $first_lemma){
+                    if(ucfirst($first_form) eq $first_form){
                         $last_node->set_form(ucfirst($contraction));
                     }
                     else{
                         $last_node->set_form($contraction);
                     }
-            
+
                     #TODO Can I delete the node? What if it has child nodes?
-                    #Clears child node form and lemma 
+                    #Clears child node form and lemma
                     $node->set_form(undef);
                     $node->set_lemma(undef);
-            
+
                 }
             }
         }
@@ -179,7 +179,7 @@ __END__
 
 =encoding utf-8
 
-=head1 NAME 
+=head1 NAME
 
 Treex::Block::T2A::PT::PrepositionContraction
 
@@ -187,7 +187,7 @@ Treex::Block::T2A::PT::PrepositionContraction
 
 Contracts the portuguese prepositions.
 
-=head1 AUTHORS 
+=head1 AUTHORS
 
 Name <email>
 
