@@ -6,11 +6,11 @@ extends 'Treex::Block::T2A::InitMorphcat';
 after process_tnode => sub {
     my ( $self, $t_node ) = @_;
     my $a_node = $t_node->get_lex_anode() or return;
- 
 
-    my $verbmod     = $t_node->get_attr('gram/verbmod');
-    my $tense       = $t_node->get_attr('gram/tense');
-    my $deontmod    = $t_node->get_attr('gram/deontmod');
+
+    my $verbmod     = $t_node->get_attr('gram/verbmod') // '';
+    my $tense       = $t_node->get_attr('gram/tense') // '';
+    my $deontmod    = $t_node->get_attr('gram/deontmod') // '';
 
 
     if($verbmod eq 'cdn' and $tense eq 'sim' and $deontmod eq 'poss') {
@@ -69,7 +69,7 @@ __END__
 
 =encoding utf-8
 
-=head1 NAME 
+=head1 NAME
 
 Treex::Block::T2A::PT::InitMorphcat
 
