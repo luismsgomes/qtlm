@@ -78,11 +78,13 @@ function translate_from_scratch {
             storable=0 \
             compress=1 \
             to="." \
-            substitute="{.*/([^/]*)\$}{$out_base.final/\$1}" \
+            substitute="{cache}{final}" \
         Write::Sentences \
         < "$base.$src.txt" 2> "$out_base.treexlog" |
     postprocessing > "$base.${trg}_mt.txt"
-    ls $out_base.cache | grep -P "\.treex.gz\$" > $out_base.cache/list.txt
+    ls $out_base.cache |
+    sort --general-numeric-sort --key=1,1 --field-separator=. |
+    grep -P "\.treex.gz\$" > $out_base.cache/list.txt
     touch $out_base.{cache,final}/.finaltouch
     log "finished $doing"
 }
