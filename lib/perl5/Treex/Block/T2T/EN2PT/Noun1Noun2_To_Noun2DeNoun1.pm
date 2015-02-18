@@ -25,12 +25,17 @@ sub process_ttree {
                 (( $parent->functor || "" ) !~ /^(CONJ|COORD)$/ ) and
                 (( $parent->formeme || "" ) =~ /^n:/ ) and
                 $tnode->precedes($parent)) {
-            $tnode->shift_after_node($parent);
 
+            my $before = $tnode->t_lemma."(".($tnode->formeme // "").") ".$parent->t_lemma."(".($parent->formeme // "").")";
+
+            $tnode->shift_after_node($parent);
             if ($tnode->formeme =~ /^n:attr/ and
                     !exists $LX::Data::PT::gentilicos{$tnode->t_lemma}) {
                 $tnode->set_formeme("n:de+X");
             }
+
+            my $after = $parent->t_lemma."(".($parent->formeme // "").") ".$tnode->t_lemma."(".($tnode->formeme // "").")";
+            print STDERR "T2T::EN2PT::Noun1Noun2_To_Noun2DeNoun1:   $before ==>  $after\n";
         }
     }
 }
