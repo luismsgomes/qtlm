@@ -123,11 +123,8 @@ with the following structure:
         ├── qtleap_2a.en2pt.ngrams  #
         ├── qtleap_2a.en2pt.resume  # output of Print::TranslationResume
         ├── qtleap_2a.en.txt        # original English text
-        ├── qtleap_2a.en.xml        # idem but in XML format for mteval-v13a.pl
         ├── qtleap_2a.pt_mt.txt     # machine translated (English to Portuguese)
-        ├── qtleap_2a.pt_mt.xml     # idem but in XML format for mteval-v13a.pl
-        ├── qtleap_2a.pt.txt        # original Portuguese text
-        └── qtleap_2a.pt.xml        # idem but in XML format for mteval-v13a.pl
+        └── qtleap_2a.pt.txt        # original Portuguese text
 
 If you then evaluate on the other direction (Portuguese to English):
 
@@ -139,7 +136,6 @@ The following files will be added to the directory:
     └── eval_qtleap_2a
         ...
         ├── qtleap_2a.en_mt.txt     # machine translated (Portuguese to English)
-        ├── qtleap_2a.en_mt.xml     # idem but in XML format for mteval-v13a.pl
         ├── qtleap_2a.pt2en.bleu    # output of `mteval-v13a.pl`
         ├── qtleap_2a.pt2en.cache.treex.gz # trees before synthesis stage
         ├── qtleap_2a.pt2en.final.treex.gz # final trees

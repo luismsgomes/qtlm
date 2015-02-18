@@ -128,11 +128,8 @@ LXSUITE_REV=143:e55fc226cb4d</code></pre>
     ├── qtleap_2a.en2pt.ngrams  #
     ├── qtleap_2a.en2pt.resume  # output of Print::TranslationResume
     ├── qtleap_2a.en.txt        # original English text
-    ├── qtleap_2a.en.xml        # idem but in XML format for mteval-v13a.pl
     ├── qtleap_2a.pt_mt.txt     # machine translated (English to Portuguese)
-    ├── qtleap_2a.pt_mt.xml     # idem but in XML format for mteval-v13a.pl
-    ├── qtleap_2a.pt.txt        # original Portuguese text
-    └── qtleap_2a.pt.xml        # idem but in XML format for mteval-v13a.pl</code></pre>
+    └── qtleap_2a.pt.txt        # original Portuguese text</code></pre>
 <p>If you then evaluate on the other direction (Portuguese to English):</p>
 <pre><code>qtleap evaluate pt en qtleap_2a</code></pre>
 <p>The following files will be added to the directory:</p>
@@ -140,7 +137,6 @@ LXSUITE_REV=143:e55fc226cb4d</code></pre>
 └── eval_qtleap_2a
     ...
     ├── qtleap_2a.en_mt.txt     # machine translated (Portuguese to English)
-    ├── qtleap_2a.en_mt.xml     # idem but in XML format for mteval-v13a.pl
     ├── qtleap_2a.pt2en.bleu    # output of `mteval-v13a.pl`
     ├── qtleap_2a.pt2en.cache.treex.gz # trees before synthesis stage
     ├── qtleap_2a.pt2en.final.treex.gz # final trees
