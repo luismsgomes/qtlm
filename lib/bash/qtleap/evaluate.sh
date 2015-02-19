@@ -70,10 +70,10 @@ function translate_from_scratch {
         Write::Treex \
             storable=0 \
             compress=1 \
-            to="." \
+            file_stem="" \
+            path="$out_base.cache" \
             substitute="{noname}{$out_base.cache/}" \
-        "$QTLEAP_ROOT/scen/$lang1-$lang2/${trg}_t2a.scen" \
-        "$QTLEAP_ROOT/scen/$lang1-$lang2/${trg}_a2w.scen" \
+        "$QTLEAP_ROOT/scen/$lang1-$lang2/${trg}_t2w.scen" \
         Write::Treex \
             storable=0 \
             compress=1 \
