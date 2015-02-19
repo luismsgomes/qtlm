@@ -8,15 +8,10 @@ extends 'Treex::Core::Block';
 sub process_tnode {
 	my ( $self, $t_node ) = @_;
 
-
     my $src_t_node = $t_node->src_tnode;
-    my @anodes = $src_t_node->get_aux_anodes();
-    return if !@anodes;
 
-    foreach my $anode (@anodes) {
-        if ( grep { $_ =~ /(There|there)/ }  $anode->form 
-            and  grep { $_ =~ /(are|is)/ } $anode->get_parent->form) {        
-    
+    if ($src_t_node and $src_t_node->t_lemma eq "be" and grep {$_->lemma eq "there"} $src_t_node->get_aux_anodes) {
+   
             $t_node->set_t_lemma('haver');
             my $new_node = $t_node->create_child(
                 {   't_lemma'         => '#PersPron',
@@ -33,7 +28,7 @@ sub process_tnode {
             );
             $new_node->shift_before_subtree($t_node);
         }
-    }
+    
 
 }
 
