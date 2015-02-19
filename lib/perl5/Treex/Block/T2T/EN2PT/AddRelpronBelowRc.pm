@@ -9,11 +9,14 @@ sub process_ttree {
 
     foreach my $rc_head ( grep { $_->formeme =~ /rc/ } $t_root->get_descendants ) {
 
-        my $child = $rc_head->get_children({preceding_only=>1, first_only=>1});
+#        my $child = $rc_head->get_children({preceding_only=>1, first_only=>1});
 
         #print STDERR "AddRelpronBelowRc ". $rc_head->t_lemma . " - " . $child->t_lemma . "\n\n";
-        next if (!$child);
-        next if $child->t_lemma ne '#PersPron';
+#        next if (!$child);
+#        next if $child->t_lemma ne '#PersPron';
+
+        next if grep {$_->t_lemma eq "que"} $rc_head->get_children;
+
         
         # Create new t-node
         my $relpron = $rc_head->create_child(
