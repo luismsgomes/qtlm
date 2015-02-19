@@ -12,10 +12,12 @@ T2T::FixFormemeWrtNodetype
 
 T2T::EN2PT::Noun1Noun2_To_Noun2DeNoun1
 T2T::EN2PT::MoveAdjsAfterNouns
-#T2T::EN2PT::DropNumberSign
 T2T::EN2PT::FixPersPron
+T2T::EN2PT::FixGrammatemes
+T2T::EN2PT::FixThereIs
+T2T::EN2PT::AddRelpronBelowRc
+T2T::EN2PT::TurnVerbLemmaToAdjectives
 
-#T2T::EN2PT::FixGrammatemes
 
 T2A::CopyTtree
 
@@ -24,9 +26,6 @@ T2A::PT::ImposeLemma
 
 T2A::PT::ImposeFormeme
 #A2A::BackupTree to_selector=ImposeFormeme
-
-####T2A::PT::DropACT
-#A2A::BackupTree to_selector=DropACT
 
 T2A::PT::MarkSubject
 #A2A::BackupTree to_selector=MarkSubject
