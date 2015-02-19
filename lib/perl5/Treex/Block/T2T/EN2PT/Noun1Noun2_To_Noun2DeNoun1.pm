@@ -35,7 +35,9 @@ sub process_ttree {
             }
 
             my $after = $parent->t_lemma."(".($parent->formeme // "").") ".$tnode->t_lemma."(".($tnode->formeme // "").")";
-            print STDERR "T2T::EN2PT::Noun1Noun2_To_Noun2DeNoun1:   $before ==>  $after\n";
+            my $addr = $tnode->get_address();
+            print STDERR "T2T::EN2PT::Noun1Noun2_To_Noun2DeNoun1: $addr\n";
+            print STDERR "T2T::EN2PT::Noun1Noun2_To_Noun2DeNoun1: $before ==>  $after\n";
         }
     }
 }
