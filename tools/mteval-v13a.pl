@@ -944,7 +944,15 @@ sub tokenization_international
 	my ($norm_text) = @_;
 
 	$norm_text =~ s/<skipped>//g; # strip "skipped" tags
-	$norm_text =~ s/\p{Hyphen}\p{Zl}//g; # strip end-of-line hyphenation and join lines
+	
+	### BEGIN FIX ####
+	# Luís Gomes: fixed the following perl warning:
+	# Use of 'Hyphen' in \p{} or \P{} is deprecated because: Supplanted by Line_Break property 
+	# values; see www.unicode.org/reports/tr14;
+	#$norm_text =~ s/\p{Hyphen}\p{Zl}//g; # strip end-of-line hyphenation and join lines
+	$norm_text =~ s/\p{Line_Break}\p{Zl}//g; # strip end-of-line hyphenation and join lines
+	### END FIX ####
+	
 	$norm_text =~ s/\p{Zl}/ /g; # join lines
 
 	# replace entities
