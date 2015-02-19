@@ -109,7 +109,7 @@ sub best_form_of_lemma {
 
         #TODO: Martelada, perguntar And. e Nuno como resolver isto: $pos = adj|noun
         my $number  = $number;
-        my $pos     = $PTCATEGORY{"$pos"} || 'adj';
+        my $pos     = $PTCATEGORY{"$pos"} || 'ADJ';
         my $gender  = $PTGENDER{$iset->gender} || 'm';
 
         my $superlative = "false";
