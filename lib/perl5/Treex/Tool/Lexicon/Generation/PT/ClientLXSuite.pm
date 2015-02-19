@@ -122,6 +122,11 @@ sub best_form_of_lemma {
 
         my $response = $self->_inflector->inflect( lc $lemma, $pos, $gender, $number,$superlative, $diminutive);
 
+        if ($pos eq "ADJ" and $gender eq "f" and $response =~ s/o(s?)$//) {
+            $response .= "a".$1;
+        }
+
+
         if(ucfirst($lemma) eq $lemma){
             $response = ucfirst($response);
         }
