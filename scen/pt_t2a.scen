@@ -8,6 +8,11 @@ T2T::FixFormemeWrtNodetype
 
 T2T::EN2PT::Noun1Noun2_To_Noun2DeNoun1
 T2T::EN2PT::MoveAdjsAfterNouns
+T2T::EN2PT::FixPersPron
+T2T::EN2PT::FixGrammatemes
+T2T::EN2PT::FixThereIs
+T2T::EN2PT::AddRelpronBelowRc
+T2T::EN2PT::TurnVerbLemmaToAdjectives
 
 T2T::SetClauseNumber
 
@@ -20,17 +25,20 @@ T2A::PT::ImposeLemma
 T2A::PT::ImposeFormeme
 #A2A::BackupTree to_selector=ImposeFormeme
 
-T2A::PT::DropACT
-#A2A::BackupTree to_selector=DropACT
-
 T2A::PT::MarkSubject
 #A2A::BackupTree to_selector=MarkSubject
 
 T2A::PT::InitMorphcat
 #A2A::BackupTree to_selector=InitMorphcat
 
+T2A::PT::SecondPersonPoliteness
+
+
 T2A::PT::AddGender
 #A2A::BackupTree to_selector=AddGender
+
+T2A::PT::AddAuxVerbCompoundPassive
+#A2A::BackupTree to_selector=AddAuxVerbCompoundPassive
 
 T2A::PT::AddConditional
 #A2A::BackupTree to_selector=AddConditional
@@ -68,6 +76,9 @@ T2A::ImposeSubjpredAgr
 T2A::ImposeAttrAgr
 #A2A::BackupTree to_selector=ImposeAttrAgr
 
+T2A::PT::DropSubjPersProns
+#A2A::BackupTree to_selector=DropSubjPersProns
+
 T2A::DropPersPronSb
 #A2A::BackupTree to_selector=DropPersPronSb
 
@@ -82,6 +93,10 @@ T2A::AddSentFinalPunct
 
 T2A::PT::GenerateWordforms
 #A2A::BackupTree to_selector=GenerateWordforms
+
+T2A::PT::GeneratePronouns
+T2A::PT::CliticExceptions
+
 
 Util::Eval anode='$.set_tag(join " ", $.get_iset_values())'
 

@@ -40,6 +40,8 @@ my %PTGENDER = (
 );
 
 
+
+
 sub best_form_of_lemma {
 
     my ( $self, $lemma, $iset ) = @_;
@@ -49,7 +51,7 @@ sub best_form_of_lemma {
         return "null";
     }
 
-    if ($lemma !~ /^[[:alpha:]]+$/u){
+    if ($lemma !~ /^[[:alpha:]]+$/u and $lemma ne "#PersPron"){
         log_warn "Lemma $lemma has non-alphanumeric characters";
         return $lemma;
     }
@@ -74,6 +76,12 @@ sub best_form_of_lemma {
             $number = 's';
         }
 
+        #Voz da passiva
+        if($iset->voice eq 'pass'){
+            $form = 'PPT';
+            $person = $PTGENDER{$iset->gender} || 'g';
+        }
+
         my $response = $self->_conjugator->conjugate($lemma, $form, $person, $number);
 
         if(ucfirst($lemma) eq $lemma){
@@ -87,10 +95,13 @@ sub best_form_of_lemma {
     }
     elsif ($pos =~/^(noun|adj)$/){
 
+
+
         #Ignora pronomes possessivos
-        if ($iset->prontype eq 'prn' && $iset->poss eq 'poss'){
-            return $lemma;
-        }
+#        if ($iset->prontype eq 'prn' && $iset->poss eq 'poss'){
+#            return $lemma;
+#        }
+        
 
         #Salta os endereços electrónicos
         if ($lemma =~ /^(?:https?|s?ftps?):\/\//) { return $lemma; }
@@ -98,7 +109,7 @@ sub best_form_of_lemma {
 
         #TODO: Martelada, perguntar And. e Nuno como resolver isto: $pos = adj|noun
         my $number  = $number;
-        my $pos     = $PTCATEGORY{"$pos"} || 'adj';
+        my $pos     = $PTCATEGORY{"$pos"} || 'ADJ';
         my $gender  = $PTGENDER{$iset->gender} || 'm';
 
         my $superlative = "false";

@@ -21,12 +21,15 @@ my %gram2iset = (
     'gender=inan' => 'gender=masc',
     'gender=fem'  => 'gender=fem',
     'gender=neut' => 'gender=neut',
+    'gender=nr' => 'gender=masc',  # Portuguese requires gender with all pronouns (inc. "them"), while it English it was not recognized (nr)
+
 
     'negation=neg1' => 'negativeness=neg',
 
     'number=sg' => 'number=sing',
     'number=pl' => 'number=plur',
     'number=du' => 'number=dual',
+    'number=nr' => 'number=sing', # again, because of distinguishing "you" which is needed in Portuguese
 
     'numbertype=basic' => 'numtype=card',
     'numbertype=ord'   => 'numtype=ord',
@@ -92,18 +95,8 @@ sub process_tnode {
         $a_node->iset->set_animateness('inan');
     }
 
-    # The type of pronoun is not preserved on t-layer, but at least we know it is a pronoun
-    if ( ( $t_node->gram_sempos // '' ) =~ /pron/ ) {
-        $a_node->iset->set_prontype('prn');
 
-        # and we can mark possessive pronouns.
-        if ( $t_node->formeme =~ /poss$/ ) {
-            $a_node->iset->set_poss('poss');
-            $a_node->iset->set_possgender( $a_node->iset->gender );
-            $a_node->iset->set_gender('');
-        }
-    }
-    
+          
     # Fill grammatemes through coref_gram.rf for reflexive pronouns
     if ( $t_node->t_lemma eq '#PersPron' and ( my ($t_antec) = $t_node->get_coref_gram_nodes() ) ){
         while ( $t_antec->get_coref_gram_nodes() ){
@@ -112,6 +105,48 @@ sub process_tnode {
         my $antec_gram = $t_antec->get_attr('gram') or return; 
         $self->fill_iset_from_gram( $t_node, $a_node, $antec_gram );
         $a_node->iset->set_reflex('reflex');    
+    }
+
+
+
+    if ($t_node->t_lemma eq "#PersPron" and $t_node->formeme =~ /poss/) {
+        $a_node->iset->set_poss('poss');
+        if ($t_node->gram_number eq "pl") {  # be careful about the nr (not recognized) value coming from English
+            $a_node->iset->set_possnumber("plur");
+        }
+        else {
+            $a_node->iset->set_possnumber("sing");  
+        }
+    }
+
+
+
+    # The type of pronoun is not preserved on t-layer, but at least we know it is a pronoun
+    if ( ( $t_node->gram_sempos // '' ) =~ /pron/ ) {
+
+        if ($t_node->t_lemma eq "#PersPron") {  # TODO: move it to a pt-specific module
+            $a_node->iset->set_prontype("prs");
+
+            if ($t_node->formeme eq "n:subj") {
+                $a_node->iset->set_case("nom");
+            }
+            elsif (not $t_node->formeme =~ /poss$/) {
+                $a_node->iset->set_case("acc"); # the oblique case
+            }
+
+        }
+        else {
+            $a_node->iset->set_prontype('prn');
+        }
+
+        # and we can mark possessive pronouns.
+#        if ( $t_node->formeme =~ /poss$/ ) {
+#            print STDERR "QQQQ3".$a_node->iset->number()."\n";
+#            $a_node->iset->set_poss('poss');
+#            # $a_node->iset->set_possgender( $a_node->iset->gender );
+#            $a_node->iset->set_possnumber( $a_node->iset->number );
+#            $a_node->iset->set_gender('');
+#        }
     }
 
     return;

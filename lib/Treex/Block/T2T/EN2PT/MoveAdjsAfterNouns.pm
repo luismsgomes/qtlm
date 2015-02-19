@@ -1,5 +1,6 @@
 package Treex::Block::T2T::EN2PT::MoveAdjsAfterNouns;
 use Moose;
+use LX::Data::PT;
 use Treex::Core::Common;
 extends 'Treex::Core::Block';
 
@@ -68,6 +69,7 @@ sub process_ttree {
             and not $tnode->is_member
             and not $tnode->is_parenthesis
             and not (($tnode->gram_sempos // '' ) =~ /pron/)
+            and not ((lc $tnode->t_lemma) ~~ @LX::Data::PT::exceptionsMoveAdjsAfterNouns) 
             ) {
                 while (($parent->get_parent->formeme || "" ) =~ /^n:/
                        and $tnode->precedes($parent->get_parent)) {

@@ -19,7 +19,20 @@ my %CONJ = (
     'meu masc plur' => 'meus',
     'meu fem plur' => 'minhas',
 
+    'vosso masc sing' => 'vosso',
+    'vosso fem sing' => 'vossa',
+    'vosso masc plur' => 'vossos',
+    'vosso fem plur' => 'vossas',
+
+    'nosso masc sing' => 'nosso',
+    'nosso fem sing' => 'nossa',
+    'nosso masc plur' => 'nossos',
+    'nosso fem plur' => 'nossas',
+
+
 );
+
+
 
 sub process_anode {
     my ( $self, $anode ) = @_;
@@ -30,6 +43,10 @@ sub process_anode {
         $anode->set_lemma('seu') if $anode->lemma =~ /(seu|sua|seus|suas)/;
         $anode->set_lemma('teu') if $anode->lemma =~ /(teu|tua|teus|tuas)/;
         $anode->set_lemma('meu') if $anode->lemma =~ /(meu|minha|meus|minhas)/;
+
+        $anode->set_lemma('vosso') if $anode->lemma =~ /(vosso|vossa|vossos|vossas)/;
+        $anode->set_lemma('nosso') if $anode->lemma =~ /(nosso|nossa|nossos|nossas)/;
+
 
         my $parent = $anode->get_parent();
 

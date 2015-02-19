@@ -143,16 +143,16 @@ sub process_zone {
     foreach my $node ( $a_root->get_descendants({ ordered => 1 }) ) {
 
         if(defined $last_node){
-            if( $last_node->lemma =~ /^[[:alpha:]]+$/){
+            if( $last_node->form =~ /^[[:alpha:]]+$/){
             
-                my $first_lemma = $last_node->lemma;
-                $first_lemma =~ s/_//g;
+                my $first_form = $last_node->form;
+                $first_form =~ s/_//g;
 
-                my $contraction = $CONTRACTION{(lc $first_lemma) . " " . (lc $node->lemma)};
+                my $contraction = $CONTRACTION{(lc $first_form) . " " . (lc $node->form)};
 
                 if(defined $contraction){
 
-                    if(ucfirst($first_lemma) eq $first_lemma){
+                    if(ucfirst($first_form) eq $first_form){
                         $last_node->set_form(ucfirst($contraction));
                     }
                     else{
