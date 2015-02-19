@@ -1,7 +1,7 @@
 Util::SetGlobal language=pt
 
 #Util::DefinedAttr tnode=t_lemma,formeme message="after TrLFCompounds"
-T2T::SelectCompatibleTlemmaFormeme
+#T2T::SelectCompatibleTlemmaFormeme
 T2T::SetClauseNumber
 
 Util::SetGlobal lxsuite_host=localhost lxsuite_port=10000
