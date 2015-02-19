@@ -8,6 +8,10 @@ extends 'Treex::Core::Block';
 sub process_tnode {
 	my ( $self, $tnode ) = @_;
 
+    # if ($tnode->formeme =~ /poss/) {
+    #     $tnode->get_parent->set_gram_definiteness("definite");
+    #     #print $tnode->get_address()."\n";
+    # }
 
 #    my $src_tnode = $tnode->src_tnode();
 
@@ -28,7 +32,7 @@ __END__
 
 =head1 NAME
 
-Treex::Block::T2T::EN2PT::FixPersPron
+Treex::Block::T2T::EN2PT::FixGrammatemes
 
 =head1 DESCRIPTION
 

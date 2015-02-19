@@ -18,6 +18,7 @@ A2T::DeleteChildlessPunctuation
 #A2T::PT::FixTlemmas
 A2T::SetNodetype
 A2T::SetFormeme
+A2T::PT::FixFormeme
 A2T::SetGrammatemes
 A2T::PT::SetGrammatemesFromAux
 A2T::AddPersPronSb
@@ -29,4 +30,3 @@ A2T::MinimizeGrammatemes
 A2T::SetNodetype
 A2T::FixAtomicNodes
 A2T::MarkReflpronCoref
-

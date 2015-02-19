@@ -53,7 +53,7 @@ function check_required_variables {
 function set_pedantic_bash_options {
     set -u # abort if using unset variable
     set -e # abort if command exits with non-zero status
-    trap 'stderr \"$BASH_COMMAND\" exited with code $?' ERR
+    trap 'echo \"$BASH_COMMAND\" exited with code $? >&2' ERR
 }
 
 function show_vars {

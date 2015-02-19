@@ -41,3 +41,7 @@ T2A::EN::IndefArticlePhonetics
 
 T2A::DeleteSuperfluousAuxCP
 T2A::EN::CapitalizeSentStart
+
+Misc::JoinBundles
+
+A2W::EN::ConcatenateTokens

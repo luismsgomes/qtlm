@@ -70,16 +70,23 @@ sub process_ttree {
             and not $tnode->is_member
             and not $tnode->is_parenthesis
             and not (($tnode->gram_sempos // '' ) =~ /pron/)
-            and not ((lc $tnode->t_lemma) ~~ @LX::Data::PT::exceptionsMoveAdjsAfterNouns) 
+            and not ((lc $tnode->t_lemma) ~~ @LX::Data::PT::exceptionsMoveAdjsAfterNouns)
             ) {
                 while (($parent->get_parent->formeme || "" ) =~ /^n:/
                        and $tnode->precedes($parent->get_parent)) {
                     $parent = $parent->get_parent;
                 }
+
+                my $before = $tnode->t_lemma."(".($tnode->formeme // "").") ".$parent->t_lemma."(".($parent->formeme // "").")";
+
                 # TODO: is this really needed n:attr => adj:attr?
                 $tnode->set_formeme("adj:attr") if $tnode->formeme =~ /^n:attr/;
-
                 $tnode->shift_after_node($parent);
+
+                my $after = $parent->t_lemma."(".($parent->formeme // "").") ".$tnode->t_lemma."(".($tnode->formeme // "").")";
+                my $addr = $tnode->get_address();
+                print STDERR "T2T::EN2PT::MoveAdjsAfterNouns: $addr\n";
+                print STDERR "T2T::EN2PT::MoveAdjsAfterNouns: $before ==>  $after\n";
         }
     }
 

@@ -41,9 +41,7 @@ function translate_from_scratch {
     if test -d "$out_base.final"; then
         find "$out_base.final" -type f -name "*.treex.gz" -delete
     fi
-    #MEMCACHED_LOCAL=1
-        # --cache=5,15 \
-    $TMT_ROOT/treex/bin/treex \
+    $TMT_ROOT/treex/bin/treex --dump_scenario \
         Util::SetGlobal \
             if_missing_bundles=ignore \
             language=$src \
@@ -53,6 +51,11 @@ function translate_from_scratch {
             lines_per_doc=1 \
         "$QTLEAP_ROOT/scen/$lang1-$lang2/${src}_w2a.scen" \
         "$QTLEAP_ROOT/scen/$lang1-$lang2/${src}_a2t.scen" \
+        Write::Treex \
+            storable=0 \
+            compress=1 \
+            file_stem="" \
+            path="$base.$src.final" \
         Util::SetGlobal \
             language=$trg \
             selector=tst \
@@ -70,16 +73,16 @@ function translate_from_scratch {
         Write::Treex \
             storable=0 \
             compress=1 \
-            to="." \
-            substitute="{noname}{$out_base.cache/}" \
-        "$QTLEAP_ROOT/scen/$lang1-$lang2/${trg}_t2a.scen" \
-        "$QTLEAP_ROOT/scen/$lang1-$lang2/${trg}_a2w.scen" \
+            path="$out_base.cache" \
+        "$QTLEAP_ROOT/scen/$lang1-$lang2/${trg}_t2w.scen" \
         Write::Treex \
             storable=0 \
             compress=1 \
-            to="." \
-            substitute="{cache}{final}" \
+            path="$out_base.final" \
         Write::Sentences \
+	> $out_base.scen
+
+    $TMT_ROOT/treex/bin/treex $out_base.scen \
         < "$base.$src.txt" 2> "$out_base.treexlog" |
     postprocessing > "$base.${trg}_mt.txt"
     ls $out_base.cache |
@@ -96,23 +99,21 @@ function translate_from_cache {
     if test -d "$out_base.final"; then
         find "$out_base.final" -type f -name "*.treex.gz" -delete
     fi
-        # --cache=5,15 \
-    $TMT_ROOT/treex/bin/treex \
+    $TMT_ROOT/treex/bin/treex --dump_scenario \
         Read::Treex \
             from=@$out_base.cache/list.txt \
         Util::SetGlobal \
             if_missing_bundles=ignore \
             language=$trg \
             selector=tst \
-        "$QTLEAP_ROOT/scen/$lang1-$lang2/${trg}_t2a.scen" \
-        "$QTLEAP_ROOT/scen/$lang1-$lang2/${trg}_a2w.scen" \
+        "$QTLEAP_ROOT/scen/$lang1-$lang2/${trg}_t2w.scen" \
         Write::Treex \
             storable=0 \
             compress=1 \
-            to="." \
-            substitute='{cache}{final}' \
-        Write::Sentences \
-        2> "$out_base.treexlog" |
+            path="$out_base.final" \
+        Write::Sentences > $out_base.scen
+
+    $TMT_ROOT/treex/bin/treex $out_base.scen 2> "$out_base.treexlog" |
     postprocessing > "$base.${trg}_mt.txt"
     touch $out_base.cache/.finaltouch
     log "finished $doing"
@@ -172,7 +173,7 @@ function run_mteval {
 }
 
 function evaluate_all {
-    for testset in $(list_all_testsets); do
+    for testset in $(list_all_testsets | grep -vP "^_"); do
         evaluate
     done
 }
@@ -202,7 +203,7 @@ function load_testset_config {
 function list_all_testsets {
     local dir="$QTLEAP_ROOT/conf/testsets/$lang_pair"
     if test -d "$dir"; then
-        ls "$dir" | grep -vP "^_" | sed "s/\\.sh$//"
+        ls "$dir" | sed "s/\\.sh$//"
     else
         fatal "directory \"$dir\" does not exist."
     fi
