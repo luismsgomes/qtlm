@@ -1,6 +1,6 @@
 
 dataset_files="\
-    corpora/europarl/ep.10k.enpt.gz \
+    corpora/europarl/ep_10k.enpt.gz \
     corpora/qtleap/qtleap_1a.enpt.gz \
     corpora/qtleap/qtleap_1q.enpt.gz "
 
