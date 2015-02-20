@@ -77,6 +77,9 @@ function check_src_trg {
 
 function save_code_snapshot {
     local dest_dir="$1"
+    if ! test "${dest_dir:0:1}" == "/"; then
+        dest_dir="$PWD/$dest_dir"
+    fi
     local doing="saving '$QTLEAP_ROOT' snapshot to '$dest_dir'"
     log "$doing"
     pushd $QTLEAP_ROOT > /dev/null
