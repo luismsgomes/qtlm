@@ -29,4 +29,6 @@ W2A::EN::SetAfunAuxCPCoord
 W2A::EN::SetAfun
 W2A::FixQuotes
 
+W2A::EN::PreferImperatives
+
 A2A::ConvertTags input_driver=en::penn
