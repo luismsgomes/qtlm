@@ -53,8 +53,16 @@ function check_required_variables {
 function set_pedantic_bash_options {
     set -u # abort if using unset variable
     set -e # abort if command exits with non-zero status
-    trap 'echo \"$BASH_COMMAND\" exited with code $? >&2' ERR
 }
+
+function on_exit {
+    local rc=$?
+    if test $rc != 0; then
+        echo "command \"$BASH_COMMAND\" exited with code $rc" >&2
+    fi
+}
+
+trap on_exit EXIT
 
 function show_vars {
     map show_var "$@" | tr $'\n' " "
