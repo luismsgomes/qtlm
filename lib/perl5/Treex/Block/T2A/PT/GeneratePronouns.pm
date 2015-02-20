@@ -138,7 +138,7 @@ sub process_tnode {
 
     if ($t_node->formeme =~ /poss/) {  # possessive pronouns
         $type = "POSS";
-        $key = join " ", ($iset->person, $iset->gender, $iset->number, $iset->possnumber);
+        $key = join " ", ($iset->person, $iset->gender||"masc", $iset->number||"sing", $iset->possnumber);
     }
 
     elsif ($t_node->formeme =~ /subj/) {

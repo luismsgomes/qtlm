@@ -16,7 +16,7 @@ has [qw( _conjugator _inflector )] => ( is => 'rw' );
 sub process_tnode {
     my ( $self, $tnode ) = @_;
 
-    if ($tnode->formeme =~ /adj/ and $tnode->t_lemma =~ /r$/) {
+    if ($tnode->formeme =~ /adj/ and $tnode->t_lemma =~ /[aei]r$/) {
 
         my $lemma = $tnode->t_lemma;
         my $form = "PPT";
@@ -69,7 +69,6 @@ based on http://en.wikipedia.org/wiki/Portuguese_verb_conjugation
 
 =head1 AUTHORS 
 
-Martin Popel <popel@ufal.mff.cuni.cz>
 
 =head1 COPYRIGHT AND LICENSE
 

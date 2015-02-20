@@ -122,6 +122,7 @@ sub best_form_of_lemma {
 
         my $response = $self->_inflector->inflect( lc $lemma, $pos, $gender, $number,$superlative, $diminutive);
 
+
         if(ucfirst($lemma) eq $lemma){
             $response = ucfirst($response);
         }

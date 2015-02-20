@@ -7,13 +7,28 @@ extends 'Treex::Core::Block';
 sub process_ttree {
     my ( $self, $t_root ) = @_;
 
+    RELCLAUSE:  
     foreach my $rc_head ( grep { $_->formeme =~ /rc/ } $t_root->get_descendants ) {
 
-        my $child = $rc_head->get_children({preceding_only=>1, first_only=>1});
+        # TODO: add "qual" (but it is a grandson, not a son node)
+        next RELCLAUSE if grep {$_->t_lemma =~ /^(que|onde|cujo)$/} $rc_head->get_children; # TODO: it is rather the formeme that should be fixed (not here, but upstream)
+
+        my $src_tnode = $rc_head->src_tnode;
+        next RELCLAUSE if !$src_tnode;
+        next RELCLAUSE 
+            if (($src_tnode->formeme =~ /rc/) && !$src_tnode->wild->{rc_no_relpron});
+
+        # Grammatical antecedent is typically the nominal parent of the clause
+        my ($gram_antec) = $rc_head->get_eparents( { ordered => 1 } );
+        next RELCLAUSE if !$gram_antec;
+        next RELCLAUSE if $gram_antec->formeme !~ /^n/;
+
+#        my $child = $rc_head->get_children({preceding_only=>1, first_only=>1});
 
         #print STDERR "AddRelpronBelowRc ". $rc_head->t_lemma . " - " . $child->t_lemma . "\n\n";
-        next if (!$child);
-        next if $child->t_lemma ne '#PersPron';
+#        next if (!$child);
+#        next if $child->t_lemma ne '#PersPron';
+
         
         # Create new t-node
         my $relpron = $rc_head->create_child(
