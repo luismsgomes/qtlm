@@ -32,15 +32,14 @@ function evaluate {
 }
 
 function translate_from_scratch {
-    false
     local base=$1 out_base=$1.${src}2${trg}
     local doing="translating $base from scratch"
     log "$doing"
     if test -d "$out_base.cache"; then
         find "$out_base.cache" -type f -name "*.treex.gz" -delete
     fi
-    if test -d "$out_base.final"; then
-        find "$out_base.final" -type f -name "*.treex.gz" -delete
+    if test -d "$out_base.final.new"; then
+        find "$out_base.final.new" -type f -name "*.treex.gz" -delete
     fi
     $TMT_ROOT/treex/bin/treex --dump_scenario \
         Util::SetGlobal \
@@ -56,7 +55,7 @@ function translate_from_scratch {
             storable=0 \
             compress=1 \
             file_stem="" \
-            path="$base.$src.final" \
+            path="$base.$src.final.new" \
         Util::SetGlobal \
             language=$trg \
             selector=tst \
@@ -79,17 +78,24 @@ function translate_from_scratch {
         Write::Treex \
             storable=0 \
             compress=1 \
-            path="$out_base.final" \
+            path="$out_base.final.new" \
         Write::Sentences \
-	> $out_base.scen
+	> $out_base.from_scratch.new.scen
 
-    $TMT_ROOT/treex/bin/treex $out_base.scen \
-        < "$base.$src.txt" 2> "$out_base.treexlog" |
-    postprocessing > "$base.${trg}_mt.txt"
+    $TMT_ROOT/treex/bin/treex $out_base.from_scratch.new.scen \
+        < "$base.$src.txt" 2> "$out_base.treexlog.new" |
+    postprocessing > "$base.${trg}_mt.new.txt"
     ls $out_base.cache |
     sort --general-numeric-sort --key=1,1 --field-separator=. |
     grep -P "\.treex.gz\$" > $out_base.cache/list.txt
-    touch $out_base.{cache,final}/.finaltouch
+    touch $out_base.{cache,final.new}/.finaltouch
+
+    rotate_new_old $out_base.from_scratch scen
+    rotate_new_old $base.${trg}_mt txt
+    rotate_new_old $out_base.treexlog
+    rotate_new_old $out_base.final
+    rotate_new_old $base.$src.final
+
     log "finished $doing"
 }
 
@@ -97,8 +103,8 @@ function translate_from_cache {
     local base=$1 out_base=$1.${src}2${trg}
     local doing="translating $base (using cached trees)"
     log "$doing"
-    if test -d "$out_base.final"; then
-        find "$out_base.final" -type f -name "*.treex.gz" -delete
+    if test -d "$out_base.final.new"; then
+        find "$out_base.final.new" -type f -name "*.treex.gz" -delete
     fi
     $TMT_ROOT/treex/bin/treex --dump_scenario \
         Read::Treex \
@@ -111,12 +117,19 @@ function translate_from_cache {
         Write::Treex \
             storable=0 \
             compress=1 \
-            path="$out_base.final" \
-        Write::Sentences > $out_base.scen
+            path="$out_base.final.new" \
+        Write::Sentences > $out_base.from_cache.new.scen
 
-    $TMT_ROOT/treex/bin/treex $out_base.scen 2> "$out_base.treexlog" |
-    postprocessing > "$base.${trg}_mt.txt"
-    touch $out_base.cache/.finaltouch
+    $TMT_ROOT/treex/bin/treex $out_base.from_cache.new.scen \
+        2> "$out_base.treexlog.new" |
+    postprocessing > "$base.${trg}_mt.new.txt"
+    touch $out_base.final.new/.finaltouch
+
+    rotate_new_old $out_base.from_cache scen
+    rotate_new_old $base.${trg}_mt txt
+    rotate_new_old $out_base.treexlog
+    rotate_new_old $out_base.final
+
     log "finished $doing"
 }
 
@@ -140,7 +153,8 @@ function create_html_table {
     # now let's create an HTML table showing the source, reference and machine
     #  translated sentences being evaluated
     paste $base.{$src,$trg,${trg}_mt}.txt |
-    $QTLEAP_ROOT/tools/tsv_to_html.py > $out_base.$src-$trg-mt_$trg.html
+    $QTLEAP_ROOT/tools/tsv_to_html.py > $out_base.$src-$trg-mt_$trg.new.html
+    rotate_new_old $out_base.$src-$trg-mt_$trg html
 }
 
 function run_mteval {
@@ -168,8 +182,9 @@ function run_mteval {
             -s $out_base.src.xml \
             -r $out_base.ref.xml \
             -t $out_base.tst.xml \
-        > $out_base.bleu
+        > $out_base.bleu.new
     rm -f $out_base.{src,ref,tst}.xml
+    rotate_new_old $out_base.bleu
     log "finished $doing"
 }
 

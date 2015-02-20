@@ -128,3 +128,31 @@ function check_transfer_models {
         done
     done
 }
+
+function rotate_new_old {
+    local base=$1
+    if test $# == 2; then
+        local ext=$2
+        test -e $base.new.$ext ||
+                fatal "No such file or directory: $base.new.$ext"
+        if test -e $base.old.$ext; then
+            rm -vrf $base.old.$ext
+        fi
+        if test -e $base.$ext; then
+            mv -v $base.$ext $base.old.$ext
+        fi
+        mv -v $base.new.$ext $base.$ext
+    else
+        test -e $base.new ||
+                fatal "No such file or directory: $base.new"
+        if test -e $base.old; then
+            rm -vrf $base.old
+        fi
+        if test -e $base; then
+            mv -v $base $base.old
+        fi
+        mv -v $base.new $base
+    fi
+}
+
+
