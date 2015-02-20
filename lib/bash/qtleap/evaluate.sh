@@ -18,7 +18,7 @@ function evaluate {
             tee >(cut -f 1 > $base.$lang1.txt) |
                   cut -f 2 > $base.$lang2.txt
         fi
-        #TODO: download transfer models if needed
+        check_transfer_models
         if test -f $base.${src}2$trg.cache/.finaltouch; then
             translate_from_cache $base
         else
@@ -32,6 +32,7 @@ function evaluate {
 }
 
 function translate_from_scratch {
+    false
     local base=$1 out_base=$1.${src}2${trg}
     local doing="translating $base from scratch"
     log "$doing"
@@ -221,7 +222,7 @@ function save {
 }
 
 function clean {
-    doing="removing previous translations $(show_vars QTLEAP_CONF)"
+    doing="removing previous translations"
     log "$doing"
     local testset
     for testset in $(list_all_testsets); do
