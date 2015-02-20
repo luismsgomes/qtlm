@@ -46,7 +46,7 @@
 function main {
     source "$QTLEAP_ROOT/lib/bash/utils.sh" || exit 1
     source "$QTLEAP_ROOT/lib/bash/qtleap/common.sh" || exit 1
-    #source "$QTLEAP_ROOT/lib/bash/qtleap/train.sh" || exit 1
+    source "$QTLEAP_ROOT/lib/bash/qtleap/train.sh" || exit 1
     source "$QTLEAP_ROOT/lib/bash/qtleap/evaluate.sh" || exit 1
     #source "$QTLEAP_ROOT/lib/bash/qtleap/translate.sh" || exit 1
     set_pedantic_bash_options
