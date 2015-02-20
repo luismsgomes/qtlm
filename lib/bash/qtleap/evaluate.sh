@@ -26,6 +26,7 @@ function evaluate {
         fi
         check_num_lines $base
         create_html_table $base
+        create_ngram_summary $base
         run_mteval $base
     done
     log "finished $doing"
@@ -155,6 +156,13 @@ function create_html_table {
     paste $base.{$src,$trg,${trg}_mt}.txt |
     $QTLEAP_ROOT/tools/tsv_to_html.py > $out_base.$src-$trg-mt_$trg.new.html
     rotate_new_old $out_base.$src-$trg-mt_$trg html
+}
+
+function create_ngram_summary {
+    local base=$1 out_base=$1.${src}2${trg}
+    $QTLEAP_ROOT/tools/comparegrams.py $base.{$trg,${trg}_mt}.txt \
+        > $out_base.new.ngrams
+    rotate_new_old $out_base ngrams
 }
 
 function run_mteval {
