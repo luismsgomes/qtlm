@@ -43,7 +43,11 @@ function load_config {
         fatal "please fix $dataset_config_file"
     fi
 
-    treex_share_dir=$(perl -e 'use Treex::Core::Config; my ($d) = Treex::Core::Config->resource_path(); print "$d\n";')
+    treex_share_dir=$(perl -e '
+        use Treex::Core::Config;
+        my ($d) = Treex::Core::Config->resource_path();
+        print "$d\n";
+    ')
 
     # let's check if all scenarios exist
     local scen lang
