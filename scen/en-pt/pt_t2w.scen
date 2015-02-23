@@ -109,6 +109,5 @@ T2A::PT::PrepositionContraction
 
 T2A::CapitalizeSentStart
 
-Misc::JoinBundles
 
 A2W::PT::ConcatenateTokens

@@ -1,7 +1,5 @@
 Util::SetGlobal language=en
 
-W2A::ResegmentSentences
-
 ## to m-layer
 W2A::EN::Tokenize
 W2A::NormalizeForms

@@ -15,12 +15,10 @@ function train {
     save_code_snapshot $train_dir
     get_corpus $train_dir
     w2a $train_dir
-
-    false
-
     align $train_dir
     a2t $train_dir
     train_transfer_models $train_dir
+    upload_transfer_models $train_dir
     log "finished $doing"
 }
 
@@ -69,8 +67,6 @@ function check_dataset_files_config {
 
 function w2a {
     local train_dir=$1
-    local doing="analysing parallel data (w2a)"
-    log "$doing"
     create_dir $train_dir/{atrees,lemmas,batches,scens}
     find $train_dir/batches -name "w2a_*" -delete
     rm -f $train_dir/todo.w2a
@@ -87,6 +83,8 @@ function w2a {
 
     local changed=false
     if test -n "$batches"; then
+        local doing="analysing parallel data (w2a)"
+        log "$doing"
         for batch in $batches; do
             test -s $train_dir/batches/$batch || continue
             changed=true
@@ -99,6 +97,7 @@ function w2a {
                 Read::AlignedSentences \
                     ${lang1}_src=@$train_dir/corpus/$lang1/batch_$batch.txt \
                     ${lang2}_src=@$train_dir/corpus/$lang2/batch_$batch.txt \
+                W2A::ResegmentSentences remove=diff \
                 "$QTLEAP_ROOT/scen/$lang1-$lang2/${lang1}_w2a.scen" \
                 "$QTLEAP_ROOT/scen/$lang1-$lang2/${lang2}_w2a.scen" \
                 Write::Treex \
@@ -107,7 +106,6 @@ function w2a {
                 Write::LemmatizedBitexts \
                     selector=src \
                     language=$lang1 \
-                    to='.' \
                     to_selector=src \
                     to_language=$lang2 \
                     path=$train_dir/lemmas \
@@ -120,61 +118,75 @@ function w2a {
         for batch in $batches; do
             rm -f $train_dir/corpus/{$lang1,$lang2}/batch_$batch.txt
         done
+        log "finished $doing"
+    else
+        log "a-trees are up-to-date"
     fi
     if $changed || ! test -f $train_dir/lemmas.gz; then
         log "gzipping lemmas"
-        find $train_dir/lemmas -name '*.txt' | sort | xargs cat |
+        find $train_dir/lemmas -name 'part_*' | sort | xargs cat |
         gzip > $train_dir/lemmas.gz
         log "finished gzipping lemmas"
     fi
-    log "finished $doing"
 }
 
 function align {
-    test -f lemmas.gz || fatal "$work_dir/lemmas.gz does not exist"
-    test lemmas.gz -nt alignments.gz || return 0
-    stderr "$(date '+%F %T')  started align"
-    create_dir align_tmp
-    $treexdir/devel/qtleap/bin/gizawrapper.pl \
-        --tempdir=align_tmp \
-        --bindir=$gizadir \
-        lemmas.gz \
+    local train_dir=$1
+    if ! test -f $train_dir/lemmas.gz; then
+        fatal "$train_dir/lemmas.gz does not exist"
+    fi
+    if test $train_dir/alignments.gz -nt $train_dir/lemmas.gz; then
+        log "alignments are up-to-date; skipping alignment."
+        return 0
+    fi
+    local doing="aligning parallel data"
+    log "$doing"
+    create_dir $train_dir/giza
+    $TMT_ROOT/treex/devel/qtleap/bin/gizawrapper.pl \
+        --tempdir=$train_dir/giza \
+        --bindir=$giza_dir \
+        $train_dir/lemmas.gz \
         --lcol=1 \
         --rcol=2 \
         --keep \
         --dirsym=gdfa,int,left,right,revgdfa \
-        2> logs/align.log |
-    paste <(zcat lemmas.gz | cut -f 1 | sed 's|^.*/|atrees/|;s|\.txt|.streex|') - |
-    gzip > alignments.gz
+        2> $train_dir/logs/giza.log |
+    paste <(zcat $train_dir/lemmas.gz | cut -f 1 |
+            sed 's|^[^,]*,||;s|/corpus/../|/atrees/|;s|\.txt|.streex|') - |
+    gzip > $train_dir/alignments.gz
     if $rm_giza_files; then
-        rm -rf align_tmp
+        rm -rf $train_dir/giza
     fi
-    stderr "$(date '+%F %T') finished align"
+    log "finished $doing"
 }
 
 function a2t {
-    create_dir ttrees $lang1-$lang2/v $lang2-$lang1/v batches
-    find batches -name "a2t_*" -delete
-    rm -f todo.a2t
+    local train_dir=$1
+    create_dir $train_dir/{ttrees,batches,models/{$lang1-$lang2,$lang2-$lang1}/v}
+    find $train_dir/batches -name "a2t_*" -delete
+    rm -f $train_dir/todo.a2t
     comm -23 \
-        <(find atrees -name '*.streex' -printf '%f\n' | sort) \
-        <(find ttrees -name '*.streex' -printf '%f\n' | sort) \
-        > todo.a2t
-    if test -s todo.a2t; then
-        split -d -a 3 -n l/$num_procs todo.a2t batches/a2t_
-        rm -f todo.a2t
+        <(find $train_dir/atrees -name '*.streex' -printf '%f\n' | sort) \
+        <(find $train_dir/ttrees -name '*.streex' -printf '%f\n' | sort) \
+        > $train_dir/todo.a2t
+    if test -s $train_dir/todo.a2t; then
+        split -d -a 3 -n l/$num_procs $train_dir/todo.a2t $train_dir/batches/a2t_
+        rm -f $train_dir/todo.a2t
     fi
-    batches=$(find batches -name "a2t_*" -printf '%f\n')
+    batches=$(find $train_dir/batches -name "a2t_*" -printf '%f\n')
     if test -n "$batches"; then
-        stderr "$(date '+%F %T')  started a2t"
+        local doing="analysing parallel data (a2t)"
+        log "$doing"
         for batch in $batches; do
-            test -s batches/$batch || continue
-            ln -f batches/$batch atrees/batch_$batch.txt
-            $treexdir/bin/treex \
+            test -s $train_dir/batches/$batch || continue
+            ln -vf $train_dir/batches/$batch $train_dir/atrees/batch_$batch.txt
+            $TMT_ROOT/treex/bin/treex \
+                Util::SetGlobal \
+                    selector=src \
                 Read::Treex \
-                    from=@atrees/batch_$batch.txt \
+                    from=@$train_dir/atrees/batch_$batch.txt \
                 Align::A::InsertAlignmentFromFile \
-                    from=alignments.gz \
+                    from=$train_dir/alignments.gz \
                     inputcols=gdfa_int_left_right_revgdfa_therescore_backscore \
                     selector=src \
                     language=$lang1 \
@@ -198,110 +210,138 @@ function a2t {
                     to_language=$lang1 \
                 Write::Treex \
                     storable=1 \
-                    substitute='{atrees}{ttrees}' \
+                    path=$train_dir/ttrees \
                 Print::VectorsForTM \
                     language=$lang2 \
                     selector=src \
                     trg_lang=$lang1 \
                     compress=1 \
-                    to='.' \
-                    substitute="{ttrees}{$lang2-$lang1/v}" \
+                    path=$train_dir/models/$lang2-$lang1/v \
                 Print::VectorsForTM \
                     language=$lang1 \
                     selector=src \
                     trg_lang=$lang2 \
                     compress=1 \
-                    to='.' \
-                    substitute="{$lang2-$lang1}{$lang1-$lang2}" \
-                &> logs/$batch.log &
+                    path=$train_dir/models/$lang1-$lang2/v \
+                &> $train_dir/logs/$batch.log &
         done
         wait
         for batch in $batches; do
-            rm -f atrees/batch_$batch.txt
+            rm -f $train_dir/atrees/batch_$batch.txt
         done
-        stderr "$(date '+%F %T') finished a2t"
+        touch $train_dir/ttrees/.finaltouch
+        log "finished $doing"
+    else
+        log "t-trees are up-to-date"
     fi
 }
 
 function train_transfer_models {
-    train_transfer_models_direction $lang1 $lang2 &
-    $running_on_a_big_machine || wait
-    train_transfer_models_direction $lang2 $lang1 &
+    local train_dir=$1
+    train_transfer_models_direction $train_dir $lang1 $lang2 &
+    if ! test $big_machine; then
+        wait
+    fi
+    train_transfer_models_direction $train_dir $lang2 $lang1 &
     wait
 }
 
 function train_transfer_models_direction {
-    src=$1
-    trg=$2
-    stderr "$(date '+%F %T')  started train $src-$trg"
-    create_dir $src-$trg/{lemma,formeme}
-
-    stderr "$(date '+%F %T')  started sorting $src-$trg vectors by $src lemmas"
-    find $src-$trg/v -name "part_*.gz" |
+    local train_dir=$1
+    local src=$2
+    local trg=$3
+    create_dir $train_dir/models/$src-$trg/{lemma,formeme}
+    if test $train_dir/models/$src-$trg/.finaltouch -nt \
+            $train_dir/ttrees/.finaltouch; then
+            log "transfer models for $src-$trg are up-to-date"
+        return 0
+    fi
+    local doing="sorting $src-$trg vectors by $src lemmas"
+    log "$doing"
+    find $train_dir/models/$src-$trg/v -name "part_*.gz" |
     sort |
     xargs zcat |
     cut -f1,2,5 |
     sort -k1,1 --buffer-size $sort_mem --parallel=$num_procs |
-    gzip > $src-$trg/lemma/train.gz
-    stderr "$(date '+%F %T') finished sorting $src-$trg vectors by $src lemmas"
-
-    stderr "$(date '+%F %T')  started sorting $src-$trg vectors by $src formemes"
-    find $src-$trg/v -name "part_*.gz" |
+    gzip > $train_dir/models/$src-$trg/lemma/train.gz
+    log "finished $doing"
+    doing="sorting $src-trg vectors for formemes"
+    find $train_dir/models/$src-$trg/v -name "part_*.gz" |
     sort |
     xargs zcat |
     cut -f3,4,5 |
     sort -k1,1 --buffer-size $sort_mem --parallel=$num_procs |
-    gzip > $src-$trg/formeme/train.gz
-    stderr "$(date '+%F %T') finished sorting $src-$trg vectors by $src formemes"
-
-    for modeltype in static maxent; do
-        train_lemma $src $trg $modeltype &
-        $running_on_a_big_machine || wait
-        train_formeme $src $trg $modeltype &
-        $running_on_a_big_machine || wait
+    gzip > $train_dir/models/$src-$trg/formeme/train.gz
+    log "finished $doing"
+    for model_type in static maxent; do
+        train_lemma $train_dir $src $trg $model_type &
+        if ! $big_machine; then
+            wait
+        fi
+        train_formeme $train_dir $src $trg $model_type &
+        if ! $big_machine; then
+            wait
+        fi
     done
     wait
-    create_model_symlinks
-    stderr "$(date '+%F %T') finished train $src-$trg"
+    touch $train_dir/models/$src-$trg/.finaltouch
 }
 
 function train_lemma {
-    src=$1
-    trg=$2
-    modeltype=$3
-    stderr "$(date '+%F %T')  started training $modeltype $src-$trg lemmas transfer model"
-    eval "train_opts=\$lemma_${modeltype}_train_opts"
-    zcat $src-$trg/lemma/train.gz |
-    eval $treexdir/training/mt/transl_models/train.pl \
-        $modeltype $train_opts $src-$trg/lemma/$modeltype.model.gz \
-        >& logs/train_${src}-${trg}_lemma_$modeltype.log
-    stderr "$(date '+%F %T') finished training $modeltype $src-$trg lemmas transfer model"
+    local train_dir=$1
+    local src=$2
+    local trg=$3
+    local model_type=$4
+    if test $train_dir/models/$src-$trg/lemma/$model_type.model.gz -nt \
+            $train_dir/ttrees/.finaltouch; then
+            log "$src-$trg lemma $model_type model is up-to-date"
+        return 0
+    fi
+    local doing="training $model_type $src-$trg lemmas transfer model"
+    log "$doing"
+    eval "local train_opts=\$lemma_${model_type}_train_opts"
+    zcat $train_dir/models/$src-$trg/lemma/train.gz |
+    eval $TMT_ROOT/treex/training/mt/transl_models/train.pl \
+        $model_type $train_opts \
+        $train_dir/models/$src-$trg/lemma/$model_type.model.gz \
+        >& $train_dir/logs/train_${src}-${trg}_lemma_$model_type.log
+    log "finished $doing"
 }
 
 function train_formeme {
-    src=$1
-    trg=$2
-    modeltype=$3
-    stderr "$(date '+%F %T')  started training $modeltype $src-$trg formemes transfer model"
-    eval "train_opts=\$formeme_${modeltype}_train_opts"
-    zcat $src-$trg/formeme/train.gz |
-    eval $treexdir/training/mt/transl_models/train.pl \
-        $modeltype $train_opts $src-$trg/formeme/$modeltype.model.gz \
-        >& logs/train_${src}-${trg}_formeme_$modeltype.log
-    stderr "$(date '+%F %T') finished training $modeltype $src-$trg formemes transfer model"
+    local train_dir=$1
+    local src=$2
+    local trg=$3
+    local model_type=$4
+    if test $train_dir/models/$src-$trg/formeme/$model_type.model.gz -nt \
+            $train_dir/ttrees/.finaltouch; then
+            log "$src-$trg formeme $model_type model is up-to-date"
+        return 0
+    fi
+    local doing="training $model_type $src-$trg formemes transfer model"
+    log "$doing"
+    eval "local train_opts=\$formeme_${model_type}_train_opts"
+    zcat $train_dir/models/$src-$trg/formeme/train.gz |
+    eval $TMT_ROOT/treex/training/mt/transl_models/train.pl \
+        $model_type $train_opts \
+        $train_dir/models/$src-$trg/formeme/$model_type.model.gz \
+        >& $train_dir/logs/train_${src}-${trg}_formeme_$model_type.log
+    log "finished $doing"
 }
 
-function create_model_symlinks {
-    for factor in lemma formeme; do
-        for langpair in $lang1-$lang2 $lang2-$lang1; do
-            file="data/models/transfer/$langpair-$conf-$factor-static.model.gz"
-            share_ssh_dir
-            d="$HOME//data/models/transfer/$langpair/$conf/$factor"
-                scp -P "$share_ssh_port" \
-                    "$work_dir/$file" \
-                    "$share_ssh_user@$share_ssh_host:$share_ssh_path/data/models/transfer/$langpair/$conf/$factor/static.model.gz"
-                ln -fs "$work_dir/$langpair/$factor/maxent.model.gz"
-            popd >&2
-        done
-    done
+function upload_transfer_models {
+    local train_dir=$1
+    local remote_dir="$upload_ssh_path/models/transfer/$dataset/$train_date"
+    local doing="uploading $train_dir to $upload_ssh_host/$remote_dir"
+    log "$doing"
+    ssh -p $upload_ssh_port $upload_ssh_user@$upload_ssh_host \
+        "mkdir -vp '$remote_dir'"
+    rsync --port $upload_ssh_port -av "$train_dir/" \
+        --exclude "dataset_files" \
+        --exclude "corpus" \
+        --exclude "giza" \
+        --exclude "batches" \
+        --exclude "todo.*" \
+        "$upload_ssh_user@$upload_ssh_host:$remote_dir"
+    log "finished $doing"
 }

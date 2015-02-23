@@ -127,7 +127,7 @@ function check_transfer_models {
     local model direction path
     for direction in $lang1-$lang2 $lang2-$lang1; do
         for model in {lemma,formeme}/{static,maxent}.model.gz; do
-            path=models/transfer/$direction/$dataset/$train_date/$model
+            path=models/transfer/$dataset/$train_date/$direction/$model
             if ! test -f $treex_share_dir/data/$path; then
                 create_dir $(dirname $treex_share_dir/data/$path)
                 download_from_share $path $treex_share_dir/data/$path

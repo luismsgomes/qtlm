@@ -50,6 +50,7 @@ function translate_from_scratch {
         Read::Sentences \
             skip_empty=1 \
             lines_per_doc=1 \
+        W2A::ResegmentSentences \
         "$QTLEAP_ROOT/scen/$lang1-$lang2/${src}_w2a.scen" \
         "$QTLEAP_ROOT/scen/$lang1-$lang2/${src}_a2t.scen" \
         Write::Treex \
@@ -64,11 +65,11 @@ function translate_from_scratch {
             source_language=$src \
             source_selector=src \
         T2T::TrFAddVariants \
-            model_dir="data/models/transfer/$src-$trg/$dataset/$train_date/formeme" \
+            model_dir="data/models/transfer/$dataset/$train_date/$src-$trg/formeme" \
             static_model="static.model.gz" \
             discr_model="maxent.model.gz" \
         T2T::TrLAddVariants \
-            model_dir="data/models/transfer/$src-$trg/$dataset/$train_date/lemma" \
+            model_dir="data/models/transfer/$dataset/$train_date/$src-$trg/lemma" \
             static_model="static.model.gz" \
             discr_model="maxent.model.gz" \
         Write::Treex \
@@ -76,6 +77,7 @@ function translate_from_scratch {
             compress=1 \
             path="$out_base.cache" \
         "$QTLEAP_ROOT/scen/$lang1-$lang2/${trg}_t2w.scen" \
+        Misc::JoinBundles \
         Write::Treex \
             storable=0 \
             compress=1 \
@@ -115,6 +117,7 @@ function translate_from_cache {
             language=$trg \
             selector=tst \
         "$QTLEAP_ROOT/scen/$lang1-$lang2/${trg}_t2w.scen" \
+        Misc::JoinBundles \
         Write::Treex \
             storable=0 \
             compress=1 \

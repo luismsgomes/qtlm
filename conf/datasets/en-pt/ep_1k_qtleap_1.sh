@@ -26,4 +26,4 @@ maxent_train_opts="\
 lemma_maxent_train_opts="$maxent_train_opts"
 formeme_maxent_train_opts="$maxent_train_opts"
 
-rm_giza_files=true
+rm_giza_files=false
