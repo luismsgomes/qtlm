@@ -14,49 +14,51 @@ sub parse_sentence {
     my ( $self, $forms, $lemmas, $cpostags, $postags, $feats ) = @_;
 
     my $cnt = scalar @$forms;
-    $self->write();
-    $self->write();
-    for ( my $i = 0; $i < $cnt; $i++ ) {
-        $self->write(($i+1) . "\t$$forms[$i]\t$$lemmas[$i]\t$$cpostags[$i]\t$$postags[$i]\t$$feats[$i]\t_\t_\t_\t_");
-    }
-    $self->write();
-    $self->write();
-
     # read output
     my @parents = ();
     my @deprels = ();
-    
-    log_debug("$cnt to read", 1);
-    my $line = $self->read();
-    while ($line eq '') {
-        $line = $self->read();
-    }
-    while ( $cnt > 0 ) {
-        if ($line =~ /^Error/) {
-            log_warn $line;
-            while ( $cnt > 0 ) {
-                $cnt--;
-                push @parents, 0;
-                push @deprels, "ROOT";
-            }
-        } elsif ($line ne '') {
-            $cnt--;
-            my ($tokid, $form, $lemma, $cpostag, $postag, $feat, $parent, $deprel, $pparent, $pdeprel) = split(/\t/, $line);
-            push @parents, $parent;
-            push @deprels, $deprel;
-            
-        } else {
-            log_warn "Unexpected empty line";
-            while ( $cnt > 0 ) {
-                $cnt--;
-                push @parents, 0;
-                push @deprels, "ROOT";
-            }
-        }
-        log_debug("$cnt to read", 1);
-        $line = $self->read();
-    }
 
+    if ($cnt > 0) {
+        $self->write();
+        $self->write();
+        for ( my $i = 0; $i < $cnt; $i++ ) {
+            $self->write(($i+1) . "\t$$forms[$i]\t$$lemmas[$i]\t$$cpostags[$i]\t$$postags[$i]\t$$feats[$i]\t_\t_\t_\t_");
+        }
+        $self->write();
+        $self->write();
+
+
+        log_debug("$cnt to read", 1);
+        my $line = $self->read();
+        while ($line eq '') {
+            $line = $self->read();
+        }
+        while ( $cnt > 0 ) {
+            if ($line =~ /^Error/) {
+                log_warn $line;
+                while ( $cnt > 0 ) {
+                    $cnt--;
+                    push @parents, 0;
+                    push @deprels, "ROOT";
+                }
+            } elsif ($line ne '') {
+                $cnt--;
+                my ($tokid, $form, $lemma, $cpostag, $postag, $feat, $parent, $deprel, $pparent, $pdeprel) = split(/\t/, $line);
+                push @parents, $parent;
+                push @deprels, $deprel;
+
+            } else {
+                log_warn "Unexpected empty line";
+                while ( $cnt > 0 ) {
+                    $cnt--;
+                    push @parents, 0;
+                    push @deprels, "ROOT";
+                }
+            }
+            log_debug("$cnt to read", 1);
+            $line = $self->read();
+        }
+    }
     return ( \@parents, \@deprels );
 }
 
