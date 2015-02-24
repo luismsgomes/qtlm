@@ -1,9 +1,5 @@
 
-dataset_files="
-    corpora/europarl/ep_10k.enpt.gz
-    corpora/qtleap/qtleap_1a.enpt.gz
-    corpora/qtleap/qtleap_1q.enpt.gz
-"
+dataset_files="corpora/europarl/ep_1k.enpt.gz"
 
 train_hostname="*"
 
@@ -26,4 +22,4 @@ maxent_train_opts="\
 lemma_maxent_train_opts="$maxent_train_opts"
 formeme_maxent_train_opts="$maxent_train_opts"
 
-rm_giza_files=true
+rm_giza_files=false
