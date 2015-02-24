@@ -124,13 +124,14 @@ function postprocessing {
 }
 
 function check_transfer_models {
-    local model direction path
+    local model direction local_path remote_path
     for direction in $lang1-$lang2 $lang2-$lang1; do
         for model in {lemma,formeme}/{static,maxent}.model.gz; do
-            path=models/transfer/$dataset/$train_date/$direction/$model
-            if ! test -f $treex_share_dir/data/$path; then
-                create_dir $(dirname $treex_share_dir/data/$path)
-                download_from_share $path $treex_share_dir/data/$path
+            remote_path=models/transfer/$dataset/$train_date/models/$direction/$model
+            local_path=$treex_share_dir/data/models/transfer/$dataset/$train_date/$direction/$model
+            if ! test -f $local_path; then
+                create_dir $(dirname $local_path)
+                download_from_share $remote_path $local_path
             fi
         done
     done
