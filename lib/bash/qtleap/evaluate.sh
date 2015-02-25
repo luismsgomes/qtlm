@@ -242,6 +242,25 @@ function list_all_testsets {
     fi
 }
 
+function create_new_snapshot_id {
+    local params="action=create&user=$USER&host=$(hostname)"
+    params="$params&lang1=$lang1&lang2=$lang2"
+    params="$params&dataset=$dataset&train_date=$train_date"
+
+    local curl=$(which curl)
+    if test -z "$curl"; then
+        fatal "curl is not installed"
+    fi
+    local out=$($curl --user "$download_http_user:$download_http_password" \
+                      --url "$download_http_base_url/snapshot.php?$params" \
+                      --silent --fail --show-error)
+    if [[ "$out" == snapshot_id=* ]]; then
+        echo ${out#snapshot_id=}
+    else
+        fatal "could not get new snapshot ID from the server"
+    fi
+}
+
 function save {
     doing="saving snapshot $(show_vars QTLEAP_CONF snapshot_description)"
     log "$doing"
