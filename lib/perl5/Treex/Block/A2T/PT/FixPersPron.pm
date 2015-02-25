@@ -117,6 +117,27 @@ sub process_tnode {
         }
 
     }
+
+    #If the modal verbs were colapsed...
+    
+    #if ($t_node->t_lemma eq "#PersPron" and $t_node->is_generated) {
+    #
+    #    print STDERR "FixPersPron perspron...\n";
+    #
+    #    #Se o pai teve filhos como verbos modais que colapsaram
+    #    my $t_parent = $t_node->get_parent;
+    #
+    #    if($t_parent and grep {$_->lemma =~ /(poder|dever|querer)/} $t_parent->get_aux_anodes ){
+    #
+    #        $t_node->set_gram_politeness("polite");
+    #        $t_node->set_gram_person(2);
+    # 
+    #    }
+    #
+
+
+    }
+
     return 1;
 }
 
