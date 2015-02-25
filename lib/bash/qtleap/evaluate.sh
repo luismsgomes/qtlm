@@ -22,9 +22,7 @@ function evaluate {
         check_transfer_models
         if test -f eval_$testset/$test_file.${src}2$trg.cache/.finaltouch; then
             translate_from_cache $testset $test_file
-            echo 1
         else
-            echo 1
             translate_from_scratch $testset $test_file
         fi
         check_num_lines $testset $test_file
