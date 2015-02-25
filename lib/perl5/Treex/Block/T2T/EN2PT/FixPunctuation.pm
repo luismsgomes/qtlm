@@ -8,22 +8,11 @@ extends 'Treex::Core::Block';
 sub process_tnode {
 	my ( $self, $tnode ) = @_;
 
-    #if ($tnode->t_lemma =~ /^[<>]$/) {
-    	#$tnode->
-    #}
-    #     $tnode->get_parent->set_gram_definiteness("definite");
-    #     #print $tnode->get_address()."\n";
-    # }
+    my $src_tnode = $tnode->src_tnode();
 
-#    my $src_tnode = $tnode->src_tnode();
-
-	# by default, nouns are definite in Portugues
-
-	#if ( $tnode->gram_sempos eq "n.denot" and not $tnode->gram_definiteness ) {
-	#	$tnode->set_gram_definiteness("definite");
-	#}
-
-
+    if ($src_tnode and $src_tnode->t_lemma  =~ /^[<>]$/) {
+            $tnode->set_formeme('x');
+    }
 }
 
 1;
