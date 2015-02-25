@@ -9,38 +9,41 @@ function evaluate {
     create_dir eval_$testset
     local remote_path
     for remote_path in $testset_files; do
-        local local_path="eval_$testset/$(basename $remote_path)"
-        local base="eval_$testset/$(basename $local_path .$lang1$lang2.gz)"
+        local test_file=$(basename $remote_path .$lang1$lang2.gz)
+        local local_path=eval_$testset/$(basename $remote_path)
         download_from_share $remote_path $local_path
-        if ! test -f "$base.$lang1.txt" || ! test -f "$base.$lang2.txt"; then
+        if ! test -f eval_$testset/$test_file.$lang1.txt ||
+                ! test -f eval_$testset/$test_file.$lang2.txt; then
             zcat $local_path |
             $QTLEAP_ROOT/tools/prune_unaligned_sentpairs.py |
-            tee >(cut -f 1 > $base.$lang1.txt) |
-                  cut -f 2 > $base.$lang2.txt
+            tee >(cut -f 1 > eval_$testset/$test_file.$lang1.txt) |
+                  cut -f 2 > eval_$testset/$test_file.$lang2.txt
         fi
         check_transfer_models
-        if test -f $base.${src}2$trg.cache/.finaltouch; then
-            translate_from_cache $base
+        if test -f eval_$testset/$test_file.${src}2$trg.cache/.finaltouch; then
+            #translate_from_cache $testset $test_file
+            echo 1
         else
-            translate_from_scratch $base
+            echo 1
+            #translate_from_scratch $testset $test_file
         fi
-        check_num_lines $base
-        create_html_table $base
-        create_ngram_summary $base
-        run_mteval $base
+        check_num_lines $testset $test_file
+        create_html_table $testset $test_file
+        create_ngram_summary $testset $test_file
+        run_mteval $testset $test_file
     done
     log "finished $doing"
 }
 
 function translate_from_scratch {
-    local base=$1 out_base=$1.${src}2${trg}
-    local doing="translating $base from scratch"
+    local testset=$1 test_file=$2
+    local doing="translating eval_$testset/$test_file from scratch"
     log "$doing"
-    if test -d "$out_base.cache"; then
-        find "$out_base.cache" -type f -name "*.treex.gz" -delete
+    if test -d "eval_$testset/$test_file.${src}2${trg}.cache"; then
+        find "eval_$testset/$test_file.${src}2${trg}.cache" -type f -name "*.treex.gz" -delete
     fi
-    if test -d "$out_base.final.new"; then
-        find "$out_base.final.new" -type f -name "*.treex.gz" -delete
+    if test -d "eval_$testset/$test_file.${src}2${trg}.final.new"; then
+        find "eval_$testset/$test_file.${src}2${trg}.final.new" -type f -name "*.treex.gz" -delete
     fi
     $TMT_ROOT/treex/bin/treex --dump_scenario \
         Util::SetGlobal \
@@ -57,7 +60,7 @@ function translate_from_scratch {
             storable=0 \
             compress=1 \
             file_stem="" \
-            path="$base.$src.final.new" \
+            path="eval_$testset/$test_file.$src.final.new" \
         Util::SetGlobal \
             language=$trg \
             selector=tst \
@@ -75,43 +78,43 @@ function translate_from_scratch {
         Write::Treex \
             storable=0 \
             compress=1 \
-            path="$out_base.cache" \
+            path="eval_$testset/$test_file.${src}2${trg}.cache" \
         "$QTLEAP_ROOT/scen/$lang1-$lang2/${trg}_t2w.scen" \
         Misc::JoinBundles \
         Write::Treex \
             storable=0 \
             compress=1 \
-            path="$out_base.final.new" \
+            path="eval_$testset/$test_file.${src}2${trg}.final.new" \
         Write::Sentences \
-	> $out_base.from_scratch.new.scen
+	> eval_$testset/$test_file.${src}2${trg}.from_scratch.new.scen
 
-    $TMT_ROOT/treex/bin/treex $out_base.from_scratch.new.scen \
-        < "$base.$src.txt" 2> "$out_base.treexlog.new" |
-    postprocessing > "$base.${trg}_mt.new.txt"
-    ls $out_base.cache |
+    $TMT_ROOT/treex/bin/treex eval_$testset/$test_file.${src}2${trg}.from_scratch.new.scen \
+        < "eval_$testset/$test_file.$src.txt" 2> "eval_$testset/$test_file.${src}2${trg}.treexlog.new" |
+    postprocessing > "eval_$testset/$test_file.${trg}_mt.new.txt"
+    ls eval_$testset/$test_file.${src}2${trg}.cache |
     sort --general-numeric-sort --key=1,1 --field-separator=. |
-    grep -P "\.treex.gz\$" > $out_base.cache/list.txt
-    touch $out_base.{cache,final.new}/.finaltouch
+    grep -P "\.treex.gz\$" > eval_$testset/$test_file.${src}2${trg}.cache/list.txt
+    touch eval_$testset/$test_file.${src}2${trg}.{cache,final.new}/.finaltouch
 
-    rotate_new_old $out_base.from_scratch scen
-    rotate_new_old $base.${trg}_mt txt
-    rotate_new_old $out_base.treexlog
-    rotate_new_old $out_base.final
-    rotate_new_old $base.$src.final
+    rotate_new_old eval_$testset/$test_file.${src}2${trg}.from_scratch scen
+    rotate_new_old eval_$testset/$test_file.${trg}_mt txt
+    rotate_new_old eval_$testset/$test_file.${src}2${trg}.treexlog
+    rotate_new_old eval_$testset/$test_file.${src}2${trg}.final
+    rotate_new_old eval_$testset/$test_file.$src.final
 
     log "finished $doing"
 }
 
 function translate_from_cache {
-    local base=$1 out_base=$1.${src}2${trg}
-    local doing="translating $base (using cached trees)"
+    local testset=$1 test_file=$2
+    local doing="translating eval_$testset/$test_file (using cached trees)"
     log "$doing"
-    if test -d "$out_base.final.new"; then
-        find "$out_base.final.new" -type f -name "*.treex.gz" -delete
+    if test -d "eval_$testset/$test_file.${src}2${trg}.final.new"; then
+        find "eval_$testset/$test_file.${src}2${trg}.final.new" -type f -name "*.treex.gz" -delete
     fi
     $TMT_ROOT/treex/bin/treex --dump_scenario \
         Read::Treex \
-            from=@$out_base.cache/list.txt \
+            from=@eval_$testset/$test_file.${src}2${trg}.cache/list.txt \
         Util::SetGlobal \
             if_missing_bundles=ignore \
             language=$trg \
@@ -121,61 +124,64 @@ function translate_from_cache {
         Write::Treex \
             storable=0 \
             compress=1 \
-            path="$out_base.final.new" \
-        Write::Sentences > $out_base.from_cache.new.scen
+            path="eval_$testset/$test_file.${src}2${trg}.final.new" \
+        Write::Sentences > eval_$testset/$test_file.${src}2${trg}.from_cache.new.scen
 
-    $TMT_ROOT/treex/bin/treex $out_base.from_cache.new.scen \
-        2> "$out_base.treexlog.new" |
-    postprocessing > "$base.${trg}_mt.new.txt"
-    touch $out_base.final.new/.finaltouch
+    $TMT_ROOT/treex/bin/treex eval_$testset/$test_file.${src}2${trg}.from_cache.new.scen \
+        2> "eval_$testset/$test_file.${src}2${trg}.treexlog.new" |
+    postprocessing > "eval_$testset/$test_file.${trg}_mt.new.txt"
+    touch eval_$testset/$test_file.${src}2${trg}.final.new/.finaltouch
 
-    rotate_new_old $out_base.from_cache scen
-    rotate_new_old $base.${trg}_mt txt
-    rotate_new_old $out_base.treexlog
-    rotate_new_old $out_base.final
+    rotate_new_old eval_$testset/$test_file.${src}2${trg}.from_cache scen
+    rotate_new_old eval_$testset/$test_file.${trg}_mt txt
+    rotate_new_old eval_$testset/$test_file.${src}2${trg}.treexlog
+    rotate_new_old eval_$testset/$test_file.${src}2${trg}.final
 
     log "finished $doing"
 }
 
 function check_num_lines {
-    local base=$1 out_base=$1.${src}2${trg}
+    local testset=$1 test_file=$2
     # first let's check if translation went OK and we got as many lines at the
     # output as there are in the input
-    local num_lines_in=$(wc -l < "$base.$src.txt")
+    local num_lines_in=$(wc -l < "eval_$testset/$test_file.$src.txt")
     local num_lines_out=0
-    if test -f "$base.${trg}_mt.txt"; then
-        num_lines_out=$(wc -l < "$base.${trg}_mt.txt")
+    if test -f "eval_$testset/$test_file.${trg}_mt.txt"; then
+        num_lines_out=$(wc -l < "eval_$testset/$test_file.${trg}_mt.txt")
     fi
     if ! test $num_lines_in -eq $num_lines_out; then
-        rm -f "$base.${trg}_mt.txt"
-        fatal "translation failed; check Treex output at $out_base.treexlog"
+        rm -f "eval_$testset/$test_file.${trg}_mt.txt"
+        fatal "translation failed; check Treex output at eval_$testset/$test_file.${src}2${trg}.treexlog"
     fi
 }
 
 function create_html_table {
-    local base=$1 out_base=$1.${src}2${trg}
+    local testset=$1 test_file=$2
     # now let's create an HTML table showing the source, reference and machine
     #  translated sentences being evaluated
-    paste $base.{$src,$trg,${trg}_mt}.txt |
-    $QTLEAP_ROOT/tools/tsv_to_html.py > $out_base.$src-$trg-mt_$trg.new.html
-    rotate_new_old $out_base.$src-$trg-mt_$trg html
+    paste eval_$testset/$test_file.{$src,$trg,${trg}_mt}.txt |
+    $QTLEAP_ROOT/tools/tsv_to_html.py \
+        "${testset} testset (${src^^}-${trg^^}) side by side with ${trg^^}/MT output ($dataset/$train_date)" \
+        "$test_file.${src}2${trg}.final/{id1:03}.treex.gz" \
+        > eval_$testset/$test_file.${src}2${trg}.$src-$trg-mt_$trg.new.html
+    rotate_new_old eval_$testset/$test_file.${src}2${trg}.$src-$trg-mt_$trg html
 }
 
 function create_ngram_summary {
-    local base=$1 out_base=$1.${src}2${trg}
-    $QTLEAP_ROOT/tools/comparegrams.py $base.{$trg,${trg}_mt}.txt \
-        > $out_base.new.ngrams
-    rotate_new_old $out_base ngrams
+    local testset=$1 test_file=$2
+    $QTLEAP_ROOT/tools/comparegrams.py eval_$testset/$test_file.{$trg,${trg}_mt}.txt \
+        > eval_$testset/$test_file.${src}2${trg}.new.ngrams
+    rotate_new_old eval_$testset/$test_file.${src}2${trg} ngrams
 }
 
 function run_mteval {
-    local base=$1 out_base=$1.${src}2${trg}
-    if test -f $out_base.bleu && \
-            test $out_base.bleu -nt $base.${trg}_mt.txt; then
+    local testset=$1 test_file=$2
+    if test -f eval_$testset/$test_file.${src}2${trg}.bleu && \
+            test eval_$testset/$test_file.${src}2${trg}.bleu -nt eval_$testset/$test_file.${trg}_mt.txt; then
         log "evaluation is up-to-date; skipping mteval"
         return
     fi
-    local doing="running mteval-v13a.pl on translation of $base"
+    local doing="running mteval-v13a.pl on translation of eval_$testset/$test_file"
     log "$doing"
     local json="{\
         \"srclang\":\"$src\",\
@@ -184,18 +190,18 @@ function run_mteval {
         \"sysid\":\"qtleap:$QTLEAP_CONF\",\
         \"refid\":\"human\"}"
     $QTLEAP_ROOT/tools/txt_to_mteval_xml.py src "$json" "(.*)\.$src\.txt" \
-        $base.$src.txt > $out_base.src.xml
+        eval_$testset/$test_file.$src.txt > eval_$testset/$test_file.${src}2${trg}.src.xml
     $QTLEAP_ROOT/tools/txt_to_mteval_xml.py ref "$json" "(.*)\.$trg\.txt" \
-        $base.$trg.txt > $out_base.ref.xml
+        eval_$testset/$test_file.$trg.txt > eval_$testset/$test_file.${src}2${trg}.ref.xml
     $QTLEAP_ROOT/tools/txt_to_mteval_xml.py tst "$json" "(.*)\.${trg}_mt\.txt" \
-        $base.${trg}_mt.txt > $out_base.tst.xml
+        eval_$testset/$test_file.${trg}_mt.txt > eval_$testset/$test_file.${src}2${trg}.tst.xml
     $QTLEAP_ROOT/tools/mteval-v13a.pl \
-            -s $out_base.src.xml \
-            -r $out_base.ref.xml \
-            -t $out_base.tst.xml \
-        > $out_base.bleu.new
-    rm -f $out_base.{src,ref,tst}.xml
-    rotate_new_old $out_base.bleu
+            -s eval_$testset/$test_file.${src}2${trg}.src.xml \
+            -r eval_$testset/$test_file.${src}2${trg}.ref.xml \
+            -t eval_$testset/$test_file.${src}2${trg}.tst.xml \
+        > eval_$testset/$test_file.${src}2${trg}.bleu.new
+    rm -f eval_$testset/$test_file.${src}2${trg}.{src,ref,tst}.xml
+    rotate_new_old eval_$testset/$test_file.${src}2${trg}.bleu
     log "finished $doing"
 }
 
@@ -258,10 +264,7 @@ function clean {
                 -name '*.treex.gz' \
                 -o -name '*.treexlog' \
                 -o -name '.finaltouch' \
-                -o -name 'list.txt' \
-                -o -name '*.bleu' \
-                -o -name '*_mt.txt' \
-                -o -name '*_mt.html' \) \
+                -o -name 'list.txt' \) \
                 -print -delete
         fi
     done
