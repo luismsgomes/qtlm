@@ -67,6 +67,10 @@ function check_dataset_files_config {
 
 function w2a {
     local train_dir=$1
+    if test -f $train_dir/atrees/.finaltouch; then
+        log "a-trees are up-to-date"
+        return
+    fi
     create_dir $train_dir/{atrees,lemmas,batches,scens}
     find $train_dir/batches -name "w2a_*" -delete
     rm -f $train_dir/todo.w2a
@@ -118,6 +122,7 @@ function w2a {
         for batch in $batches; do
             rm -f $train_dir/corpus/{$lang1,$lang2}/batch_$batch.txt
         done
+        touch $train_dir/atrees/.finaltouch
         log "finished $doing"
     else
         log "a-trees are up-to-date"
@@ -162,6 +167,10 @@ function align {
 
 function a2t {
     local train_dir=$1
+    if test -f $train_dir/ttrees/.finaltouch; then
+        log "t-trees are up-to-date"
+        return
+    fi
     create_dir $train_dir/{ttrees,batches,models/{$lang1-$lang2,$lang2-$lang1}/v}
     find $train_dir/batches -name "a2t_*" -delete
     rm -f $train_dir/todo.a2t
