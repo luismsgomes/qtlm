@@ -50,6 +50,7 @@ would be used.
 =head1 AUTHOR
 
 Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
+Luís Gomes <luis.gomes@di.fc.ul.pt> (save $t_node->wild->{is_rightangle_bracket} to allow recovering rightangle brackets later)
 
 =head1 COPYRIGHT AND LICENSE
 
