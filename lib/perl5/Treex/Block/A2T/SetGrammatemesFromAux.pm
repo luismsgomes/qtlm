@@ -44,6 +44,18 @@ sub process_tnode {
                 $tnode->set_gram_number($number);
             }
         }
+
+        if ($anode->lemma eq "poder") { # TODO better to turn it into a hash
+            $tnode->set_gram_deontmod("poss");
+        }
+        elsif ($anode->lemma eq "querer") {
+            $tnode->set_gram_deontmod("vol");
+        }
+        elsif ($anode->lemma eq "dever") {
+            $tnode->set_gram_deontmod("deb");
+        }
+               
+
         $self->check_anode($tnode, $anode);
     }
 
