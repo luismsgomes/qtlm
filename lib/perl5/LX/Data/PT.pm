@@ -1468,6 +1468,18 @@ use utf8;
     bastante bastantes todo todos toda todas nenhum 
     nenhuns nenhuma nenhumas cada quanto quantos quanta quantas);
 
+@LX::Data::PT::ObliqueInherentVerbs=qw(aberregar abichornar acadrimar acarrançar 
+    achamalotar acocorinhar actanciar afarar afaroar afobar agauchar agostar
+    ajudengar alavercar aleixar amanchar amulherengar apachorrar apalestrar 
+    aparoquiar apuridar aqueijar arremansar arrispidar atalancar auto briocar 
+    desengrimpar desmarear desretratar destabocar desvoluntariar emboldriar 
+    emonar emperiquitar encaipirar encarrapichar encatarroar encorujar endefluxar 
+    engalfinhar engalispar engrimpar enruminar ensimesmar ensoberbar ensoissar 
+    entanguir entreajudar entrefestejar entrefigurar entrenublar entrombar 
+    envolar esbaforir esbrucinar escarafolar escorcemelar escorçomelar esfoguear 
+    hirtar hispar letrar lusquir nastrar peinar pisgar rancorar remansar reminar 
+    repetenar repotrear rosar rotejar suicidar susquir trasvestir tremeter trigar 
+    vispar);
 
 1;
 
