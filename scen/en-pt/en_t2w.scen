@@ -5,6 +5,9 @@ Util::SetGlobal language=en
 T2T::SetClauseNumber
 
 T2T::PT2EN::MoveAdjsBeforeNouns
+T2T::PT2EN::FixThereIs
+T2T::PT2EN::FixValency
+
 
 T2A::DeleteGeneratedNodes
 T2A::CopyTtree
@@ -14,6 +17,9 @@ T2A::EN::MarkSubject
 T2A::EN::WordOrder
 
 T2A::EN::ImposeSubjpredAgr
+
+T2A::EN::DeleteYouInImperatives
+
 T2A::EN::AddPrepos
 T2A::EN::AddSubconjs
 T2A::EN::AddInfinitiveParticles
@@ -38,6 +44,8 @@ T2A::EN::AddPhrasalPunct
 T2A::EN::FixLemmas
 T2A::EN::GenerateWordforms
 T2A::EN::IndefArticlePhonetics
+
+T2A::EN::FixThereIs
 
 T2A::DeleteSuperfluousAuxCP
 T2A::EN::CapitalizeSentStart

@@ -5,11 +5,14 @@ Util::SetGlobal lxsuite_key=nlx.qtleap.13417612987549387402
 
 #Util::SetGlobal error_level=DEBUG
 
-W2A::PT::TokenizeAndTag
+W2A::ResegmentSentences
 
+W2A::PT::TokenizeAndTag
+W2A::PT::FixTags
 W2A::NormalizeForms
 W2A::MarkChunks min_quotes=3
 
 # a-layer
 W2A::PT::Parse lxsuite_mode=conll.pos:parser:conll.usd
 HamleDT::PT::HarmonizeCintilUSD
+W2A::PT::FixAfuns

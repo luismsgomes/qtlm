@@ -2,6 +2,7 @@ Util::SetGlobal language=pt
 
 # a-layer to t-layer
 A2T::PT::MarkEdgesToCollapse
+
 A2T::BuildTtree
 A2T::RehangUnaryCoordConj
 A2T::SetIsMember
@@ -23,7 +24,10 @@ A2T::SetGrammatemes
 A2T::PT::SetGrammatemesFromAux
 A2T::AddPersPronSb
 A2T::MinimizeGrammatemes
-# A2T::PT::SetPersPron # UNCOMMENT FOR NEXT MODEL TRAINING
+
+A2T::PT::FixImperatives
+
+A2T::PT::FixPersPron
 
 # semantic role labeling should be here
 #A2T::PT::SetFunctors
