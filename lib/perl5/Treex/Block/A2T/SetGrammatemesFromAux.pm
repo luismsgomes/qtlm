@@ -17,9 +17,7 @@ sub process_tnode {
     foreach my $anode (@anodes) {
 
 
-        # TODO: Passar para bloco independente ::PT::SetGrammatemesFromAux
-        # A análise do Inglês está a dar a tag genérica (prn) erradamente 
-        # aos artigos 'the' e 'a' ou 'an'
+        # TODO: Create as a specific PT block
         $tnode->set_gram_definiteness('definite')   if ($anode->iset->prontype eq 'prn' && $anode->lemma eq 'the');
         $tnode->set_gram_definiteness('indefinite') if ($anode->iset->prontype eq 'prn' && $anode->lemma =~ /^(a|an)$/);
         
@@ -45,6 +43,7 @@ sub process_tnode {
             }
         }
 
+        #Modal verbs
         if ($anode->lemma eq "poder") { # TODO better to turn it into a hash
             $tnode->set_gram_deontmod("poss");
         }
@@ -82,11 +81,12 @@ A very basic, language-independent grammateme setting block for t-nodes.
 Grammatemes are set based on the Interset features (and formeme)
 of the corresponding auxiliary a-nodes.
 
-So far, only definiteness is handled (i.e. definite and indefinite articles).
+Sets the deontmod grammatemes for Portuguese modal verbs (poder,querer e dever)
 
 =head1 AUTHOR
 
 Martin Popel <popel@ufal.mff.cuni.cz>
+Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
 
 =head1 COPYRIGHT AND LICENSE
 
