@@ -9,16 +9,9 @@ sub process_tnode {
     return if ( $t_node->voice || $t_node->gram_diathesis || '' ) !~ /^pas/;
     my $a_node = $t_node->get_lex_anode() or return;
 
-
-    #Nó pai é definido como participio passado
-    #$a_node->set_attr( 'iset/mood', 'ind');
-    #$a_node->set_attr( 'iset/tense', 'past');
-    #$a_node->iset->set_voice('pass');
-
     my $gender = $a_node->get_attr('iset/gender') // '';
     my $number = $a_node->get_attr('iset/number') // '';
 
-    #Acrescentado nó filho, lado esquerdo mais próximo
     my $new_node = $a_node->create_child({
             'lemma'         => 'ser',
             'afun'          => 'AuxV',
@@ -43,13 +36,27 @@ sub process_tnode {
 
 __END__
 
-=encoding utf8
+=encoding utf-8
 
-=over
+=head1 NAME
 
-=item Treex::Block::T2A::PT::AddAuxVerbCompoundPassive
+Treex::Block::T2A::PT::AddAuxVerbCompoundPassive
 
-=back
+=head1 DESCRIPTION
 
-=cut
+Added portuguese auxiliary verb 'ser' to a passive verb
+
+=head1 AUTHORS
+
+Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
+
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright © 2015 by NLX Group, Universidade de Lisboa
+
+Copyright © 2008 by Institute of Formal and Applied Linguistics, Charles University in Prague
+
+This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
 

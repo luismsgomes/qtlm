@@ -7,9 +7,7 @@ extends 'Treex::Core::Block';
 
 my %PT2EN_FORMEME = (
     "clicar n:em+X" => "n:on+X",
-    );
-
-
+);
 
 sub process_tnode {
 	my ( $self, $t_node ) = @_;
@@ -39,11 +37,25 @@ __END__
 
 =head1 NAME
 
-Treex::Block::T2T::EN2PT::FixThereIs
+Treex::Block::T2T::PT2EN::FixValency
 
 =head1 DESCRIPTION
 
+Fix the click on valency
+
 =head1 AUTHORS
 
+Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
+
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
+
 =head1 COPYRIGHT AND LICENSE
+
+Copyright © 2015 by NLX Group, Universidade de Lisboa
+
+Copyright © 2008 by Institute of Formal and Applied Linguistics, Charles University in Prague
+
+This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
+
+
 

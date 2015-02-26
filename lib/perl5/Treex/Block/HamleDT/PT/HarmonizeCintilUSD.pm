@@ -659,7 +659,9 @@ to the annotation style of HamleDT/Prague.
 =head1 AUTHOR
 
 Dan Zeman <zeman@ufal.mff.cuni.cz>
+
 Martin Popel <popel@ufal.mff.cuni.cz>
+
 Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
 
 =head1 COPYRIGHT AND LICENSE

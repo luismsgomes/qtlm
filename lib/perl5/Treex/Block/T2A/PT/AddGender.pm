@@ -14,12 +14,12 @@ sub process_anode {
 
 	return if ($anode->lemma !~ /^[[:alpha:]]+$/);
 
-	#TODO Tratamento de numerais
+	#TODO Handle of numerals
 	return if ($anode->iset->pos !~ m/(noun|adj)/);
 
 	my ( $forms, $lemmas, $postags, $cpostags, $feats ) = $self->generator->tokenize_and_tag(lc $anode->lemma);
 
-	#Por defeito fica em masculino
+	#By default the portuguese gender is set to masculine
 	if ($feats->[@$feats - 1] !~ /^(m|f)/){
 		log_warn $anode->lemma . " género por defeito...";
 		$anode->iset->set_gender('masc');
@@ -29,10 +29,6 @@ sub process_anode {
 		$anode->iset->set_gender('masc') 	if ($feats->[@$feats - 1] =~ /^m/);
 		$anode->iset->set_gender('fem') 	if ($feats->[@$feats - 1] =~ /^f/);
 	}
-	
-
-
-	
 	
 
 	return;
@@ -49,17 +45,28 @@ __END__
 
 =encoding utf-8
 
-=head1 NAME 
+=head1 NAME
 
 Treex::Block::T2A::PT::AddGender
 
 =head1 DESCRIPTION
 
-Adiciona género a nomes e adjectivos fazendo uso do LXTagger
+Runs the form, lemma and other attributes of a noun or adjective through the LX-Suite tagger 
+extracting the gender from the resulting annotation
 
-=head1 AUTHORS 
+=head1 AUTHORS
+
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
+
+Luís Gomes <luis.gomes@di.fc.ul.pt>, <luismsgomes@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright © 2014 by Institute of Formal and Applied Linguistics, Charles University in Prague
+Copyright © 2015 by NLX Group, Universidade de Lisboa
+
+Copyright © 2008 by Institute of Formal and Applied Linguistics, Charles University in Prague
+
 This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
+
+
+

@@ -25,21 +25,24 @@ __END__
 
 =encoding utf-8
 
-=head1 NAME
+=head1 NAME 
 
 Treex::Block::T2A::EN::FixThereIs
 
 =head1 DESCRIPTION
 
-Fixing lemmas of personal pronouns and negation particles (converting C<#Neg> and C<#PersPron>
-to corresponding surface values).
+
 
 =head1 AUTHORS
 
-Ondřej Dušek <odusek@ufal.mff.cuni.cz>
+Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
+
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
 
 =head1 COPYRIGHT AND LICENSE
 
 Copyright © 2014 by Institute of Formal and Applied Linguistics, Charles University in Prague
+
+Copyright © 2014 by NLX Group, Universidade de Lisboa
 
 This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.

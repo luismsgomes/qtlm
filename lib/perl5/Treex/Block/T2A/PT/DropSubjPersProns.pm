@@ -17,12 +17,6 @@ sub process_tnode {
             }
             $a_node->remove();
         }
-        else {
-            print STDERR "NO anode\n";
-        }
-
-        print STDERR "Perspron REMOVED\n";
-
     }
 
 }
@@ -31,4 +25,31 @@ sub process_tnode {
 
 __END__
 
-=over
+=encoding utf-8
+
+=head1 NAME
+
+Treex::Block::T2A::PT::DropSubjPersProns
+
+=head1 DESCRIPTION
+
+Removes #PersPron nodes
+
+=head1 AUTHORS
+
+Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
+
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright © 2015 by NLX Group, Universidade de Lisboa
+
+Copyright © 2008 by Institute of Formal and Applied Linguistics, Charles University in Prague
+
+This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
+
+
+
+
+

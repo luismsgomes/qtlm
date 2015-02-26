@@ -13,7 +13,6 @@ T2T::FixFormemeWrtNodetype
 T2T::EN2PT::Noun1Noun2_To_Noun2DeNoun1
 T2T::EN2PT::MoveAdjsAfterNouns
 T2T::EN2PT::FixPersPron
-#T2T::EN2PT::FixGrammatemes
 T2T::EN2PT::FixThereIs
 T2T::EN2PT::AddRelpronBelowRc
 T2T::EN2PT::TurnVerbLemmaToAdjectives

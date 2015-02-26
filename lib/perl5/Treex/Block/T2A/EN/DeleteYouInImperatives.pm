@@ -33,13 +33,13 @@ Treex::Block::T2A::EN::DeleteYouInImperatives
 
 =head1 DESCRIPTION
 
-Adding prepositional a-nodes according to prepositions contained in t-nodes' formemes.
-
-English-specific: adding prepositions to gerunds. 
+Deletes PersPron node when its a child of a Imperative node
 
 =head1 AUTHORS
 
-Ondřej Dušek <odusek@ufal.mff.cuni.cz>
+Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
+
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
 
 =head1 COPYRIGHT AND LICENSE
 

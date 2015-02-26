@@ -7,14 +7,10 @@ extends 'Treex::Core::Block';
 sub process_tnode {
     my ( $self, $t_node ) = @_;
 
-    #print "so far OK";
-
     if ($t_node->t_lemma eq "#PersPron" and $t_node->gram_person eq "2") {
-     #   print STDERR "CHANGED\n";
         my $a_node = $t_node->get_lex_anode() or return;
         $a_node->iset->set_person(3);
-        #print STDERR "CHANGED2\n";
-        
+       
     }
 
     return;
@@ -25,13 +21,29 @@ sub process_tnode {
 
 __END__
 
-=encoding utf8
+=encoding utf-8
 
-=over
+=head1 NAME
 
-=item Treex::Block::T2A::PT::SecondPersonPoliteness
+Treex::Block::T2A::PT::SecondPersonPoliteness
 
-=back
+=head1 DESCRIPTION
 
-=cut
+Sets politeness for portuguese (third person) 
+
+=head1 AUTHORS
+
+Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
+
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright © 2015 by NLX Group, Universidade de Lisboa
+
+Copyright © 2008 by Institute of Formal and Applied Linguistics, Charles University in Prague
+
+This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
+
+
 

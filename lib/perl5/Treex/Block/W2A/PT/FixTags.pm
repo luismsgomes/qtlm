@@ -4,46 +4,46 @@ extends 'Treex::Core::Block';
 
 sub process_anode {
     my ( $self, $anode ) = @_;
-#print STDERR "SUCCESSSSSSSSSSSSSSS 0\n";    
+  
     if (lc($anode->form) eq 'se'){
 
-        print STDERR (join " ", map {"$_".$anode->attr("conll/$_")} qw(pos cpos feat));
-        print STDERR "\n";
-
-#print STDERR "SUCCESSSSSSSSSSSSSSS 1 \n";
         my $previous_anode = $anode->get_prev_node;
-        if($previous_anode
-            #and do {print STDERR "SUCCESSSSSSSSSSSSSSS 1.5 \n";}
-            and $previous_anode->attr('conll/cpos') eq 'V') {
-
-            #print STDERR "SUCCESSSSSSSSSSSSSSS 3\n";
+        if($previous_anode and $previous_anode->attr('conll/cpos') eq 'V') {
             $anode->set_attr('conll/pos', 'CJ' );
             $anode->set_attr('conll/cpos', 'CJ');
             $anode->set_attr('conll/feat', '_');
         }
-
     }  
     return 1;
 }
 
 1;
-
+    
 __END__
 
 =encoding utf-8
 
-=head1 NAME 
+=head1 NAME
 
-Treex::Block::W2A::PT::Tokenize
+Treex::Block::W2A::PT::FixTags
 
 =head1 DESCRIPTION
 
-Uses LX-Suite tokenizer to split a sentence into a sequence of tokens.
+Correct wrongly annotated 'se' conjunctions (in source they appear as clitics)
 
 =head1 AUTHORS
 
-Luís Gomes <luis.gomes@di.fc.ul.pt>, <luismsgomes@gmail.com>
+Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
+
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright © 2014 by NLX Group, Universidade de Lisboa
+Copyright © 2015 by NLX Group, Universidade de Lisboa
+
+Copyright © 2008 by Institute of Formal and Applied Linguistics, Charles University in Prague
+
+This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
+
+
+

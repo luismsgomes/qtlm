@@ -86,6 +86,7 @@ Sets the deontmod grammatemes for Portuguese modal verbs (poder,querer e dever)
 =head1 AUTHOR
 
 Martin Popel <popel@ufal.mff.cuni.cz>
+
 Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
 
 =head1 COPYRIGHT AND LICENSE

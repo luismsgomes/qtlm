@@ -125,9 +125,7 @@ sub process_tnode {
     # 
     #    }
     #
-
-
-    }
+    #}
 
     return 1;
 }
@@ -148,6 +146,7 @@ Fix #PersPron grammatemes, extracting person, number and gender from node form.
 =head1 AUTHOR
 
 Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
+
 João A. Rodrigues <jrodrigues@di.fc.ul.pt>
 
 =head1 COPYRIGHT AND LICENSE

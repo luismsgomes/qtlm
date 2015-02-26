@@ -40,8 +40,6 @@ my %PTGENDER = (
 );
 
 
-
-
 sub best_form_of_lemma {
 
     my ( $self, $lemma, $iset ) = @_;
@@ -56,19 +54,22 @@ sub best_form_of_lemma {
         return $lemma;
     }
 
-    return $lemma if ($lemma =~ /_/);
+    if ($lemma =~ /_/) { return $lemma; }
+    if ($lemma =~ /^(?:https?|s?ftps?):\/\//) { return $lemma; }
+    if ($lemma =~ /^(?:www\.|[a-z0-9\.\-]+@[a-z0-9\-\.]+)/) { return $lemma; }
 
     my $pos     = $iset->pos;
-    my $number  = $PTNUMBER{$iset->number || 'sing'};
+    my $number  = $PTNUMBER{$iset->number} || 's';
+    my $mood    = $iset->mood;
+    my $tense   = $iset->tense;
+    my $person  = $iset->person || '1';
 
+    #Handle verbs
     if ($pos eq 'verb'){
 
-        my $mood    = $iset->mood;
         if(not $mood){ return $lemma; }
 
-        my $tense   = $iset->tense;
-        my $person  = $iset->person || '1';
-        my $form    = $PTFORM{"$mood $tense"} || 'pi';
+        my $form = $PTFORM{"$mood $tense"} || 'pi';
 
         if($mood eq 'imp'){
             $form   = 'pc';
@@ -76,7 +77,7 @@ sub best_form_of_lemma {
             $number = 's';
         }
 
-        #Voz da passiva
+        #Passive
         if($iset->voice eq 'pass'){
             $form = 'PPT';
             $person = $PTGENDER{$iset->gender} || 'g';
@@ -88,40 +89,23 @@ sub best_form_of_lemma {
             $response = ucfirst($response);
         }
 
-        #Ocorreu qualquer erro no conjugador...
+        #Conjugator returns with error
         return $lemma if $response eq '<NULL>';
-        
         return $response;
     }
+    #Handle nouns and adjectives
     elsif ($pos =~/^(noun|adj)$/){
 
-
-
-        #Ignora pronomes possessivos
-#        if ($iset->prontype eq 'prn' && $iset->poss eq 'poss'){
-#            return $lemma;
-#        }
-        
-
-        #Salta os endereços electrónicos
-        if ($lemma =~ /^(?:https?|s?ftps?):\/\//) { return $lemma; }
-        if ($lemma =~ /^(?:www\.|[a-z0-9\.\-]+@[a-z0-9\-\.]+)/) { return $lemma; }
-
-        #TODO: Martelada, perguntar And. e Nuno como resolver isto: $pos = adj|noun
-        my $number  = $number;
         my $pos     = $PTCATEGORY{"$pos"} || 'ADJ';
         my $gender  = $PTGENDER{$iset->gender} || 'm';
-
         my $superlative = "false";
         my $diminutive = "false";
-
 
         if($iset->degree eq 'sup'){
             $superlative = "true";
         }
 
         my $response = $self->_inflector->inflect( lc $lemma, $pos, $gender, $number,$superlative, $diminutive);
-
 
         if(ucfirst($lemma) eq $lemma){
             $response = ucfirst($response);
@@ -152,19 +136,28 @@ sub BUILD {
 
 __END__
 
+=encoding utf-8
+
 =head1 NAME
 
-Treex::Tool::Lexicon::Generation::PT
-
-=head1 SYNOPSIS
-
+Treex::Tool::Lexicon::Generation::PT::ClientLXSuite
 
 =head1 DESCRIPTION
 
+Conjugates and inflects portuguese verbs, nouns and adjectives through the LX-Suite tools
+
 =head1 AUTHORS
+
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright © 2014 by Institute of Formal and Applied Linguistics, Charles University in Prague
+Copyright © 2015 by NLX Group, Universidade de Lisboa
+
+Copyright © 2008 by Institute of Formal and Applied Linguistics, Charles University in Prague
 
 This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
+
+
+
+

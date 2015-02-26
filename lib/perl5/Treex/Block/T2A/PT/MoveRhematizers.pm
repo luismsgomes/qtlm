@@ -83,6 +83,8 @@ to
 
 Martin Popel <popel@ufal.mff.cuni.cz>
 
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
+
 =head1 COPYRIGHT AND LICENSE
 
 Copyright © 2014 by Institute of Formal and Applied Linguistics, Charles University in Prague
