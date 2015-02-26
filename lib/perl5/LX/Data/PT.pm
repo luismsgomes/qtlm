@@ -1460,25 +1460,25 @@ use utf8;
     'zuriquense' => 1,
 );
 
-@LX::Data::PT::exceptionsMoveAdjsAfterNouns=qw(outro outra outros outras 
-    este estes esta estas isto esse esses essa essas isso 
-    aquele aqueles aquela aquelas aquilo muito muitos 
-    muita muitas pouco poucos pouca poucas tanto tantos 
-    tanta tantas algum alguns alguma algumas vários várias 
-    bastante bastantes todo todos toda todas nenhum 
+@LX::Data::PT::exceptionsMoveAdjsAfterNouns=qw(outro outra outros outras
+    este estes esta estas isto esse esses essa essas isso
+    aquele aqueles aquela aquelas aquilo muito muitos
+    muita muitas pouco poucos pouca poucas tanto tantos
+    tanta tantas algum alguns alguma algumas vários várias
+    bastante bastantes todo todos toda todas nenhum
     nenhuns nenhuma nenhumas cada quanto quantos quanta quantas);
 
-@LX::Data::PT::ObliqueInherentVerbs=qw(aberregar abichornar acadrimar acarrançar 
+@LX::Data::PT::ObliqueInherentVerbs=qw(aberregar abichornar acadrimar acarrançar
     achamalotar acocorinhar actanciar afarar afaroar afobar agauchar agostar
-    ajudengar alavercar aleixar amanchar amulherengar apachorrar apalestrar 
-    aparoquiar apuridar aqueijar arremansar arrispidar atalancar auto briocar 
-    desengrimpar desmarear desretratar destabocar desvoluntariar emboldriar 
-    emonar emperiquitar encaipirar encarrapichar encatarroar encorujar endefluxar 
-    engalfinhar engalispar engrimpar enruminar ensimesmar ensoberbar ensoissar 
-    entanguir entreajudar entrefestejar entrefigurar entrenublar entrombar 
-    envolar esbaforir esbrucinar escarafolar escorcemelar escorçomelar esfoguear 
-    hirtar hispar letrar lusquir nastrar peinar pisgar rancorar remansar reminar 
-    repetenar repotrear rosar rotejar suicidar susquir trasvestir tremeter trigar 
+    ajudengar alavercar aleixar amanchar amulherengar apachorrar apalestrar
+    aparoquiar apuridar aqueijar arremansar arrispidar atalancar auto briocar
+    desengrimpar desmarear desretratar destabocar desvoluntariar emboldriar
+    emonar emperiquitar encaipirar encarrapichar encatarroar encorujar endefluxar
+    engalfinhar engalispar engrimpar enruminar ensimesmar ensoberbar ensoissar
+    entanguir entreajudar entrefestejar entrefigurar entrenublar entrombar
+    envolar esbaforir esbrucinar escarafolar escorcemelar escorçomelar esfoguear
+    hirtar hispar letrar lusquir nastrar peinar pisgar rancorar remansar reminar
+    repetenar repotrear rosar rotejar suicidar susquir trasvestir tremeter trigar
     vispar);
 
 1;
@@ -1498,6 +1498,7 @@ Assorted Portuguese word lists.
 =head1 AUTHORS
 
 Luís Gomes <luis.gomes@di.fc.ul.pt>, <luismsgomes@gmail.com>
+João Rodrigues <joao.rodrigues@di.fc.ul.pt>
 
 =head1 COPYRIGHT AND LICENSE
 
