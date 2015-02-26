@@ -6,6 +6,7 @@ T2T::FixPunctFormemes
 #T2T::SelectCompatibleTlemmaFormeme
 T2T::SetClauseNumber
 
+T2T::PT2EN::RestoreUrl
 T2T::PT2EN::MoveAdjsBeforeNouns
 T2T::PT2EN::FixThereIs
 T2T::PT2EN::FixValency

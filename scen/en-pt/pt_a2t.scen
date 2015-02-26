@@ -20,7 +20,7 @@ A2T::DeleteChildlessPunctuation
 A2T::SetNodetype
 A2T::SetFormeme
 A2T::PT::FixFormeme
-A2T::SetGrammatemes
+A2T::PT::SetGrammatemes
 A2T::PT::SetGrammatemesFromAux
 A2T::AddPersPronSb
 A2T::MinimizeGrammatemes
