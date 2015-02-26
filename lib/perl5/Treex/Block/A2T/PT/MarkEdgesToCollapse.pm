@@ -92,6 +92,7 @@ and it is derived from L<Treex::Block::A2T::MarkEdgesToCollapse>.
 =head1 AUTHORS
 
 Martin Popel <popel@ufal.mff.cuni.cz>
+
 Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
 
 =head1 COPYRIGHT AND LICENSE

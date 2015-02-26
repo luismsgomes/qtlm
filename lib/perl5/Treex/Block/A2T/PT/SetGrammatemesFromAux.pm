@@ -42,7 +42,9 @@ and negation.
 =head1 AUTHOR
 
 Martin Popel <popel@ufal.mff.cuni.cz>
+
 Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
+
 João A. Rodrigues <jrodrigues@di.fc.ul.pt>
 
 =head1 COPYRIGHT AND LICENSE

@@ -14,8 +14,8 @@ sub process_tnode {
     my ( $self, $tnode ) = @_;
     my $anode  = $tnode->get_lex_anode() or return;
 
-    #TODO: Passar para o bloco independente ::PT::AddArticles
-    #Se for preposicao possessiva então adiciona o artigo como nó irmão
+    #TODO: Create as language independent
+    #If node is a possessive preposition, create a child node for the article
     if ($anode->iset->prontype =~ m/(prn|prs)/ && $anode->iset->poss =~ m/poss/)
     {
 
@@ -79,6 +79,8 @@ language.
 Martin Popel <popel@ufal.mff.cuni.cz>
 
 Ondřej Dušek <odusek@ufal.mff.cuni.cz>
+
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
 
 =head1 COPYRIGHT AND LICENSE
 

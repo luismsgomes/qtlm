@@ -7,11 +7,9 @@ after process_tnode => sub {
     my ( $self, $t_node ) = @_;
     my $a_node = $t_node->get_lex_anode() or return;
 
-
     my $verbmod     = $t_node->get_attr('gram/verbmod') // '';
     my $tense       = $t_node->get_attr('gram/tense') // '';
     my $deontmod    = $t_node->get_attr('gram/deontmod') // '';
-
 
     if($verbmod eq 'cdn' and $tense eq 'sim' and $deontmod eq 'poss') {
 
@@ -33,7 +31,6 @@ after process_tnode => sub {
         }
         else
         {
-
             $a_node->iset->set_mood('ind');
             $a_node->iset->set_tense('fut');
         }
@@ -48,7 +45,6 @@ after process_tnode => sub {
     # "Pretérito Perfeito" from "Pretérito Imperfeito".
     # TODO: distinguish/guess also "Pretérito Mais que Perfeito" ($anode->iset->set_tense('pqp')).
     $a_node->iset->set_tense('imp') if $a_node->match_iset(aspect=>'imp', tense=>'past');
-
 
     return;
 };
@@ -84,6 +80,10 @@ L<Treex::Block::T2A::InitMorphcat>
 =head1 AUTHORS
 
 Martin Popel <popel@ufal.mff.cuni.cz>
+
+Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
+
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
 
 =head1 COPYRIGHT AND LICENSE
 

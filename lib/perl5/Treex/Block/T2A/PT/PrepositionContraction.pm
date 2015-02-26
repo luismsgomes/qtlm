@@ -40,13 +40,6 @@ my %CONTRACTION = (
     'de os' => 'dos',
     'de a' => 'da',
     'de as' => 'das',
-
-    #Desuso
-    #'de um' => 'dum',
-    #'de uns' => 'duns',
-    #'de uma' => 'duma',
-    #'de umas' => 'dumas',
-
     'de ele' => 'dele',
     'de eles' => 'deles',
     'de ela' => 'dela',
@@ -111,13 +104,6 @@ my %CONTRACTION = (
     'em alguma' => 'nalguma',
     'em algumas' => 'nalgumas',
     'por os' => 'pelos',
-
-    #Desuso
-    #'para o' => 'prò',
-    #'para os' => 'pròs',
-    #'para a' => 'prà',
-    #'para as' => 'pràs',
-
     'me o' => 'mo',
     'me os' => 'mos',
     'me a' => 'ma',
@@ -136,13 +122,13 @@ sub process_zone {
     my ( $self, $zone ) = @_;
     my $a_root   = $zone->get_atree();
 
-    #TODO Simpler way of extraction
     $a_root->get_descendants( { ordered => 1 } );
 
     my $last_node;
     foreach my $node ( $a_root->get_descendants({ ordered => 1 }) ) {
 
         if(defined $last_node){
+            #TODO: Check this regular expression
             if( $last_node->form =~ /^[[:alpha:]]+$/){
 
                 my $first_form = $last_node->form;
@@ -159,8 +145,6 @@ sub process_zone {
                         $last_node->set_form($contraction);
                     }
 
-                    #TODO Can I delete the node? What if it has child nodes?
-                    #Clears child node form and lemma
                     $node->set_form(undef);
                     $node->set_lemma(undef);
 
@@ -189,10 +173,12 @@ Contracts the portuguese prepositions.
 
 =head1 AUTHORS
 
-Name <email>
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright © 2014 by Institute of Formal and Applied Linguistics, Charles University in Prague
-This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
+Copyright © 2015 by NLX Group, Universidade de Lisboa
 
+Copyright © 2015 by Institute of Formal and Applied Linguistics, Charles University in Prague
+
+This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.

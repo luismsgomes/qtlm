@@ -4,13 +4,9 @@ use Moose;
 use Treex::Core::Common;
 extends 'Treex::Core::Block';
 
-
-
 # TODO: using the regularities, both pronoun tables can be written in a more concise way
-
 my %PRON_FORM = (
     "POSS" => {  # dimensions:   person of the possessor, gender of the possessed object, number of the possessed object, number of the possessor
-
 
     '1 masc sing sing' => 'meu', 
     '1 fem sing sing' => 'minha', 
@@ -116,13 +112,7 @@ my %PRON_FORM = (
     '3 masc plur' => '-lhes',
     '3 fem plur' => '-lhes',
     },
-
-
-
-    
-    );
-
-
+);
 
 sub process_tnode {
 
@@ -158,26 +148,18 @@ sub process_tnode {
     }
 
     else {
-        print STDERR "THIS should never happen, unrecognized pronoun formeme".$t_node->formeme."\n";
-        # this should never happen # TODO Warning
+        log_warn "THIS should never happen, unrecognized pronoun formeme".$t_node->formeme."\n";
     }
-
 
     my $form = $PRON_FORM{$type}{$key};
     if (not defined $form) {    
-         
-        print  STDERR "ERROR: No pronoun form of type $type for morphological categories equal to $key\t".$t_node->get_address."\n";
-         
+        log_warn "ERROR: No pronoun form of type $type for morphological categories equal to $key\t".$t_node->get_address."\n";  
     }
     else  {
         $a_node->set_form($form);
-           print  STDERR "SUCCESS: $type $key --> $form\n"; 
     }
 
-
     return;
-
-
 }
 
 1;
@@ -186,19 +168,26 @@ __END__
 
 =encoding utf-8
 
-=head1 NAME 
+=head1 NAME
 
-Treex::Block::T2A::EN::AddVerbNegation
+Treex::Block::T2A::PT::GeneratePronouns
 
 =head1 DESCRIPTION
 
-Add the particle 'not' and the auxiliary 'do' for negated verbs.
+Generates portuguese pronouns using the formeme and the Interset person, gender and number
 
-=head1 AUTHORS 
+=head1 AUTHORS
 
-Ondřej Dušek <odusek@ufal.mff.cuni.cz>
+Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
+
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright © 2014 by Institute of Formal and Applied Linguistics, Charles University in Prague
+Copyright © 2015 by NLX Group, Universidade de Lisboa
+
+Copyright © 2008 by Institute of Formal and Applied Linguistics, Charles University in Prague
+
 This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
+
+

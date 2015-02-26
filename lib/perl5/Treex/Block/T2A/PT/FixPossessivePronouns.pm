@@ -29,10 +29,7 @@ my %CONJ = (
     'nosso masc plur' => 'nossos',
     'nosso fem plur' => 'nossas',
 
-
 );
-
-
 
 sub process_anode {
     my ( $self, $anode ) = @_;
@@ -47,9 +44,7 @@ sub process_anode {
         $anode->set_lemma('vosso') if $anode->lemma =~ /(vosso|vossa|vossos|vossas)/;
         $anode->set_lemma('nosso') if $anode->lemma =~ /(nosso|nossa|nossos|nossas)/;
 
-
         my $parent = $anode->get_parent();
-
         my $new_lemma = $CONJ{$anode->lemma . " " . $parent->iset->gender . " " . $parent->iset->number};
         
         $anode->set_lemma($new_lemma) if defined $new_lemma; 
@@ -68,20 +63,26 @@ __END__
 
 =encoding utf-8
 
-=head1 NAME 
+=head1 NAME
 
 Treex::Block::T2A::PT::FixPossessivePronouns
 
 =head1 DESCRIPTION
 
-Pronomes possessivos são inflexionados admitindo possivel erro no transfer do lemma
+Possessive pronouns are inflected assuming an error in the resulting lemma
 
-=head1 AUTHORS 
+=head1 AUTHORS
 
-Name <email>
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright © 2014 by Institute of Formal and Applied Linguistics, Charles University in Prague
+Copyright © 2015 by NLX Group, Universidade de Lisboa
+
+Copyright © 2008 by Institute of Formal and Applied Linguistics, Charles University in Prague
+
 This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
+
+
+
 

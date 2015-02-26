@@ -36,19 +36,22 @@ __END__
 
 =encoding utf-8
 
-=head1 NAME 
+=head1 NAME
 
-Treex::Block::T2A::EN::AddVerbNegation
+Treex::Block::T2A::PT::AddVerbNegation
 
 =head1 DESCRIPTION
 
-Add the particle 'not' and the auxiliary 'do' for negated verbs.
+Creates the particle 'não' corresponding to the negation of the negated verb
 
-=head1 AUTHORS 
+=head1 AUTHORS
 
-Ondřej Dušek <odusek@ufal.mff.cuni.cz>
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright © 2014 by Institute of Formal and Applied Linguistics, Charles University in Prague
+Copyright © 2015 by NLX Group, Universidade de Lisboa
+
+Copyright © 2008 by Institute of Formal and Applied Linguistics, Charles University in Prague
+
 This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.

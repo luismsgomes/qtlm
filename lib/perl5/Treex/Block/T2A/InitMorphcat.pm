@@ -70,7 +70,7 @@ sub process_tnode {
     # Part-of-speech
     # Use mlayer_pos, if available, otherwise try sempos or syntpos from formeme
     my $mlayer_pos = $t_node->get_attr('mlayer_pos');
-    #desactiva m-layer
+    #Disables m-layer for PT translation
     if (undef and defined($mlayer_pos) and $mlayer_pos !~ /^[xX]$/ ) {
         log_warn "M-layer";
         $a_node->iset->set_pos($mlayer_pos);
@@ -96,7 +96,7 @@ sub process_tnode {
     }
 
 
-          
+        
     # Fill grammatemes through coref_gram.rf for reflexive pronouns
     if ( $t_node->t_lemma eq '#PersPron' and ( my ($t_antec) = $t_node->get_coref_gram_nodes() ) ){
         while ( $t_antec->get_coref_gram_nodes() ){
@@ -184,6 +184,10 @@ Fill Interset morphological categories with values derived from grammatemes and 
 =head1 AUTHORS
 
 Martin Popel <popel@ufal.mff.cuni.cz>
+
+Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
+
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
 
 =head1 COPYRIGHT AND LICENSE
 

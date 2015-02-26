@@ -65,6 +65,7 @@ Toggle overwrite current alignment links (default: 1).
 =head1 AUTHOR
 
 Ondřej Dušek <odusek@ufal.mff.cuni.cz>
+
 Luís Gomes <luis.gomes@di.fc.ul.pt> (reverse type of alignments: left<=>right)
 
 =head1 COPYRIGHT AND LICENSE

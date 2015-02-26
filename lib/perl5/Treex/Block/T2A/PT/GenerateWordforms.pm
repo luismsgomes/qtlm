@@ -20,8 +20,6 @@ sub process_anode {
 
     if(defined $tnode){
         if(defined $tnode->t_lemma_origin){
-
-
             if($tnode->t_lemma_origin eq 'clone'){
                 $anode->set_form($tnode->t_lemma);
                 return;
@@ -29,8 +27,6 @@ sub process_anode {
         }
     }
 
-
-    #return $anode->set_form($anode->lemma) if (defined $anode->afun) && ($anode->afun eq 'Sb');
     if ((defined $anode->afun) && ($anode->afun eq 'Sb')){
     	print STDERR "->Warning, Afun=Sb, Lemma: ", $anode->lemma,"\n";
     }
@@ -56,14 +52,13 @@ Treex::Block::T2A::PT::GenerateWordforms
 
 =head1 DESCRIPTION
 
-just a draft of Portuguese verbal conjugation
-(placeholder for the real morphological module by LX-Center)
-based on http://en.wikipedia.org/wiki/Portuguese_verb_conjugation
-
+Portuguese verbal and noun/adjective conjugation through the LXSuite tools 
 
 =head1 AUTHORS 
 
 Martin Popel <popel@ufal.mff.cuni.cz>
+
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
 
 =head1 COPYRIGHT AND LICENSE
 

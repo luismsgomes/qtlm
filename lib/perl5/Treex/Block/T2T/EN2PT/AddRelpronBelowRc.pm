@@ -22,13 +22,6 @@ sub process_ttree {
         my ($gram_antec) = $rc_head->get_eparents( { ordered => 1 } );
         next RELCLAUSE if !$gram_antec;
         next RELCLAUSE if $gram_antec->formeme !~ /^n/;
-
-#        my $child = $rc_head->get_children({preceding_only=>1, first_only=>1});
-
-        #print STDERR "AddRelpronBelowRc ". $rc_head->t_lemma . " - " . $child->t_lemma . "\n\n";
-#        next if (!$child);
-#        next if $child->t_lemma ne '#PersPron';
-
         
         # Create new t-node
         my $relpron = $rc_head->create_child(
@@ -42,7 +35,6 @@ sub process_ttree {
 
             }
         );
-        #$relpron->set_deref_attr( 'coref_gram.rf', [$gram_antec] );
 
         $relpron->shift_before_subtree($rc_head);
     }
@@ -51,18 +43,27 @@ sub process_ttree {
 
 1;
 
-=over
+=encoding utf-8
 
-=item Treex::Block::T2T::EN2CS::AddRelpronBelowRc
+=head1 NAME
+
+Treex::Block::T2T::EN2PT::AddRelpronBelowRc
+
+=head1 DESCRIPTION
 
 Generating new t-nodes corresponding to relative pronoun 'ktery' below roots
 of relative clauses, whose source-side counterparts were not relative
 clauses (e.g. when translatin an English gerund to a Czech relative
 clause ). Grammatical coreference is filled too.
 
-=back
+=head1 AUTHORS
 
-=cut
+Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
 
-# Copyright 2009 Zdenek Zabokrtsky
-# This file is distributed under the GNU General Public License v2. See $TMT_ROOT/README.
+=head1 COPYRIGHT AND LICENSE
+
+Copyright © 2015 by NLX Group, Universidade de Lisboa
+
+Copyright © 2008 by Institute of Formal and Applied Linguistics, Charles University in Prague
+
+This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.

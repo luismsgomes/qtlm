@@ -7,19 +7,8 @@ extends 'Treex::Core::Block';
 sub process_tnode {
     my ( $self, $tnode ) = @_;
 
-
-    #log_warn "Tnode " . $tnode->t_lemma;
-    #log_warn "Formema " . $tnode->formeme;
-
-    #my $variants_rf = $tnode->get_attr('translation_model/formeme_variants') || [];
-    #foreach my $variant (@$variants_rf) {
-    #    print STDERR "\t" . $variant->{formeme} . "\t" . exp( $variant->{logprob} ) . "\n";
-    #
-    #}
-
     #Formema tem prioridade sobre lemma
     #Procura próximo lemma correspondente ao POS do formema caso sejam diferentes
-
     if ($tnode->t_lemma =~ m/(acesso)/){
 
         my $variants_lemma_rf = $tnode->get_attr('translation_model/t_lemma_variants');
@@ -72,9 +61,7 @@ sub process_tnode {
             }
 
             if($tnode->t_lemma =~ m/(clique|clicar|carregar)/){
-                #TODO Manter POS? n?
                 $node->set_attr('formeme', 'n:em+X' );
-
             }
 
             last;
@@ -90,17 +77,26 @@ __END__
 
 =encoding utf-8
 
-=head1 NAME 
+=head1 NAME
 
+Treex::Block::T2A::PT::ImposeFormeme
 
 =head1 DESCRIPTION
 
+Imposes formeme over know bad formations (Ugly hack)
 
 =head1 AUTHORS
 
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright © 2014 by Institute of Formal and Applied Linguistics, Charles University in Prague
+Copyright © 2015 by NLX Group, Universidade de Lisboa
+
+Copyright © 2008 by Institute of Formal and Applied Linguistics, Charles University in Prague
 
 This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
+
+
+
+
