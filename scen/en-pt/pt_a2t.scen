@@ -36,4 +36,4 @@ A2T::FixAtomicNodes
 A2T::MarkReflpronCoref
 
 # ensure that all punctuation tokens have formeme x
-A2T::FixPunctFormemes
+T2T::FixPunctFormemes

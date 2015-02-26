@@ -1,5 +1,7 @@
 Util::SetGlobal language=en
 
+T2T::FixPunctFormemes
+
 #Util::DefinedAttr tnode=t_lemma,formeme message="after TrLFCompounds"
 #T2T::SelectCompatibleTlemmaFormeme
 T2T::SetClauseNumber

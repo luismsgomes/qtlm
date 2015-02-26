@@ -44,4 +44,4 @@ A2T::EN::FindTextCoref
 A2T::EN::FixAdjNattrN
 
 # ensure that all punctuation tokens have formeme x
-A2T::FixPunctFormemes
+T2T::FixPunctFormemes

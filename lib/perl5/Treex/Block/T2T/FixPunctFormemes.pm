@@ -1,4 +1,4 @@
-package Treex::Block::A2T::FixPunctFormemes;
+package Treex::Block::T2T::FixPunctFormemes;
 use Moose;
 use Treex::Core::Common;
 extends 'Treex::Core::Block';
@@ -18,11 +18,11 @@ __END__
 
 =head1 NAME
 
-Treex::Block::A2T::FixPunctFormemes
+Treex::Block::T2T::FixPunctFormemes
 
 =head1 DESCRIPTION
 
-    Force formeme x for quotes.
+    Force formeme x for all punctuation tokens.
 
 
 =head1 AUTHORS
