@@ -13,6 +13,8 @@ has 'overwrite' => ( is => 'ro', isa => 'Bool', default => 1 );
 
 has 'align_type' => ( is => 'ro', isa => 'Str', default => 'reverse_alignment' );
 
+has 'reverse_align_type' => ( is => 'ro', isa => 'Bool', default => 0 );
+
 sub process_zone {
     my ( $self, $zone ) = @_;
     my @nodes = $zone->get_tree( $self->layer )->get_descendants( { ordered => 1 } );
@@ -21,10 +23,14 @@ sub process_zone {
 		my ( $n_rf, $t_rf ) = $x->get_aligned_nodes();
 		my $iterator = List::MoreUtils::each_arrayref( $n_rf, $t_rf );
 	    while ( my ( $node, $type ) = $iterator->() ) {
-	    	$type =~ s/left/oldleft/g;
-	    	$type =~ s/right/oldright/g;
-	    	$type =~ s/oldleft/right/g;
-	    	$type =~ s/oldright/left/g;
+            if ($self->reverse_align_type) {
+    	    	$type =~ s/left/oldleft/g;
+    	    	$type =~ s/right/oldright/g;
+    	    	$type =~ s/oldleft/right/g;
+    	    	$type =~ s/oldright/left/g;
+            } else {
+                $type = $self->align_type;
+            }
 	        $node->add_aligned_node($x, $type);
 	    }
     }
