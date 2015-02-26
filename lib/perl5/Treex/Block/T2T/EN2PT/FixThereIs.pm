@@ -35,7 +35,6 @@ sub process_tnode {
 1;
 
 __END__
-
 =encoding utf-8
 
 =head1 NAME
@@ -44,7 +43,22 @@ Treex::Block::T2T::EN2PT::FixThereIs
 
 =head1 DESCRIPTION
 
+Creates a PersPron node for the 'there is/are' 
+
 =head1 AUTHORS
 
+Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
+
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
+
 =head1 COPYRIGHT AND LICENSE
+
+Copyright © 2015 by NLX Group, Universidade de Lisboa
+
+Copyright © 2008 by Institute of Formal and Applied Linguistics, Charles University in Prague
+
+This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
+
+
+
 

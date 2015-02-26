@@ -56,21 +56,28 @@ __END__
 
 =encoding utf-8
 
-=head1 NAME 
+=head1 NAME
 
-Treex::Block::T2A::PT::GenerateWordforms
+Treex::Block::T2T::EN2PT::TurnVerbLemmaToAdjectives
 
 =head1 DESCRIPTION
 
-just a draft of Portuguese verbal conjugation
-(placeholder for the real morphological module by LX-Center)
-based on http://en.wikipedia.org/wiki/Portuguese_verb_conjugation
+Corrects verb nodes lemma with wrong formeme (adj) by passing through the LX-Suite conjugator
+as a past participle
 
+=head1 AUTHORS
 
-=head1 AUTHORS 
+Zdeněk Žabokrtský <zaborktsky@ufal.mff.cuni.cz>
 
+João A. Rodrigues <jrodrigues@di.fc.ul.pt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright © 2014 by Institute of Formal and Applied Linguistics, Charles University in Prague
+Copyright © 2015 by NLX Group, Universidade de Lisboa
+
+Copyright © 2008 by Institute of Formal and Applied Linguistics, Charles University in Prague
+
 This module is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
+
+
+

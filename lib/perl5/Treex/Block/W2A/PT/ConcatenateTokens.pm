@@ -16,11 +16,6 @@ sub process_zone {
 
     #Concatenação de Cliticos
     $sentence =~ s/ -/-/g;
-
-
-
-
-
     $sentence =~ s/ +/ /g;
     $sentence =~ s/ ([!,.?:;])/$1/g;
     $sentence =~ s/(["”’])\./\.$1/g;
@@ -58,8 +53,6 @@ Treex::Block::A2W::PT::ConcatenateTokens
 =head1 DESCRIPTION
 
 Creates a sentence as a concatenation of a-nodes, removing spacing where needed.
-
-
 
 =head1 AUTHOR
 
