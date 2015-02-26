@@ -1,4 +1,4 @@
-package Treex::Block::T2T::FixPunctFormemes;
+package Treex::Block::A2T::FixPunctFormemes;
 use Moose;
 use Treex::Core::Common;
 extends 'Treex::Core::Block';
@@ -18,7 +18,7 @@ __END__
 
 =head1 NAME
 
-Treex::Block::T2T::FixPunctFormemes
+Treex::Block::A2T::FixPunctFormemes
 
 =head1 DESCRIPTION
 

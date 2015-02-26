@@ -42,3 +42,6 @@ A2T::EN::FindTextCoref
 
 # verificar se este bloco está a ajudar ou piorar:
 A2T::EN::FixAdjNattrN
+
+# ensure that all punctuation tokens have formeme x
+A2T::FixPunctFormemes

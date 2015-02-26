@@ -1,6 +1,6 @@
 Util::SetGlobal language=pt
 
-Util::SetGlobal lxsuite_host=localhost lxsuite_port=10000
+Util::SetGlobal lxsuite_host=194.117.45.198 lxsuite_port=10000
 Util::SetGlobal lxsuite_key=nlx.qtleap.13417612987549387402
 
 #Util::SetGlobal error_level=DEBUG
