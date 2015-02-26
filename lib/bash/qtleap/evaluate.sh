@@ -58,7 +58,7 @@ function translate_from_scratch {
             storable=0 \
             compress=1 \
             file_stem="" \
-            path="eval_$testset/$test_file.$src.final.new" \
+            path=eval_$testset/$test_file.$src.final.new \
         Util::SetGlobal \
             language=$trg \
             selector=tst \
@@ -66,23 +66,23 @@ function translate_from_scratch {
             source_language=$src \
             source_selector=src \
         T2T::TrFAddVariants \
-            model_dir="data/models/transfer/$dataset/$train_date/$src-$trg/formeme" \
-            static_model="static.model.gz" \
-            discr_model="maxent.model.gz" \
+            model_dir=data/models/transfer/$dataset/$train_date/$src-$trg/formeme \
+            static_model=static.model.gz \
+            discr_model=maxent.model.gz \
         T2T::TrLAddVariants \
-            model_dir="data/models/transfer/$dataset/$train_date/$src-$trg/lemma" \
-            static_model="static.model.gz" \
-            discr_model="maxent.model.gz" \
+            model_dir=data/models/transfer/$dataset/$train_date/$src-$trg/lemma \
+            static_model=static.model.gz \
+            discr_model=maxent.model.gz \
         Write::Treex \
             storable=0 \
             compress=1 \
-            path="eval_$testset/$test_file.${src}2${trg}.cache" \
+            path=eval_$testset/$test_file.${src}2${trg}.cache \
         "$QTLEAP_ROOT/scen/$lang1-$lang2/${trg}_t2w.scen" \
         Misc::JoinBundles \
         Write::Treex \
             storable=0 \
             compress=1 \
-            path="eval_$testset/$test_file.${src}2${trg}.final.new" \
+            path=eval_$testset/$test_file.${src}2${trg}.final.new \
         Write::Sentences \
 	> eval_$testset/$test_file.${src}2${trg}.from_scratch.new.scen
 
@@ -203,12 +203,6 @@ function run_mteval {
     log "finished $doing"
 }
 
-function evaluate_all {
-    for testset in $(list_all_testsets | grep -vP "^_"); do
-        evaluate
-    done
-}
-
 function load_testset_config {
     local testset_config_file="$QTLEAP_ROOT/conf/testsets/$lang_pair/$testset.sh"
     if ! test -f "$testset_config_file"; then
@@ -242,6 +236,7 @@ function list_all_testsets {
 
 function create_new_snapshot_id {
     local params="action=create&user=$USER&host=$(hostname)"
+    params="$params&eval_date=$eval_date&testset=$testset"
     params="$params&lang1=$lang1&lang2=$lang2"
     params="$params&dataset=$dataset&train_date=$train_date"
 
@@ -249,6 +244,9 @@ function create_new_snapshot_id {
     if test -z "$curl"; then
         fatal "curl is not installed"
     fi
+    echo $curl --user "$download_http_user:$download_http_password" \
+                      --url "$download_http_base_url/snapshot.php?$params" \
+                      --silent --fail --show-error >&2
     local out=$($curl --user "$download_http_user:$download_http_password" \
                       --url "$download_http_base_url/snapshot.php?$params" \
                       --silent --fail --show-error)
@@ -260,10 +258,11 @@ function create_new_snapshot_id {
 }
 
 function save {
-    doing="saving snapshot $(show_vars QTLEAP_CONF snapshot_description)"
+    doing="saving snapshot of current $testset evaluation"
     log "$doing"
     snapshot_id=$(create_new_snapshot_id)
     create_dir "snapshots/$snapshot_id"
+    exit
     save_code_snapshot "snapshots/$snapshot_id"
     save_eval_snapshot "snapshots/$snapshot_id"
     upload_snapshot "snapshots/$snapshot_id"
@@ -271,18 +270,19 @@ function save {
 }
 
 function clean {
-    doing="removing previous translations"
+    doing="cleaning testset $testset"
     log "$doing"
-    local testset
-    for testset in $(list_all_testsets); do
-        if test -d eval_$testset; then
-            log "cleaning eval_$testset"
-            find eval_$testset -type f \( \
-                -name '*.treex.gz' \
-                -o -name '*.treexlog' \
-                -o -name '.finaltouch' \
-                -o -name 'list.txt' \) \
-                -print -delete
+    load_testset_config
+    for remote_path in $testset_files; do
+        local test_file=$(basename $remote_path .$lang1$lang2.gz)
+        if test -d eval_$testset/$test_file.${src}2${trg}.cache; then
+            rm -rvf eval_$testset/$test_file.${src}2${trg}.cache
+        fi
+        if test -d eval_$testset/$test_file.${src}2${trg}.final; then
+            rm -rvf eval_$testset/$test_file.${src}2${trg}.final
+        fi
+        if test -d eval_$testset/$test_file.${src}.final; then
+            rm -rvf eval_$testset/$test_file.${src}.final
         fi
     done
     log "finished $doing"

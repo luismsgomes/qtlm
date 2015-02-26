@@ -11,19 +11,20 @@
 ##?   train
 ##?         Trains the transfer models for the current configuration.
 ##?
-##?   evaluate <src> <trg> [testset]
+##?   evaluate <src> <trg> [testset]...
 ##?         Evaluates current pipeline using given testset or all configured
 ##?         testsets if a testset is not specified.
 ##?
-##?   clean
+##?   clean <src> <trg> [testset]...
 ##?         Cleans cache files from last evaluation. Use this if you changed
 ##?         the <src> languages analysis.
 ##?
-##?   save <description>
-##?         Saves a snapshot of the current evaluation. <description> should be
-##?         a brief description of what changed since last save. Requires that
-##?         all configured testsets have been evaluated (in both translation
-##?         directions).  Snapshots are uploaded to the share server.
+##?   save <testset> <description>
+##?         Saves a snapshot of the current evaluation of <testset>.
+##?         <description> should be a brief description of what changed since
+##?         last save. Note that <testset> must have been evaluated in both
+##?         translation directions before saving a snapshot.
+##?         Snapshots are uploaded to the share server.
 ##?
 ##?   list
 ##?         Lists all snapshots in reverse chronological order.
@@ -60,34 +61,40 @@ function main {
     shift
     # set apropriate variables for each command from command line arguments
     case $cmd in
-        train|clean|list|help|version)
+        train|list|help|version)
             if test $# -gt 0; then
                 fatal "command $cmd takes no arguments"
             fi
+            $cmd
         ;;
-        evaluate)
+        evaluate|clean)
             if test $# -lt 2; then
                 fatal "command $cmd requires at least two arguments: <src> <trg>"
             fi
             src="$1"
-            trg="$2"
+            shift
+            trg="$1"
+            shift
             check_src_trg
-            if test $# -eq 2; then
-                cmd=evaluate_all
-            elif test $# == 3; then
-                testset="$3"
-            elif test $# > 3; then
-                fatal "too many arguments given for command $cmd"
+            if test $# -eq 0; then
+                testsets=$(list_all_testsets | grep -vP "^_")
+            else
+                testsets=$@
             fi
+            for testset in $testsets; do
+                $cmd
+            done
         ;;
         save)
-            if test $# -eq 0; then
-                fatal "command $cmd requires one argument: <description>"
-            elif test $# == 1; then
-                snapshot_description="$1"
+            if test $# -ne 2; then
+                fatal "command $cmd requires two arguments: <testset> <description>"
             else
-                fatal "too many arguments given for command $cmd"
+                testset=$1
+                shift
+                snapshot_description=$1
+                shift
             fi
+            save
         ;;
         compare)
             if test $# -eq 0; then
@@ -112,7 +119,6 @@ function main {
         exit 1
         ;;
     esac
-    $cmd
 }
 
 function help {
