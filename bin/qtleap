@@ -26,8 +26,9 @@
 ##?         translation directions before saving a snapshot.
 ##?         Snapshots are uploaded to the share server.
 ##?
-##?   list
-##?         Lists all snapshots in reverse chronological order.
+##?   list (snapshots|scores)
+##?         Lists all snapshots in reverse chronological order or list BLEU
+##?         scores from evaluations in current directory.
 ##?
 ##?   compare [snapshot_id]
 ##?         Compare current evaluations with specified snapshot (or with
@@ -61,11 +62,23 @@ function main {
     shift
     # set apropriate variables for each command from command line arguments
     case $cmd in
-        train|list|help|version)
+        train|help|version)
             if test $# -gt 0; then
                 fatal "command $cmd takes no arguments"
             fi
             $cmd
+        ;;
+        list)
+            if test $# -ne 1; then
+                fatal "command $cmd requires one argument: (snapshots|scores)"
+            fi
+            if test "$1" == "snapshots"; then
+                list_snapshots
+            elif test "$1" == "scores"; then
+                list_scores
+            else
+                fatal "invalid argument for command $cmd: $1"
+            fi
         ;;
         evaluate|clean)
             if test $# -lt 2; then
