@@ -1,4 +1,4 @@
-package Treex::Tool::Parser::LXParser;
+package Treex::Tool::LXSuite::LXParser;
 use Moose;
 use Treex::Core::Log;
 
@@ -59,6 +59,7 @@ sub parse_sentence {
             $line = $self->read();
         }
     }
+
     return ( \@parents, \@deprels );
 }
 

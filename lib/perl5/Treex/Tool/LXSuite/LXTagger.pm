@@ -1,4 +1,4 @@
-package Treex::Tool::Tagger::LXTagger;
+package Treex::Tool::LXSuite::LXTagger;
 use Moose;
 use Treex::Core::Log;
 extends 'Treex::Tool::LXSuite::Client';
