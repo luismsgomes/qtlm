@@ -3,9 +3,9 @@ use Moose;
 use Treex::Core::Common;
 extends 'Treex::Block::W2A::BaseChunkParser';
 
-use Treex::Tool::Parser::LXParser;
+use Treex::Tool::LXSuite::LXParser;
 
-has _parser => ( isa => 'Treex::Tool::Parser::LXParser', is => 'ro',
+has _parser => ( isa => 'Treex::Tool::LXSuite::LXParser', is => 'ro',
     required => 1, builder => '_build_parser', lazy=>1 );
 
 has lxsuite_host => ( isa => 'Str', is => 'ro', required => 1);
@@ -21,7 +21,7 @@ sub BUILD {
 
 sub _build_parser {
     my $self = shift;
-    return Treex::Tool::Parser::LXParser->new({
+    return Treex::Tool::LXSuite::LXParser->new({
         lxsuite_key => $self->lxsuite_key,
         lxsuite_host => $self->lxsuite_host,
         lxsuite_port => $self->lxsuite_port,
@@ -41,6 +41,7 @@ sub parse_chunk {
 
     # parse sentence
     my ( $parents_rf, $deprel_rf ) = $self->_parser->parse_sentence( \@forms, \@lemmas, \@cpos, \@pos, \@feats );
+
 
     # build a-tree
     my @roots = ();
