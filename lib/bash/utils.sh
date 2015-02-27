@@ -56,9 +56,9 @@ function set_pedantic_bash_options {
 }
 
 function on_exit {
-    local rc=$?
-    if test $rc != 0; then
-        echo "command \"$BASH_COMMAND\" exited with code $rc" >&2
+    local rc=$? command=$BASH_COMMAND
+    if test $rc != 0 && test "${command:0:4}" != "exit"; then
+        echo "command \"$command\" exited with code $rc" >&2
     fi
 }
 
