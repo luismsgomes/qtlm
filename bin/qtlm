@@ -135,11 +135,11 @@ function main {
 }
 
 function help {
-    grep "^##?" "$QTLM_ROOT/bin/qtleap" | cut -c 5-
+    grep "^##?" "$QTLM_ROOT/bin/qtlm" | cut -c 5-
 }
 
 function version {
-    grep "^#?"  "$QTLM_ROOT/bin/qtleap" | cut -c 4-
+    grep "^#?"  "$QTLM_ROOT/bin/qtlm" | cut -c 4-
 }
 
 main "$@"
