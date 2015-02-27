@@ -1,4 +1,4 @@
-package Treex::Block::T2A::AddArticles;
+package Treex::Block::T2A::PT::AddArticles;
 use utf8;
 use Moose;
 use Treex::Core::Common;
