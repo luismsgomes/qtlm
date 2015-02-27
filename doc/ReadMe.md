@@ -34,8 +34,7 @@ Training transfer models (both translation directions are trained in parallel):
 The training process will create a directory named
 `train_${DATASET}_${LANG1}-${LANG2}_${TRAIN_DATE}`, which would be
 `train_ep_en-pt_2015-02-12` for the previous example. Several files and
-sub-directories within the current directory, so generally *you want to run
-this command on a newly created directory*.  For example, when training models
+sub-directories within that directory. For example, when training models
 for English-Portuguese, the following files and directories are created:
 
     .
