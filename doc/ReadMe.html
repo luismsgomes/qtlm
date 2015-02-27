@@ -13,7 +13,8 @@
 <nav id="TOC">
 <ul>
 <li><a href="#qtleap-manager">QTLeap Manager</a><ul>
-<li><a href="#usage-examples">Usage Examples</a><ul>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#usage">Usage</a><ul>
 <li><a href="#training">Training</a></li>
 <li><a href="#translation">Translation</a></li>
 <li><a href="#evaluation">Evaluation</a><ul>
@@ -52,15 +53,76 @@
 </ul>
 </nav>
 <h1 id="qtleap-manager"><a href="#TOC">QTLeap Manager</a></h1>
-<p>The purpose of <em>QTLeap Manager</em> is to make life easier for QTLeap developers working on TectoMT-based translation systems.</p>
+<p>The purpose of <code>qtlm</code> (QTLeap Manager) is to make life easier for QTLeap developers working on TectoMT-based translation systems.</p>
 <p>Comments and suggestions for improvement are welcome (<script type="text/javascript">
 <!--
 h='&#100;&#x69;&#46;&#102;&#x63;&#46;&#x75;&#108;&#46;&#112;&#116;';a='&#64;';n='&#108;&#x75;&#x69;&#x73;&#46;&#x67;&#x6f;&#x6d;&#x65;&#x73;';e=n+a+h;
 document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+'a'+'>');
 // -->
 </script><noscript>luis.gomes at di dot fc dot ul dot pt</noscript>).</p>
-<h2 id="usage-examples"><a href="#TOC">Usage Examples</a></h2>
-<p>For all the following commands the <code>$QTLM_CONF</code> variable must be defined in the environment. This variable should contain a string with three components separated by a forward slash (<code>/</code>):</p>
+<h2 id="installation"><a href="#TOC">Installation</a></h2>
+<p>Before starting, make sure that you have a working Treex installation. You can find instructions at the <a href="https://ufal.mff.cuni.cz/treex/">Treex web page</a>.</p>
+<p>The remainder of this installation guide assumes that you have checked-out the TectoMT repository into <code>~/code/tectomt</code>:</p>
+<pre><code>mkdir -p ~/code
+url=https://svn.ms.mff.cuni.cz/svn/tectomt_devel/trunk
+svn --username public co $url ~/code/tectomt</code></pre>
+<p>Pre-requisites/dependencies of <code>qtlm</code>:</p>
+<ol type="1">
+<li>Perl (&gt;= v5.14.2)</li>
+<li>Python (&gt;= 3.2.3)</li>
+<li>Bash (&gt;= 4.2)</li>
+<li>gawk (&gt;= 3.1.8)</li>
+<li>GIZA++ (&gt;= 1.0.7)</li>
+</ol>
+<p>Note: the BLEU scores reported for Pilot 1 by the EN-PT system are based on <code>tectomt</code> revision 14386, so if you are trying to reproduce the exact same setup you should update the repository to that revision.</p>
+<p>Extract the <em>QTLeap Manager</em> archive <code>qtlm_rev274.tgz</code> into <code>~/code/qtlm</code>:</p>
+<pre><code>mkdir -p ~/code
+tar xzf qtlm_rev273.tgz -C ~/code</code></pre>
+<p>Add the following ling to your <code>~/.bashrc</code>:</p>
+<pre><code>source ~/code/qtlm/conf/env/default.sh</code></pre>
+<p>And, run the previous command on your active terminal as well, before proceeding.</p>
+<h2 id="usage"><a href="#TOC">Usage</a></h2>
+<p>If you type <code>qtlm help</code> on your terminal you shoud get the following usage summary:</p>
+<pre><code>Usage: qtlm &lt;command&gt; &lt;args&gt;...
+
+List of commands:
+
+  train
+        Trains the transfer models for the current configuration.
+
+  evaluate &lt;src&gt; &lt;trg&gt; [testset]...
+        Evaluates current pipeline using given testset or all configured
+        testsets if a testset is not specified.
+
+  clean &lt;src&gt; &lt;trg&gt; [testset]...
+        Cleans cache files from last evaluation. Use this if you changed
+        the &lt;src&gt; languages analysis.
+
+  save &lt;testset&gt; &lt;description&gt;
+        Saves a snapshot of the current evaluation of &lt;testset&gt;.
+        &lt;description&gt; should be a brief description of what changed since
+        last save. Note that &lt;testset&gt; must have been evaluated in both
+        translation directions before saving a snapshot.
+        Snapshots are uploaded to the share server.
+
+  list (snapshots|scores)
+        Lists all snapshots in reverse chronological order or list BLEU
+        scores from evaluations in current directory.
+
+  compare [snapshot_id]
+        Compare current evaluations with specified snapshot (or with
+        latest snapshot if snapshot_id is not given).
+
+  translate &lt;src&gt; &lt;trg&gt;
+        Translates text from STDIN (expects one sentence per line) and
+        writes translations to STDOUT.
+
+  help
+        Shows this help.
+
+  version
+        Shows qtleap script version.</code></pre>
+<p>Most of these commands require an environment variable <code>$QTLM_CONF</code> to be set. This variable should contain a string with three components separated by a forward slash (<code>/</code>):</p>
 <ol type="1">
 <li>the language pair (in the form of <code>L1-L2</code>);</li>
 <li>the training dataset name;</li>

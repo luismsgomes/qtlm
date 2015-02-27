@@ -1,18 +1,98 @@
 QTLeap Manager
 ==============
 
-The purpose of QTLeap Manager is to make life easier for QTLeap
+The purpose of qtlm (QTLeap Manager) is to make life easier for QTLeap
 developers working on TectoMT-based translation systems.
 
 Comments and suggestions for improvement are welcome
 (luis.gomes@di.fc.ul.pt).
 
-Usage Examples
---------------
+Installation
+------------
 
-For all the following commands the $QTLM_CONF variable must be defined
-in the environment. This variable should contain a string with three
-components separated by a forward slash (/):
+Before starting, make sure that you have a working Treex installation.
+You can find instructions at the Treex web page.
+
+The remainder of this installation guide assumes that you have
+checked-out the TectoMT repository into ~/code/tectomt:
+
+    mkdir -p ~/code
+    url=https://svn.ms.mff.cuni.cz/svn/tectomt_devel/trunk
+    svn --username public co $url ~/code/tectomt
+
+Pre-requisites/dependencies of qtlm:
+
+1.  Perl (>= v5.14.2)
+2.  Python (>= 3.2.3)
+3.  Bash (>= 4.2)
+4.  gawk (>= 3.1.8)
+5.  GIZA++ (>= 1.0.7)
+
+Note: the BLEU scores reported for Pilot 1 by the EN-PT system are based
+on tectomt revision 14386, so if you are trying to reproduce the exact
+same setup you should update the repository to that revision.
+
+Extract the QTLeap Manager archive qtlm_rev274.tgz into ~/code/qtlm:
+
+    mkdir -p ~/code
+    tar xzf qtlm_rev273.tgz -C ~/code
+
+Add the following ling to your ~/.bashrc:
+
+    source ~/code/qtlm/conf/env/default.sh
+
+And, run the previous command on your active terminal as well, before
+proceeding.
+
+Usage
+-----
+
+If you type qtlm help on your terminal you shoud get the following usage
+summary:
+
+    Usage: qtlm <command> <args>...
+
+    List of commands:
+
+      train
+            Trains the transfer models for the current configuration.
+
+      evaluate <src> <trg> [testset]...
+            Evaluates current pipeline using given testset or all configured
+            testsets if a testset is not specified.
+
+      clean <src> <trg> [testset]...
+            Cleans cache files from last evaluation. Use this if you changed
+            the <src> languages analysis.
+
+      save <testset> <description>
+            Saves a snapshot of the current evaluation of <testset>.
+            <description> should be a brief description of what changed since
+            last save. Note that <testset> must have been evaluated in both
+            translation directions before saving a snapshot.
+            Snapshots are uploaded to the share server.
+
+      list (snapshots|scores)
+            Lists all snapshots in reverse chronological order or list BLEU
+            scores from evaluations in current directory.
+
+      compare [snapshot_id]
+            Compare current evaluations with specified snapshot (or with
+            latest snapshot if snapshot_id is not given).
+
+      translate <src> <trg>
+            Translates text from STDIN (expects one sentence per line) and
+            writes translations to STDOUT.
+
+      help
+            Shows this help.
+
+      version
+            Shows qtleap script version.
+
+Most of these commands require an environment variable $QTLM_CONF to be
+set. This variable should contain a string with three components
+separated by a forward slash (/):
 
 1.  the language pair (in the form of L1-L2);
 2.  the training dataset name;
