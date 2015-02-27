@@ -234,6 +234,18 @@ function list_all_testsets {
     fi
 }
 
+function list_scores {
+    local file_regex='^\.\/[^\/]*\/([^:]*)\.bleu:'
+    local nist_regex='NIST score = ([0-9]*.[0-9]*)'
+    local bleu_regex='BLEU score = ([0-9]*.[0-9]*)'
+    local system_regex='for system "(.*)"$'
+    find . -maxdepth 2 -name '*.bleu' |
+    xargs --no-run-if-empty grep --with-filename 'BLEU score' |
+    perl -pe "s/$file_regex\s*$nist_regex\s*$bleu_regex\s*$system_regex/\1\t\2\t\3\t\4/g" |
+    cat <(echo -e "TESTSET\tNIST\tBLEU\tSYSTEM") - |
+    column -t
+}
+
 function create_new_snapshot_id {
     local params="action=create&user=$USER&host=$(hostname)"
     params="$params&eval_date=$eval_date&testset=$testset"
