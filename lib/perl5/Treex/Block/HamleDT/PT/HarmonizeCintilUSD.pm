@@ -54,7 +54,11 @@ sub process_zone
     {
         # Save Interset features to the "tag" attribute,
         # so we can see them in TrEd (tooltip shows also the categories).
+
+        
+
         $node->set_tag(join ' ', $node->get_iset_values());
+
         # "em_" -> "em" etc.
         $self->fix_form($node);
         # Lowercase lemmas etc.
