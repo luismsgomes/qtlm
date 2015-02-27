@@ -3,14 +3,13 @@
 The purpose of these scripts is to make life easier for developers working on
 QTLeap.
 
-Comments and suggestions for improvement are very welcome
-(<luis.gomes@di.fc.ul.pt>).
+Comments and suggestions for improvement are welcome (<luis.gomes@di.fc.ul.pt>).
 
 ## Usage Examples
 
 For all the following commands the `$QTLEAP_CONF` variable must be defined in
- the environment. This value in this variable has three components separated
- by a forward slash (`/`):
+ the environment. This variable should contain a string with three components
+ separated by a forward slash (`/`):
 
   1. the language pair (in the form of `L1-L2`);
   2. the training dataset name;
@@ -32,40 +31,42 @@ Training transfer models (both translation directions are trained in parallel):
 
     qtleap train
 
-The training process will create several files and sub-directories within the
-current directory, so generally *you want to run this command on a newly
-created directory*.  For example, when training models for English-Portuguese,
-the following files and directories are created:
+The training process will create a directory named
+`train_${DATASET}_${LANG1}-${LANG2}_${TRAIN_DATE}`, which would be
+`train_ep_en-pt_2015-02-12` for the previous example. Several files and
+sub-directories within the current directory, so generally *you want to run
+this command on a newly created directory*.  For example, when training models
+for English-Portuguese, the following files and directories are created:
 
     .
-    ├── [*] about.txt    # contains versioning information and $QTLEAP_CONF
-    ├── [*] qtleap.stat  # output of "hg stat" on $QTLEAP_ROOT repository
-    ├── [*] qtleap.diff  # unified diff of the $QTLEAP_ROOT repository
-    ├── [*] tectomt.stat # output of "svn stat" on the $TMT_ROOT repository
-    ├── [*] tectomt.diff # unified diff of the $TMT_ROOT repository
-    ├── dataset_files/   # downloaded from central share server
-    ├── corpus/          # plain text split into chunks of 200 sentences
-    ├── lemmas.gz        # GIZA input files
-    ├── giza/            # GIZA itermediate files
-    ├── alignments.gz    # GIZA final alignments
-    ├── en2pt/           # models for EN to PT transfer
-    │   ├── formemes/
-    │   │   ├── [*] maxent.model.gz
-    │   │   └── [*] static.model.gz
-    │   ├── lemmas/
-    │   │   ├── [*] maxent.model.gz
-    │   │   └── [*] static.model.gz
-    │   └── vectors/     # input for machine learning
-    ├── pt2en/           # models for PT to EN transfer
-    │   ├── formemes/
-    │   │   ├── [*] maxent.model.gz
-    │   │   └── [*] static.model.gz
-    │   ├── lemmas/
-    │   │   ├── [*] maxent.model.gz
-    │   │   └── [*] static.model.gz
-    │   └── vectors/     # input for machine learning
-    ├── atrees/          # analytical-level trees
-    └── ttrees/          # tectogrammatical-level trees
+    |-- [*] about.txt    # contains versioning information and $QTLEAP_CONF
+    |-- [*] qtleap.stat  # output of "hg stat" on $QTLEAP_ROOT repository
+    |-- [*] qtleap.diff  # unified diff of the $QTLEAP_ROOT repository
+    |-- [*] tectomt.stat # output of "svn stat" on the $TMT_ROOT repository
+    |-- [*] tectomt.diff # unified diff of the $TMT_ROOT repository
+    |-- dataset_files/   # downloaded from central share server
+    |-- corpus/          # plain text split into chunks of 200 sentences
+    |-- lemmas.gz        # GIZA input files
+    |-- giza/            # GIZA itermediate files
+    |-- alignments.gz    # GIZA final alignments
+    |-- en2pt/           # models for EN to PT transfer
+    |   |-- formemes/
+    |   |   |-- [*] maxent.model.gz
+    |   |   `-- [*] static.model.gz
+    |   |-- lemmas/
+    |   |   |-- [*] maxent.model.gz
+    |   |   `-- [*] static.model.gz
+    |   `-- vectors/     # input for machine learning
+    |-- pt2en/           # models for PT to EN transfer
+    |   |-- formemes/
+    |   |   |-- [*] maxent.model.gz
+    |   |   `-- [*] static.model.gz
+    |   |-- lemmas/
+    |   |   |-- [*] maxent.model.gz
+    |   |   `-- [*] static.model.gz
+    |   `-- vectors/     # input for machine learning
+    |-- atrees/          # analytical-level trees
+    `-- ttrees/          # tectogrammatical-level trees
 
 Here's the contents of `about.txt`:
 
@@ -112,17 +113,17 @@ A new directory `eval_qtleap_2a` will be created in the current directory with
 the following structure:
 
     .
-    └── eval_qtleap_2a
-        ├── about.txt               # contains versioning information
-        ├── qtleap_2a.en2pt.bleu    # output of `mteval-v13a.pl`
-        ├── qtleap_2a.en2pt.cache.treex.gz # trees before synthesis stage
-        ├── qtleap_2a.en2pt.final.treex.gz # final trees
-        ├── qtleap_2a.en2pt.html    # original, reference and MT side by side
-        ├── qtleap_2a.en2pt.ngrams  #
-        ├── qtleap_2a.en2pt.resume  # output of Print::TranslationResume
-        ├── qtleap_2a.en.txt        # original English text
-        ├── qtleap_2a.pt_mt.txt     # machine translated (English to Portuguese)
-        └── qtleap_2a.pt.txt        # original Portuguese text
+    `-- eval_qtleap_2a
+        |-- about.txt               # contains versioning information
+        |-- qtleap_2a.en2pt.bleu    # output of `mteval-v13a.pl`
+        |-- qtleap_2a.en2pt.cache.treex.gz # trees before synthesis stage
+        |-- qtleap_2a.en2pt.final.treex.gz # final trees
+        |-- qtleap_2a.en2pt.html    # original, reference and MT side by side
+        |-- qtleap_2a.en2pt.ngrams  #
+        |-- qtleap_2a.en2pt.resume  # output of Print::TranslationResume
+        |-- qtleap_2a.en.txt        # original English text
+        |-- qtleap_2a.pt_mt.txt     # machine translated (English to Portuguese)
+        `-- qtleap_2a.pt.txt        # original Portuguese text
 
 If you then evaluate on the other direction (Portuguese to English):
 
@@ -131,15 +132,15 @@ If you then evaluate on the other direction (Portuguese to English):
 The following files will be added to the directory:
 
     .
-    └── eval_qtleap_2a
+    `-- eval_qtleap_2a
         ...
-        ├── qtleap_2a.en_mt.txt     # machine translated (Portuguese to English)
-        ├── qtleap_2a.pt2en.bleu    # output of `mteval-v13a.pl`
-        ├── qtleap_2a.pt2en.cache.treex.gz # trees before synthesis stage
-        ├── qtleap_2a.pt2en.final.treex.gz # final trees
-        ├── qtleap_2a.pt2en.html    # original, reference and MT side by side
-        ├── qtleap_2a.pt2en.ngrams  #
-        └── qtleap_2a.pt2en.resume  # output of Print::TranslationResume
+        |-- qtleap_2a.en_mt.txt     # machine translated (Portuguese to English)
+        |-- qtleap_2a.pt2en.bleu    # output of `mteval-v13a.pl`
+        |-- qtleap_2a.pt2en.cache.treex.gz # trees before synthesis stage
+        |-- qtleap_2a.pt2en.final.treex.gz # final trees
+        |-- qtleap_2a.pt2en.html    # original, reference and MT side by side
+        |-- qtleap_2a.pt2en.ngrams  #
+        `-- qtleap_2a.pt2en.resume  # output of Print::TranslationResume
 
 To evaluate the current pipeline on all evaluation sets listed in
 `$QTLEAP_ROOT/conf/testsets/en-pt` just omit the evalset name:
@@ -385,7 +386,7 @@ If you wonder why we don't simply use `$QTLEAP_ROOT/conf/treex/$USER.yaml`, it
 is because Treex expects its configuration file to be named exactly
  `config.yaml`.
 
-Here's my Treex configuration (`$QTLEAP_ROOT/conf/treex/luis/config.yaml`) for
+Here's a Treex configuration (`$QTLEAP_ROOT/conf/treex/luis/config.yaml`) for
 guidance:
 
     ---

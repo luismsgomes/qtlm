@@ -10,3 +10,6 @@ pandoc --from markdown --to plain \
     --smart --toc \
     --output doc/ReadMe.txt < doc/ReadMe.md
 
+pandoc --from markdown --to latex \
+    --smart --standalone \
+    --output doc/ReadMe.tex < doc/ReadMe.md

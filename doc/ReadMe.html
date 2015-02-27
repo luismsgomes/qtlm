@@ -53,14 +53,14 @@
 </nav>
 <h1 id="easier-qtleap"><a href="#TOC">Easier QTLeap</a></h1>
 <p>The purpose of these scripts is to make life easier for developers working on QTLeap.</p>
-<p>Comments and suggestions for improvement are very welcome (<script type="text/javascript">
+<p>Comments and suggestions for improvement are welcome (<script type="text/javascript">
 <!--
 h='&#100;&#x69;&#46;&#102;&#x63;&#46;&#x75;&#108;&#46;&#112;&#116;';a='&#64;';n='&#108;&#x75;&#x69;&#x73;&#46;&#x67;&#x6f;&#x6d;&#x65;&#x73;';e=n+a+h;
 document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+'a'+'>');
 // -->
 </script><noscript>luis.gomes at di dot fc dot ul dot pt</noscript>).</p>
 <h2 id="usage-examples"><a href="#TOC">Usage Examples</a></h2>
-<p>For all the following commands the <code>$QTLEAP_CONF</code> variable must be defined in the environment. This value in this variable has three components separated by a forward slash (<code>/</code>):</p>
+<p>For all the following commands the <code>$QTLEAP_CONF</code> variable must be defined in the environment. This variable should contain a string with three components separated by a forward slash (<code>/</code>):</p>
 <ol type="1">
 <li>the language pair (in the form of <code>L1-L2</code>);</li>
 <li>the training dataset name;</li>
@@ -71,36 +71,36 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+
 <h3 id="training"><a href="#TOC">Training</a></h3>
 <p>Training transfer models (both translation directions are trained in parallel):</p>
 <pre><code>qtleap train</code></pre>
-<p>The training process will create several files and sub-directories within the current directory, so generally <em>you want to run this command on a newly created directory</em>. For example, when training models for English-Portuguese, the following files and directories are created:</p>
+<p>The training process will create a directory named <code>train_${DATASET}_${LANG1}-${LANG2}_${TRAIN_DATE}</code>, which would be <code>train_ep_en-pt_2015-02-12</code> for the previous example. Several files and sub-directories within the current directory, so generally <em>you want to run this command on a newly created directory</em>. For example, when training models for English-Portuguese, the following files and directories are created:</p>
 <pre><code>.
-├── [*] about.txt    # contains versioning information and $QTLEAP_CONF
-├── [*] qtleap.stat  # output of &quot;hg stat&quot; on $QTLEAP_ROOT repository
-├── [*] qtleap.diff  # unified diff of the $QTLEAP_ROOT repository
-├── [*] tectomt.stat # output of &quot;svn stat&quot; on the $TMT_ROOT repository
-├── [*] tectomt.diff # unified diff of the $TMT_ROOT repository
-├── dataset_files/   # downloaded from central share server
-├── corpus/          # plain text split into chunks of 200 sentences
-├── lemmas.gz        # GIZA input files
-├── giza/            # GIZA itermediate files
-├── alignments.gz    # GIZA final alignments
-├── en2pt/           # models for EN to PT transfer
-│   ├── formemes/
-│   │   ├── [*] maxent.model.gz
-│   │   └── [*] static.model.gz
-│   ├── lemmas/
-│   │   ├── [*] maxent.model.gz
-│   │   └── [*] static.model.gz
-│   └── vectors/     # input for machine learning
-├── pt2en/           # models for PT to EN transfer
-│   ├── formemes/
-│   │   ├── [*] maxent.model.gz
-│   │   └── [*] static.model.gz
-│   ├── lemmas/
-│   │   ├── [*] maxent.model.gz
-│   │   └── [*] static.model.gz
-│   └── vectors/     # input for machine learning
-├── atrees/          # analytical-level trees
-└── ttrees/          # tectogrammatical-level trees</code></pre>
+|-- [*] about.txt    # contains versioning information and $QTLEAP_CONF
+|-- [*] qtleap.stat  # output of &quot;hg stat&quot; on $QTLEAP_ROOT repository
+|-- [*] qtleap.diff  # unified diff of the $QTLEAP_ROOT repository
+|-- [*] tectomt.stat # output of &quot;svn stat&quot; on the $TMT_ROOT repository
+|-- [*] tectomt.diff # unified diff of the $TMT_ROOT repository
+|-- dataset_files/   # downloaded from central share server
+|-- corpus/          # plain text split into chunks of 200 sentences
+|-- lemmas.gz        # GIZA input files
+|-- giza/            # GIZA itermediate files
+|-- alignments.gz    # GIZA final alignments
+|-- en2pt/           # models for EN to PT transfer
+|   |-- formemes/
+|   |   |-- [*] maxent.model.gz
+|   |   `-- [*] static.model.gz
+|   |-- lemmas/
+|   |   |-- [*] maxent.model.gz
+|   |   `-- [*] static.model.gz
+|   `-- vectors/     # input for machine learning
+|-- pt2en/           # models for PT to EN transfer
+|   |-- formemes/
+|   |   |-- [*] maxent.model.gz
+|   |   `-- [*] static.model.gz
+|   |-- lemmas/
+|   |   |-- [*] maxent.model.gz
+|   |   `-- [*] static.model.gz
+|   `-- vectors/     # input for machine learning
+|-- atrees/          # analytical-level trees
+`-- ttrees/          # tectogrammatical-level trees</code></pre>
 <p>Here’s the contents of <code>about.txt</code>:</p>
 <pre><code>QTLEAP_CONF=en-pt/ep/2015-02-12
 QTLEAP_ROOT_REV=139:f0dc245ff992
@@ -119,30 +119,30 @@ LXSUITE_REV=143:e55fc226cb4d</code></pre>
 <p>For this command to succeed the file <code>$QTLEAP_ROOT/conf/testsets/en-pt/qtleap_2a.sh</code> must exist and define a variable named <code>testset_files</code> as described below in <a href="#testset-configuration">Testset Configuration</a> section.</p>
 <p>A new directory <code>eval_qtleap_2a</code> will be created in the current directory with the following structure:</p>
 <pre><code>.
-└── eval_qtleap_2a
-    ├── about.txt               # contains versioning information
-    ├── qtleap_2a.en2pt.bleu    # output of `mteval-v13a.pl`
-    ├── qtleap_2a.en2pt.cache.treex.gz # trees before synthesis stage
-    ├── qtleap_2a.en2pt.final.treex.gz # final trees
-    ├── qtleap_2a.en2pt.html    # original, reference and MT side by side
-    ├── qtleap_2a.en2pt.ngrams  #
-    ├── qtleap_2a.en2pt.resume  # output of Print::TranslationResume
-    ├── qtleap_2a.en.txt        # original English text
-    ├── qtleap_2a.pt_mt.txt     # machine translated (English to Portuguese)
-    └── qtleap_2a.pt.txt        # original Portuguese text</code></pre>
+`-- eval_qtleap_2a
+    |-- about.txt               # contains versioning information
+    |-- qtleap_2a.en2pt.bleu    # output of `mteval-v13a.pl`
+    |-- qtleap_2a.en2pt.cache.treex.gz # trees before synthesis stage
+    |-- qtleap_2a.en2pt.final.treex.gz # final trees
+    |-- qtleap_2a.en2pt.html    # original, reference and MT side by side
+    |-- qtleap_2a.en2pt.ngrams  #
+    |-- qtleap_2a.en2pt.resume  # output of Print::TranslationResume
+    |-- qtleap_2a.en.txt        # original English text
+    |-- qtleap_2a.pt_mt.txt     # machine translated (English to Portuguese)
+    `-- qtleap_2a.pt.txt        # original Portuguese text</code></pre>
 <p>If you then evaluate on the other direction (Portuguese to English):</p>
 <pre><code>qtleap evaluate pt en qtleap_2a</code></pre>
 <p>The following files will be added to the directory:</p>
 <pre><code>.
-└── eval_qtleap_2a
+`-- eval_qtleap_2a
     ...
-    ├── qtleap_2a.en_mt.txt     # machine translated (Portuguese to English)
-    ├── qtleap_2a.pt2en.bleu    # output of `mteval-v13a.pl`
-    ├── qtleap_2a.pt2en.cache.treex.gz # trees before synthesis stage
-    ├── qtleap_2a.pt2en.final.treex.gz # final trees
-    ├── qtleap_2a.pt2en.html    # original, reference and MT side by side
-    ├── qtleap_2a.pt2en.ngrams  #
-    └── qtleap_2a.pt2en.resume  # output of Print::TranslationResume</code></pre>
+    |-- qtleap_2a.en_mt.txt     # machine translated (Portuguese to English)
+    |-- qtleap_2a.pt2en.bleu    # output of `mteval-v13a.pl`
+    |-- qtleap_2a.pt2en.cache.treex.gz # trees before synthesis stage
+    |-- qtleap_2a.pt2en.final.treex.gz # final trees
+    |-- qtleap_2a.pt2en.html    # original, reference and MT side by side
+    |-- qtleap_2a.pt2en.ngrams  #
+    `-- qtleap_2a.pt2en.resume  # output of Print::TranslationResume</code></pre>
 <p>To evaluate the current pipeline on all evaluation sets listed in <code>$QTLEAP_ROOT/conf/testsets/en-pt</code> just omit the evalset name:</p>
 <pre><code>qtleap evaluate en pt</code></pre>
 <h4 id="cleaning-cached-intermediate-trees"><a href="#TOC">Cleaning cached intermediate trees</a></h4>
@@ -244,7 +244,7 @@ formeme_maxent_train_opts=&quot;$maxent_train_opts&quot;</code></pre>
 <p>Example: <code>testset_files=&quot;corpora/qtleap/qtleap_1a.gz&quot;</code></p>
 <h3 id="treex-configuration"><a href="#TOC">Treex Configuration</a></h3>
 <p>Treex configuration for each user is kept in <code>$QTLEAP_ROOT/conf/treex/$USER/config.yaml</code>. If you wonder why we don’t simply use <code>$QTLEAP_ROOT/conf/treex/$USER.yaml</code>, it is because Treex expects its configuration file to be named exactly <code>config.yaml</code>.</p>
-<p>Here’s my Treex configuration (<code>$QTLEAP_ROOT/conf/treex/luis/config.yaml</code>) for guidance:</p>
+<p>Here’s a Treex configuration (<code>$QTLEAP_ROOT/conf/treex/luis/config.yaml</code>) for guidance:</p>
 <pre><code>---
 resource_path:
   - /home/luis/code/tectomt/share
