@@ -1,7 +1,7 @@
 
 function load_config {
-    check_required_variables QTLEAP_CONF QTLEAP_ROOT
-    lang_pair=${QTLEAP_CONF%/*/*}
+    check_required_variables QTLM_CONF QTLM_ROOT
+    lang_pair=${QTLM_CONF%/*/*}
     lang1=${lang_pair%-*}
     lang2=${lang_pair#*-}
     if [[ "$lang1" > "$lang2" ]]; then
@@ -10,21 +10,21 @@ function load_config {
     if test "$lang1" == "$lang2"; then
         fatal "<lang1> and <lang2> must be different"
     fi
-    local dataset_and_train_date=${QTLEAP_CONF#*-*/} # dataset/train_date
+    local dataset_and_train_date=${QTLM_CONF#*-*/} # dataset/train_date
     dataset=${dataset_and_train_date%/*}
     train_date=${dataset_and_train_date#*/}
 
     # Sharing configuration
-    source $QTLEAP_ROOT/conf/sharing.sh
+    source $QTLM_ROOT/conf/sharing.sh
     if ! check_required_variables download_http_{base_url,user,password} \
             upload_ssh_{user,host,port,path}; then
-        fatal "please fix $QTLEAP_ROOT/conf/sharing.sh"
+        fatal "please fix $QTLM_ROOT/conf/sharing.sh"
     fi
 
-    local host_config_file=$QTLEAP_ROOT/conf/hosts/$(hostname).sh
+    local host_config_file=$QTLM_ROOT/conf/hosts/$(hostname).sh
     # Host configuration
     if ! test -f $host_config_file; then
-        host_config_file=$QTLEAP_ROOT/conf/hosts/default.sh
+        host_config_file=$QTLM_ROOT/conf/hosts/default.sh
     fi
     source $host_config_file
     if ! check_required_variables num_procs sort_mem big_machine giza_dir; then
@@ -32,7 +32,7 @@ function load_config {
     fi
 
     # Dataset configuration
-    local dataset_config_file=$QTLEAP_ROOT/conf/datasets/$lang1-$lang2/$dataset.sh
+    local dataset_config_file=$QTLM_ROOT/conf/datasets/$lang1-$lang2/$dataset.sh
     if ! test -f $dataset_config_file; then
         fatal "$dataset_config_file does not exist"
     fi
@@ -52,7 +52,7 @@ function load_config {
     # let's check if all scenarios exist
     local scen lang
     for lang in $lang1 $lang2; do
-        for scen in $QTLEAP_ROOT/scen/$lang1-$lang2/${lang}_{w2a,a2t,t2w}.scen; do
+        for scen in $QTLM_ROOT/scen/$lang1-$lang2/${lang}_{w2a,a2t,t2w}.scen; do
             if ! test -f "$scen"; then
                 fatal "missing scenario $scen"
             fi
@@ -80,9 +80,9 @@ function save_code_snapshot {
     if ! test "${dest_dir:0:1}" == "/"; then
         dest_dir="$PWD/$dest_dir"
     fi
-    local doing="saving '$QTLEAP_ROOT' snapshot to '$dest_dir'"
+    local doing="saving '$QTLM_ROOT' snapshot to '$dest_dir'"
     log "$doing"
-    pushd $QTLEAP_ROOT > /dev/null
+    pushd $QTLM_ROOT > /dev/null
     hg log -r . > "$dest_dir/qtleap.info"
     hg stat     > "$dest_dir/qtleap.stat"
     hg diff     > "$dest_dir/qtleap.diff"
@@ -116,8 +116,8 @@ function download_from_share {
 }
 
 function postprocessing {
-    if test -f $QTLEAP_ROOT/tools/postprocessing_$trg.py; then
-        stdbuf -i0 -o0 $QTLEAP_ROOT/tools/postprocessing_$trg.py
+    if test -f $QTLM_ROOT/tools/postprocessing_$trg.py; then
+        stdbuf -i0 -o0 $QTLM_ROOT/tools/postprocessing_$trg.py
     else
         cat
     fi

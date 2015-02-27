@@ -15,7 +15,7 @@ function evaluate {
         if ! test -f eval_$testset/$test_file.$lang1.txt ||
                 ! test -f eval_$testset/$test_file.$lang2.txt; then
             zcat $local_path |
-            $QTLEAP_ROOT/tools/prune_unaligned_sentpairs.py |
+            $QTLM_ROOT/tools/prune_unaligned_sentpairs.py |
             tee >(cut -f 1 > eval_$testset/$test_file.$lang1.txt) |
                   cut -f 2 > eval_$testset/$test_file.$lang2.txt
         fi
@@ -52,8 +52,8 @@ function translate_from_scratch {
             skip_empty=1 \
             lines_per_doc=1 \
         W2A::ResegmentSentences \
-        "$QTLEAP_ROOT/scen/$lang1-$lang2/${src}_w2a.scen" \
-        "$QTLEAP_ROOT/scen/$lang1-$lang2/${src}_a2t.scen" \
+        "$QTLM_ROOT/scen/$lang1-$lang2/${src}_w2a.scen" \
+        "$QTLM_ROOT/scen/$lang1-$lang2/${src}_a2t.scen" \
         Write::Treex \
             storable=0 \
             compress=1 \
@@ -77,7 +77,7 @@ function translate_from_scratch {
             storable=0 \
             compress=1 \
             path=eval_$testset/$test_file.${src}2${trg}.cache \
-        "$QTLEAP_ROOT/scen/$lang1-$lang2/${trg}_t2w.scen" \
+        "$QTLM_ROOT/scen/$lang1-$lang2/${trg}_t2w.scen" \
         Misc::JoinBundles \
         Write::Treex \
             storable=0 \
@@ -117,7 +117,7 @@ function translate_from_cache {
             if_missing_bundles=ignore \
             language=$trg \
             selector=tst \
-        "$QTLEAP_ROOT/scen/$lang1-$lang2/${trg}_t2w.scen" \
+        "$QTLM_ROOT/scen/$lang1-$lang2/${trg}_t2w.scen" \
         Misc::JoinBundles \
         Write::Treex \
             storable=0 \
@@ -158,7 +158,7 @@ function create_html_table {
     # now let's create an HTML table showing the source, reference and machine
     #  translated sentences being evaluated
     paste eval_$testset/$test_file.{$src,$trg,${trg}_mt}.txt |
-    $QTLEAP_ROOT/tools/tsv_to_html.py \
+    $QTLM_ROOT/tools/tsv_to_html.py \
         "${testset} testset (${src^^}-${trg^^}) side by side with ${trg^^}/MT output ($dataset/$train_date)" \
         "$test_file.${src}2${trg}.final/{id1:03}.treex.gz" \
         > eval_$testset/$test_file.${src}2${trg}.$src-$trg-mt_$trg.new.html
@@ -167,7 +167,7 @@ function create_html_table {
 
 function create_ngram_summary {
     local testset=$1 test_file=$2
-    $QTLEAP_ROOT/tools/comparegrams.py eval_$testset/$test_file.{$trg,${trg}_mt}.txt \
+    $QTLM_ROOT/tools/comparegrams.py eval_$testset/$test_file.{$trg,${trg}_mt}.txt \
         > eval_$testset/$test_file.${src}2${trg}.new.ngrams
     rotate_new_old eval_$testset/$test_file.${src}2${trg} ngrams
 }
@@ -185,15 +185,15 @@ function run_mteval {
         \"srclang\":\"$src\",\
         \"trglang\":\"$trg\",\
         \"setid\":\"$testset\",\
-        \"sysid\":\"qtleap:$QTLEAP_CONF\",\
+        \"sysid\":\"qtleap:$QTLM_CONF\",\
         \"refid\":\"human\"}"
-    $QTLEAP_ROOT/tools/txt_to_mteval_xml.py src "$json" "(.*)\.$src\.txt" \
+    $QTLM_ROOT/tools/txt_to_mteval_xml.py src "$json" "(.*)\.$src\.txt" \
         eval_$testset/$test_file.$src.txt > eval_$testset/$test_file.${src}2${trg}.src.xml
-    $QTLEAP_ROOT/tools/txt_to_mteval_xml.py ref "$json" "(.*)\.$trg\.txt" \
+    $QTLM_ROOT/tools/txt_to_mteval_xml.py ref "$json" "(.*)\.$trg\.txt" \
         eval_$testset/$test_file.$trg.txt > eval_$testset/$test_file.${src}2${trg}.ref.xml
-    $QTLEAP_ROOT/tools/txt_to_mteval_xml.py tst "$json" "(.*)\.${trg}_mt\.txt" \
+    $QTLM_ROOT/tools/txt_to_mteval_xml.py tst "$json" "(.*)\.${trg}_mt\.txt" \
         eval_$testset/$test_file.${trg}_mt.txt > eval_$testset/$test_file.${src}2${trg}.tst.xml
-    $QTLEAP_ROOT/tools/mteval-v13a.pl \
+    $QTLM_ROOT/tools/mteval-v13a.pl \
             -s eval_$testset/$test_file.${src}2${trg}.src.xml \
             -r eval_$testset/$test_file.${src}2${trg}.ref.xml \
             -t eval_$testset/$test_file.${src}2${trg}.tst.xml \
@@ -204,7 +204,7 @@ function run_mteval {
 }
 
 function load_testset_config {
-    local testset_config_file="$QTLEAP_ROOT/conf/testsets/$lang_pair/$testset.sh"
+    local testset_config_file="$QTLM_ROOT/conf/testsets/$lang_pair/$testset.sh"
     if ! test -f "$testset_config_file"; then
         fatal "testset configuration file \"$testset_config_file\" does not exist"
     fi
@@ -226,7 +226,7 @@ function load_testset_config {
 }
 
 function list_all_testsets {
-    local dir="$QTLEAP_ROOT/conf/testsets/$lang_pair"
+    local dir="$QTLM_ROOT/conf/testsets/$lang_pair"
     if test -d "$dir"; then
         ls "$dir" | sed "s/\\.sh$//"
     else

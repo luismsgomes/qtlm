@@ -1,13 +1,13 @@
-# Easier QTLeap
+# QTLeap Manager
 
-The purpose of these scripts is to make life easier for developers working on
-QTLeap.
+The purpose of *QTLeap Manager* is to make life easier for QTLeap developers
+working on TectoMT-based translation systems.
 
 Comments and suggestions for improvement are welcome (<luis.gomes@di.fc.ul.pt>).
 
 ## Usage Examples
 
-For all the following commands the `$QTLEAP_CONF` variable must be defined in
+For all the following commands the `$QTLM_CONF` variable must be defined in
  the environment. This variable should contain a string with three components
  separated by a forward slash (`/`):
 
@@ -15,12 +15,12 @@ For all the following commands the `$QTLEAP_CONF` variable must be defined in
   2. the training dataset name;
   3. the date when the transfer models were trained (formatted as `YYYY-MM-DD`)
 
-Example:  `QTLEAP_CONF=en-pt/ep/2015-02-12`
+Example:  `QTLM_CONF=en-pt/ep/2015-02-12`
 
 The two languages must be lexicographically ordered (`en-pt` is OK, `pt-en` is
  not). The same configuration identifier is used for both translation directions.
-According to the `$QTLEAP_CONF` variable defined above, the file
- `$QTLEAP_ROOT/conf/datasets/en-pt/ep.sh` must exist (see
+According to the `$QTLM_CONF` variable defined above, the file
+ `$QTLM_ROOT/conf/datasets/en-pt/ep.sh` must exist (see
  [Dataset Configuration](#dataset-configuration) section below for
  further details). The date suffix (in this case `2015-02-12`) indicates when
  the transfer models were trained.
@@ -38,45 +38,49 @@ sub-directories within that directory. For example, when training models
 for English-Portuguese, the following files and directories are created:
 
     .
-    |-- [*] about.txt    # contains versioning information and $QTLEAP_CONF
-    |-- [*] qtleap.stat  # output of "hg stat" on $QTLEAP_ROOT repository
-    |-- [*] qtleap.diff  # unified diff of the $QTLEAP_ROOT repository
-    |-- [*] tectomt.stat # output of "svn stat" on the $TMT_ROOT repository
-    |-- [*] tectomt.diff # unified diff of the $TMT_ROOT repository
-    |-- dataset_files/   # downloaded from central share server
-    |-- corpus/          # plain text split into chunks of 200 sentences
-    |-- lemmas.gz        # GIZA input files
-    |-- giza/            # GIZA itermediate files
-    |-- alignments.gz    # GIZA final alignments
-    |-- en2pt/           # models for EN to PT transfer
-    |   |-- formemes/
-    |   |   |-- [*] maxent.model.gz
-    |   |   `-- [*] static.model.gz
-    |   |-- lemmas/
-    |   |   |-- [*] maxent.model.gz
-    |   |   `-- [*] static.model.gz
-    |   `-- vectors/     # input for machine learning
-    |-- pt2en/           # models for PT to EN transfer
-    |   |-- formemes/
-    |   |   |-- [*] maxent.model.gz
-    |   |   `-- [*] static.model.gz
-    |   |-- lemmas/
-    |   |   |-- [*] maxent.model.gz
-    |   |   `-- [*] static.model.gz
-    |   `-- vectors/     # input for machine learning
-    |-- atrees/          # analytical-level trees
-    `-- ttrees/          # tectogrammatical-level trees
+    `-- train_ep_en-pt_2015-02-12
+        |-- [*] qtleap.info  # contains versioning information about qtlm
+        |-- [*] qtleap.stat  # output of "hg stat" on $QTLM_ROOT repository
+        |-- [*] qtleap.diff  # unified diff of the $QTLM_ROOT repository
+        |-- [*] tectomt.info # contains versioning information about tectomt
+        |-- [*] tectomt.stat # output of "svn stat" on the $TMT_ROOT repository
+        |-- [*] tectomt.diff # unified diff of the $TMT_ROOT repository
+        |-- dataset_files/   # downloaded from central share server
+        |-- corpus/          # plain text split into chunks of 200 sentences
+        |-- lemmas.gz        # GIZA input files
+        |-- giza/            # GIZA itermediate files
+        |-- alignments.gz    # GIZA final alignments
+        |-- models/
+        |   |-- en-pt/       # models for EN to PT transfer
+        |   |   |-- formeme/
+        |   |   |   |-- [*] maxent.model.gz
+        |   |   |   `-- [*] static.model.gz
+        |   |   |-- lemma/
+        |   |   |   |-- [*] maxent.model.gz
+        |   |   |   `-- [*] static.model.gz
+        |   |   `-- v/       # input vectors for machine learning
+        |   |-- pt-en/       # models for PT to EN transfer
+        |   |   |-- formeme/
+        |   |   |   |-- [*] maxent.model.gz
+        |   |   |   `-- [*] static.model.gz
+        |   |   |-- lemma/
+        |   |   |   |-- [*] maxent.model.gz
+        |   |   |   `-- [*] static.model.gz
+        |   |   `-- v/       # input vectors for machine learning
+        |-- logs/            # logs for all training stages/tools
+        |-- atrees/          # analytical-level trees
+        `-- ttrees/          # tectogrammatical-level trees
 
 Here's the contents of `about.txt`:
 
-    QTLEAP_CONF=en-pt/ep/2015-02-12
-    QTLEAP_ROOT_REV=139:f0dc245ff992
+    QTLM_CONF=en-pt/ep/2015-02-12
+    QTLM_ROOT_REV=139:f0dc245ff992
     TMT_ROOT_REV=14390
     LXSUITE_REV=143:e55fc226cb4d
 
 When training is finished, the files prefixed with `[*]` in the above tree are
 automatically uploaded to the share server into the directory
-`$upload_ssh_path/$QTLEAP_CONF`.  See [Sharing Configuration](#upload_ssh_)
+`$upload_ssh_path/$QTLM_CONF`.  See [Sharing Configuration](#upload_ssh_)
 section for details about `$upload_ssh_path` and related variables.
 
 ### Translation
@@ -104,7 +108,7 @@ Evaluating the current pipeline on a specific evaluation set (in this example
     qtleap evaluate en pt qtleap_2a
 
 For this command to succeed the file
-`$QTLEAP_ROOT/conf/testsets/en-pt/qtleap_2a.sh` must exist and define a
+`$QTLM_ROOT/conf/testsets/en-pt/qtleap_2a.sh` must exist and define a
 variable named `testset_files` as described below in
 [Testset Configuration](#testset-configuration) section.
 
@@ -142,7 +146,7 @@ The following files will be added to the directory:
         `-- qtleap_2a.pt2en.resume  # output of Print::TranslationResume
 
 To evaluate the current pipeline on all evaluation sets listed in
-`$QTLEAP_ROOT/conf/testsets/en-pt` just omit the evalset name:
+`$QTLM_ROOT/conf/testsets/en-pt` just omit the evalset name:
 
     qtleap evaluate en pt
 
@@ -172,7 +176,7 @@ needed to recover the exact state of the current pipeline.
 #### Creating a snapshot
 
 To create a snapshot first you must ensure that all configured testsets have
-been evaluated using the current `$QTLEAP_CONF` for both translation directions.
+been evaluated using the current `$QTLM_CONF` for both translation directions.
 Then you may run:
 
     qtleap save "brief description of what changed since last snapshot"
@@ -181,12 +185,12 @@ This command will create a new directory `snapshots/YYYY-MM-DDL` (year, month,
 day, and a letter) within the current directory and it will copy all current
 evaluations into it.
 
-The value of the `$QTLEAP_CONF` variable is saved into `about.txt` within the
+The value of the `$QTLM_CONF` variable is saved into `about.txt` within the
 snapshot directory, as well as the current mercurial and SVN revision numbers
-of `$QTLEAP_ROOT` and `$TMT_ROOT` respectively, and the current revision of
+of `$QTLM_ROOT` and `$TMT_ROOT` respectively, and the current revision of
 the remote lxsuite service.
 
-Furthermore, uncommited changes to the `$QTLEAP_ROOT` and `$TMT_ROOT`
+Furthermore, uncommited changes to the `$QTLM_ROOT` and `$TMT_ROOT`
 repositories are also saved in the form of a unified diff (`qtleap.diff` and
 `tectomt.diff`), allowing us to recover the current source code in full extent.
 
@@ -201,7 +205,7 @@ The URL of a snapshot is
 `$download_http_base_url/snapshots/LANGPAIR/DATASET/YYYY-MM-DDL`, where
 `$download_http_base_url` is a configuration variable described in
 [Sharing Configuration](#sharing-configuration), and `LANGPAIR` and `DATASET`
-are the first two components of `$QTLEAP_CONF`.
+are the first two components of `$QTLM_CONF`.
 
 #### Listing snapshots
 Listing all saved snapshots, from the most recent to the oldest:
@@ -209,7 +213,7 @@ Listing all saved snapshots, from the most recent to the oldest:
     qtleap list
 
 This will fetch an updated list of snapshots from the share server for the
-current `$QTLEAP_CONF`.  The list is presented as follows:
+current `$QTLM_CONF`.  The list is presented as follows:
 
     ------------------------------------------------------------------------
      Snapshot      | en2pt | pt2en | Description
@@ -242,28 +246,28 @@ longer because the snapshot will be automatically downloaded from the server.
 ## Configuration
 
 
-All configuration files are kept in directory `$QTLEAP_ROOT/conf`.
+All configuration files are kept in directory `$QTLM_ROOT/conf`.
 
 ### Environment Configuration
 
 The shell environment is configured by sourcing
-`$QTLEAP_ROOT/conf/env/default.sh` from your `~/.bashrc` as follows:
+`$QTLM_ROOT/conf/env/default.sh` from your `~/.bashrc` as follows:
 
     source $HOME/code/qtleap/conf/env/default.sh
 
-This file defines and exports the following variables: `QTLEAP_ROOT`,
+This file defines and exports the following variables: `QTLM_ROOT`,
 `TMT_ROOT`, `TREEX_CONFIG`, `PATH`, and `PERL5LIB`. If you installed the
 qtleap and tectomt repositories into the recommended place
 (`~/code/qtleap` and `~/code/tectomt`), then you don't have to change this
 file. Else, you should create a file with your username
-(`$QTLEAP_ROOT/conf/env/$USER.sh`) and source it from your `~/.bashrc` like
+(`$QTLM_ROOT/conf/env/$USER.sh`) and source it from your `~/.bashrc` like
 this:
 
-    source $QTLEAP_ROOT/conf/env/$USER.sh
+    source $QTLM_ROOT/conf/env/$USER.sh
 
 ### Host Configuration
-The file `$QTLEAP_ROOT/conf/hosts/$(hostname).sh` will be used if it exists,
-else the file `$QTLEAP_ROOT/conf/hosts/default.sh` is used instead.
+The file `$QTLM_ROOT/conf/hosts/$(hostname).sh` will be used if it exists,
+else the file `$QTLM_ROOT/conf/hosts/default.sh` is used instead.
 Either of these files must define the following variables:
 
 #### \$num_procs
@@ -288,7 +292,7 @@ Where GIZA++ has been installed.
 
 Corpora and transfer models are downloaded/uploaded automatically, without
 user intervention.  All data is stored in a central server, which is
-configured in `$QTLEAP_ROOT/conf/sharing.sh`:
+configured in `$QTLM_ROOT/conf/sharing.sh`:
 
 #### \$upload_ssh_*
 These variables configure SSH access for automatic uploading of transfer models
@@ -313,14 +317,14 @@ Example:
 
 A dataset is a combination of parallel corpora that is used to train the
 transfer models.  For each `DATASET` we must create a respective file
-`$QTLEAP_ROOT/conf/datasets/L1-L2/DATASET.sh` and it must define the following
+`$QTLM_ROOT/conf/datasets/L1-L2/DATASET.sh` and it must define the following
 variables:
 
 #### \$dataset_files
 A space-separated list of files (may be gzipped), each containing
 tab-separated pairs of human translated sentences. The file paths specfied
 here must be relative to `$download_base_url` configured in
-`$QTLEAP_ROOT/conf/sharing.sh`.
+`$QTLM_ROOT/conf/sharing.sh`.
 
 Example: `dataset_files="corpora/europarl/ep.enpt.gz"`
 
@@ -366,13 +370,13 @@ If `true` then GIZA models are removed after the aligment is produced.
 
 A testset is a combination of parallel corpora that is used to test the
  whole pipeline.  For each `TESTSET` we must create a respective file
- `$QTLEAP_ROOT/conf/datasets/L1-L2/TESTSET.sh` and it must define the following variables:
+ `$QTLM_ROOT/conf/datasets/L1-L2/TESTSET.sh` and it must define the following variables:
 
 #### \$testset_files
 A space-separated list of files (may be gzipped), each containing
 tab-separated pairs of human translated sentences.
 The file paths specified here must be relative to `$download_base_url`
-configured in `$QTLEAP_ROOT/conf/sharing.sh`.
+configured in `$QTLM_ROOT/conf/sharing.sh`.
 
 Example: `testset_files="corpora/qtleap/qtleap_1a.gz"`
 
@@ -380,12 +384,12 @@ Example: `testset_files="corpora/qtleap/qtleap_1a.gz"`
 ### Treex Configuration
 
 Treex configuration for each user is kept in
-`$QTLEAP_ROOT/conf/treex/$USER/config.yaml`.
-If you wonder why we don't simply use `$QTLEAP_ROOT/conf/treex/$USER.yaml`, it
+`$QTLM_ROOT/conf/treex/$USER/config.yaml`.
+If you wonder why we don't simply use `$QTLM_ROOT/conf/treex/$USER.yaml`, it
 is because Treex expects its configuration file to be named exactly
  `config.yaml`.
 
-Here's a Treex configuration (`$QTLEAP_ROOT/conf/treex/luis/config.yaml`) for
+Here's a Treex configuration (`$QTLM_ROOT/conf/treex/luis/config.yaml`) for
 guidance:
 
     ---

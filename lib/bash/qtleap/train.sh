@@ -8,7 +8,7 @@ function train {
     if [[ "$(hostname)" != $train_hostname ]]; then
         fatal "dataset '$dataset/$lang1-$lang2' must be trained on '$train_hostname'"
     fi
-    doing="training $(show_vars QTLEAP_CONF)"
+    doing="training $(show_vars QTLM_CONF)"
     log "$doing"
     local train_dir=train_${lang_pair}_${dataset}_${train_date}
     create_dir $train_dir/logs
@@ -41,7 +41,7 @@ function get_corpus {
     for file in $dataset_files; do
         zcat "$train_dir/dataset_files/$(basename $file)"
     done |
-    $QTLEAP_ROOT/tools/prune_unaligned_sentpairs.py |
+    $QTLM_ROOT/tools/prune_unaligned_sentpairs.py |
     tee >(cut -f 1 | split $SPLITOPTS - $train_dir/corpus/$lang1/part_) |
           cut -f 2 | split $SPLITOPTS - $train_dir/corpus/$lang2/part_
     find $train_dir/corpus/$lang1 -name 'part_*.txt' -printf '%f\n' |
@@ -102,8 +102,8 @@ function w2a {
                     ${lang1}_src=@$train_dir/corpus/$lang1/batch_$batch.txt \
                     ${lang2}_src=@$train_dir/corpus/$lang2/batch_$batch.txt \
                 W2A::ResegmentSentences remove=diff \
-                "$QTLEAP_ROOT/scen/$lang1-$lang2/${lang1}_w2a.scen" \
-                "$QTLEAP_ROOT/scen/$lang1-$lang2/${lang2}_w2a.scen" \
+                "$QTLM_ROOT/scen/$lang1-$lang2/${lang1}_w2a.scen" \
+                "$QTLM_ROOT/scen/$lang1-$lang2/${lang2}_w2a.scen" \
                 Write::Treex \
                     storable=1 \
                     path=$train_dir/atrees \
@@ -206,8 +206,8 @@ function a2t {
                     selector=src \
                     language=$lang1 \
                     layer=a \
-                "$QTLEAP_ROOT/scen/$lang1-$lang2/${lang1}_a2t.scen" \
-                "$QTLEAP_ROOT/scen/$lang1-$lang2/${lang2}_a2t.scen" \
+                "$QTLM_ROOT/scen/$lang1-$lang2/${lang1}_a2t.scen" \
+                "$QTLM_ROOT/scen/$lang1-$lang2/${lang2}_a2t.scen" \
                 Align::T::CopyAlignmentFromAlayer \
                     selector=src \
                     language=$lang1 \
