@@ -70,13 +70,13 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+
 <p>The two languages must be lexicographically ordered (<code>en-pt</code> is OK, <code>pt-en</code> is not). The same configuration identifier is used for both translation directions. According to the <code>$QTLM_CONF</code> variable defined above, the file <code>$QTLM_ROOT/conf/datasets/en-pt/ep.sh</code> must exist (see <a href="#dataset-configuration">Dataset Configuration</a> section below for further details). The date suffix (in this case <code>2015-02-12</code>) indicates when the transfer models were trained.</p>
 <h3 id="training"><a href="#TOC">Training</a></h3>
 <p>Training transfer models (both translation directions are trained in parallel):</p>
-<pre><code>qtleap train</code></pre>
-<p>The training process will create a directory named <code>train_${DATASET}_${LANG1}-${LANG2}_${TRAIN_DATE}</code>, which would be <code>train_ep_en-pt_2015-02-12</code> for the previous example. Several files and sub-directories within that directory. For example, when training models for English-Portuguese, the following files and directories are created:</p>
+<pre><code>qtlm train</code></pre>
+<p>The training process will create a directory named <code>train_${DATASET}_${LANG1}-${LANG2}_${TRAIN_DATE}</code>, which would be <code>train_ep_en-pt_2015-02-12</code> for the previous example. The training process will create several files and sub-directories within that directory. For example, when training models for English-Portuguese, we get the following files and directories:</p>
 <pre><code>.
 `-- train_ep_en-pt_2015-02-12
-    |-- [*] qtleap.info  # contains versioning information about lxqtleap
-    |-- [*] qtleap.stat  # output of &quot;hg stat&quot; on $QTLM_ROOT repository
-    |-- [*] qtleap.diff  # unified diff of the $QTLM_ROOT repository
+    |-- [*] qtlm.info  # contains versioning information about qtlm
+    |-- [*] qtlm.stat  # output of &quot;hg stat&quot; on $QTLM_ROOT repository
+    |-- [*] qtlm.diff  # unified diff of the $QTLM_ROOT repository
     |-- [*] tectomt.info # contains versioning information about tectomt
     |-- [*] tectomt.stat # output of &quot;svn stat&quot; on the $TMT_ROOT repository
     |-- [*] tectomt.diff # unified diff of the $TMT_ROOT repository
@@ -105,21 +105,16 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+
     |-- logs/            # logs for all training stages/tools
     |-- atrees/          # analytical-level trees
     `-- ttrees/          # tectogrammatical-level trees</code></pre>
-<p>Here’s the contents of <code>about.txt</code>:</p>
-<pre><code>QTLM_CONF=en-pt/ep/2015-02-12
-QTLM_ROOT_REV=139:f0dc245ff992
-TMT_ROOT_REV=14390
-LXSUITE_REV=143:e55fc226cb4d</code></pre>
 <p>When training is finished, the files prefixed with <code>[*]</code> in the above tree are automatically uploaded to the share server into the directory <code>$upload_ssh_path/$QTLM_CONF</code>. See <a href="#upload_ssh_">Sharing Configuration</a> section for details about <code>$upload_ssh_path</code> and related variables.</p>
 <h3 id="translation"><a href="#TOC">Translation</a></h3>
 <p>Translating from English to Portuguese (reads one sentence per line from <code>STDIN</code> and writes one sentence per line on <code>STDOUT</code>):</p>
-<pre><code>qtleap translate en pt</code></pre>
+<pre><code>qtlm translate en pt</code></pre>
 <p>If you want to save the trees of each translated sentence (for debugging purposes for example), then give a directory name as argument:</p>
-<pre><code>qtleap translate en pt trees_dir</code></pre>
+<pre><code>qtlm translate en pt trees_dir</code></pre>
 <p>This will read from <code>STDIN</code> and write to <code>STDOUT</code> as previously, but it will also create a file named <code>trees_dir/###.treex.gz</code> for each input line (<code>###</code> is replaced by the number of the line, starting with <code>001</code>).</p>
 <h3 id="evaluation"><a href="#TOC">Evaluation</a></h3>
 <p>Evaluating the current pipeline on a specific evaluation set (in this example <code>qtleap_2a</code>):</p>
-<pre><code>qtleap evaluate en pt qtleap_2a</code></pre>
+<pre><code>qtlm evaluate en pt qtleap_2a</code></pre>
 <p>For this command to succeed the file <code>$QTLM_ROOT/conf/testsets/en-pt/qtleap_2a.sh</code> must exist and define a variable named <code>testset_files</code> as described below in <a href="#testset-configuration">Testset Configuration</a> section.</p>
 <p>A new directory <code>eval_qtleap_2a</code> will be created in the current directory with the following structure:</p>
 <pre><code>.
@@ -135,7 +130,7 @@ LXSUITE_REV=143:e55fc226cb4d</code></pre>
     |-- qtleap_2a.pt_mt.txt     # machine translated (English to Portuguese)
     `-- qtleap_2a.pt.txt        # original Portuguese text</code></pre>
 <p>If you then evaluate on the other direction (Portuguese to English):</p>
-<pre><code>qtleap evaluate pt en qtleap_2a</code></pre>
+<pre><code>qtlm evaluate pt en qtleap_2a</code></pre>
 <p>The following files will be added to the directory:</p>
 <pre><code>.
 `-- eval_qtleap_2a
@@ -148,26 +143,26 @@ LXSUITE_REV=143:e55fc226cb4d</code></pre>
     |-- qtleap_2a.pt2en.ngrams  #
     `-- qtleap_2a.pt2en.resume  # output of Print::TranslationResume</code></pre>
 <p>To evaluate the current pipeline on all evaluation sets listed in <code>$QTLM_ROOT/conf/testsets/en-pt</code> just omit the evalset name:</p>
-<pre><code>qtleap evaluate en pt</code></pre>
+<pre><code>qtlm evaluate en pt</code></pre>
 <h4 id="cleaning-cached-intermediate-trees"><a href="#TOC">Cleaning cached intermediate trees</a></h4>
 <p>If you are developing the synthesis and you want to re-evaluate the pipeline you just repeat the above commands to re-synthesize the translations.</p>
-<p>The re-runs will be much faster than the first evaluation because <code>qtleap_evaluate</code> will reuse the previously created <code>*.cache.treex.gz</code> files (which contain the trees after analysis and transfer), and only the synthesis step is done.</p>
+<p>The re-runs will be much faster than the first evaluation because <code>qtlm evaluate</code> will reuse the previously created <code>*.cache.treex.gz</code> files (which contain the trees after analysis and transfer), and only the synthesis step is done.</p>
 <p><em>However, if you have changed the analysis or transfer steps</em>, then you should remove the cached trees by running:</p>
-<pre><code>qtleap clean</code></pre>
+<pre><code>qtlm clean</code></pre>
 <p>This will clean the cached trees for all configured testsets that have been already evaluated in the current directory.</p>
 <h3 id="snapshots"><a href="#TOC">Snapshots</a></h3>
 <p>A snapshot is a bundle of current evaluations together with all information needed to recover the exact state of the current pipeline.</p>
 <h4 id="creating-a-snapshot"><a href="#TOC">Creating a snapshot</a></h4>
 <p>To create a snapshot first you must ensure that all configured testsets have been evaluated using the current <code>$QTLM_CONF</code> for both translation directions. Then you may run:</p>
-<pre><code>qtleap save &quot;brief description of what changed since last snapshot&quot;</code></pre>
+<pre><code>qtlm save &quot;brief description of what changed since last snapshot&quot;</code></pre>
 <p>This command will create a new directory <code>snapshots/YYYY-MM-DDL</code> (year, month, day, and a letter) within the current directory and it will copy all current evaluations into it.</p>
 <p>The value of the <code>$QTLM_CONF</code> variable is saved into <code>about.txt</code> within the snapshot directory, as well as the current mercurial and SVN revision numbers of <code>$QTLM_ROOT</code> and <code>$TMT_ROOT</code> respectively, and the current revision of the remote lxsuite service.</p>
-<p>Furthermore, uncommited changes to the <code>$QTLM_ROOT</code> and <code>$TMT_ROOT</code> repositories are also saved in the form of a unified diff (<code>qtleap.diff</code> and <code>tectomt.diff</code>), allowing us to recover the current source code in full extent.</p>
+<p>Furthermore, uncommited changes to the <code>$QTLM_ROOT</code> and <code>$TMT_ROOT</code> repositories are also saved in the form of a unified diff (<code>qtlm.diff</code> and <code>tectomt.diff</code>), allowing us to recover the current source code in full extent.</p>
 <p><em>WARNING</em>: only files already tracked by mercurial and SVN will be included in the unified diff of every snapshot, ie, all files appearing with a question mark when you issue the commands <code>hg status</code> or <code>svn status</code> <em>WILL NOT</em> be included in the diff.</p>
 <p>The snapshot is also uploaded to the configured share server, making it readily available for comparison and analysis to other users. The URL of a snapshot is <code>$download_http_base_url/snapshots/LANGPAIR/DATASET/YYYY-MM-DDL</code>, where <code>$download_http_base_url</code> is a configuration variable described in <a href="#sharing-configuration">Sharing Configuration</a>, and <code>LANGPAIR</code> and <code>DATASET</code> are the first two components of <code>$QTLM_CONF</code>.</p>
 <h4 id="listing-snapshots"><a href="#TOC">Listing snapshots</a></h4>
 <p>Listing all saved snapshots, from the most recent to the oldest:</p>
-<pre><code>qtleap list</code></pre>
+<pre><code>qtlm list</code></pre>
 <p>This will fetch an updated list of snapshots from the share server for the current <code>$QTLM_CONF</code>. The list is presented as follows:</p>
 <pre><code>------------------------------------------------------------------------
  Snapshot      | en2pt | pt2en | Description
@@ -178,16 +173,16 @@ LXSUITE_REV=143:e55fc226cb4d</code></pre>
 <p>Columns <code>en2pt</code> and <code>pt2en</code> show the average BLEU scores over all configured evalsets for both translation directions. Snapshots marked with an asterisk (<code>*</code>) exist both locally and on the server. Unmarked snapshots exist only on the server.</p>
 <h4 id="comparing-snapshots"><a href="#TOC">Comparing snapshots</a></h4>
 <p>To compare current translations/evaluations with the ones from last snapshot:</p>
-<pre><code>qtleap compare</code></pre>
+<pre><code>qtlm compare</code></pre>
 <p>To compare current translations/evaluations with a specific snapshot (in this case 2015-01-20):</p>
-<pre><code>qtleap compare 2015-01-20</code></pre>
+<pre><code>qtlm compare 2015-01-20</code></pre>
 <p>Note: if the specified snapshot does not exist locally (ie, it does not appear marked with an asterisk in the list of snapshots), then the comparison will take longer because the snapshot will be automatically downloaded from the server.</p>
 <h2 id="configuration"><a href="#TOC">Configuration</a></h2>
 <p>All configuration files are kept in directory <code>$QTLM_ROOT/conf</code>.</p>
 <h3 id="environment-configuration"><a href="#TOC">Environment Configuration</a></h3>
 <p>The shell environment is configured by sourcing <code>$QTLM_ROOT/conf/env/default.sh</code> from your <code>~/.bashrc</code> as follows:</p>
-<pre><code>source $HOME/code/qtleap/conf/env/default.sh</code></pre>
-<p>This file defines and exports the following variables: <code>QTLM_ROOT</code>, <code>TMT_ROOT</code>, <code>TREEX_CONFIG</code>, <code>PATH</code>, and <code>PERL5LIB</code>. If you installed the qtleap and tectomt repositories into the recommended place (<code>~/code/qtleap</code> and <code>~/code/tectomt</code>), then you don’t have to change this file. Else, you should create a file with your username (<code>$QTLM_ROOT/conf/env/$USER.sh</code>) and source it from your <code>~/.bashrc</code> like this:</p>
+<pre><code>source $HOME/code/qtlm/conf/env/default.sh</code></pre>
+<p>This file defines and exports the following variables: <code>QTLM_ROOT</code>, <code>TMT_ROOT</code>, <code>TREEX_CONFIG</code>, <code>PATH</code>, and <code>PERL5LIB</code>. If you installed the qtlm and tectomt repositories into the recommended place (<code>~/code/qtlm</code> and <code>~/code/tectomt</code>), then you don’t have to change this file. Else, you should create a file with your username (<code>$QTLM_ROOT/conf/env/$USER.sh</code>) and source it from your <code>~/.bashrc</code> like this:</p>
 <pre><code>source $QTLM_ROOT/conf/env/$USER.sh</code></pre>
 <h3 id="host-configuration"><a href="#TOC">Host Configuration</a></h3>
 <p>The file <code>$QTLM_ROOT/conf/hosts/$(hostname).sh</code> will be used if it exists, else the file <code>$QTLM_ROOT/conf/hosts/default.sh</code> is used instead. Either of these files must define the following variables:</p>

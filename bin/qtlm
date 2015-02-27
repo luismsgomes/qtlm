@@ -47,10 +47,10 @@
 
 function main {
     source "$QTLM_ROOT/lib/bash/utils.sh" || exit 1
-    source "$QTLM_ROOT/lib/bash/qtleap/common.sh" || exit 1
-    source "$QTLM_ROOT/lib/bash/qtleap/train.sh" || exit 1
-    source "$QTLM_ROOT/lib/bash/qtleap/evaluate.sh" || exit 1
-    #source "$QTLM_ROOT/lib/bash/qtleap/translate.sh" || exit 1
+    source "$QTLM_ROOT/lib/bash/qtlm/common.sh" || exit 1
+    source "$QTLM_ROOT/lib/bash/qtlm/train.sh" || exit 1
+    source "$QTLM_ROOT/lib/bash/qtlm/evaluate.sh" || exit 1
+    #source "$QTLM_ROOT/lib/bash/qtlm/translate.sh" || exit 1
     set_pedantic_bash_options
     load_config
     if test $# == 0; then

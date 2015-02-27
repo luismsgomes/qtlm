@@ -29,19 +29,20 @@ According to the `$QTLM_CONF` variable defined above, the file
 
 Training transfer models (both translation directions are trained in parallel):
 
-    qtleap train
+    qtlm train
 
 The training process will create a directory named
 `train_${DATASET}_${LANG1}-${LANG2}_${TRAIN_DATE}`, which would be
-`train_ep_en-pt_2015-02-12` for the previous example. Several files and
-sub-directories within that directory. For example, when training models
-for English-Portuguese, the following files and directories are created:
+`train_ep_en-pt_2015-02-12` for the previous example. The training process will
+create several files and sub-directories within that directory. For example,
+when training models for English-Portuguese, we get the following files and
+directories:
 
     .
     `-- train_ep_en-pt_2015-02-12
-        |-- [*] qtleap.info  # contains versioning information about qtlm
-        |-- [*] qtleap.stat  # output of "hg stat" on $QTLM_ROOT repository
-        |-- [*] qtleap.diff  # unified diff of the $QTLM_ROOT repository
+        |-- [*] qtlm.info  # contains versioning information about qtlm
+        |-- [*] qtlm.stat  # output of "hg stat" on $QTLM_ROOT repository
+        |-- [*] qtlm.diff  # unified diff of the $QTLM_ROOT repository
         |-- [*] tectomt.info # contains versioning information about tectomt
         |-- [*] tectomt.stat # output of "svn stat" on the $TMT_ROOT repository
         |-- [*] tectomt.diff # unified diff of the $TMT_ROOT repository
@@ -71,13 +72,6 @@ for English-Portuguese, the following files and directories are created:
         |-- atrees/          # analytical-level trees
         `-- ttrees/          # tectogrammatical-level trees
 
-Here's the contents of `about.txt`:
-
-    QTLM_CONF=en-pt/ep/2015-02-12
-    QTLM_ROOT_REV=139:f0dc245ff992
-    TMT_ROOT_REV=14390
-    LXSUITE_REV=143:e55fc226cb4d
-
 When training is finished, the files prefixed with `[*]` in the above tree are
 automatically uploaded to the share server into the directory
 `$upload_ssh_path/$QTLM_CONF`.  See [Sharing Configuration](#upload_ssh_)
@@ -88,12 +82,12 @@ section for details about `$upload_ssh_path` and related variables.
 Translating from English to Portuguese (reads one sentence per line from
  `STDIN` and writes one sentence per line on `STDOUT`):
 
-    qtleap translate en pt
+    qtlm translate en pt
 
 If you want to save the trees of each translated sentence (for debugging
 purposes for example), then give a directory name as argument:
 
-    qtleap translate en pt trees_dir
+    qtlm translate en pt trees_dir
 
 This will read from `STDIN` and write to `STDOUT` as previously, but it will
 also create a file named `trees_dir/###.treex.gz` for each input line (`###`
@@ -105,7 +99,7 @@ is replaced by the number of the line, starting with `001`).
 Evaluating the current pipeline on a specific evaluation set (in this example
  `qtleap_2a`):
 
-    qtleap evaluate en pt qtleap_2a
+    qtlm evaluate en pt qtleap_2a
 
 For this command to succeed the file
 `$QTLM_ROOT/conf/testsets/en-pt/qtleap_2a.sh` must exist and define a
@@ -130,7 +124,7 @@ the following structure:
 
 If you then evaluate on the other direction (Portuguese to English):
 
-    qtleap evaluate pt en qtleap_2a
+    qtlm evaluate pt en qtleap_2a
 
 The following files will be added to the directory:
 
@@ -148,7 +142,7 @@ The following files will be added to the directory:
 To evaluate the current pipeline on all evaluation sets listed in
 `$QTLM_ROOT/conf/testsets/en-pt` just omit the evalset name:
 
-    qtleap evaluate en pt
+    qtlm evaluate en pt
 
 #### Cleaning cached intermediate trees
 
@@ -156,14 +150,14 @@ If you are developing the synthesis and you want to re-evaluate the pipeline you
 just repeat the above commands to re-synthesize the translations.
 
 The re-runs will be much faster than the first evaluation because
-`qtleap_evaluate` will reuse the previously created `*.cache.treex.gz` files
+`qtlm evaluate` will reuse the previously created `*.cache.treex.gz` files
 (which contain the trees after analysis and transfer), and only the synthesis
 step is done.
 
 *However, if you have changed the analysis or transfer steps*, then you should
 remove the cached trees by running:
 
-    qtleap clean
+    qtlm clean
 
 This will clean the cached trees for all configured testsets that have been
 already evaluated in the current directory.
@@ -179,7 +173,7 @@ To create a snapshot first you must ensure that all configured testsets have
 been evaluated using the current `$QTLM_CONF` for both translation directions.
 Then you may run:
 
-    qtleap save "brief description of what changed since last snapshot"
+    qtlm save "brief description of what changed since last snapshot"
 
 This command will create a new directory `snapshots/YYYY-MM-DDL` (year, month,
 day, and a letter) within the current directory and it will copy all current
@@ -191,7 +185,7 @@ of `$QTLM_ROOT` and `$TMT_ROOT` respectively, and the current revision of
 the remote lxsuite service.
 
 Furthermore, uncommited changes to the `$QTLM_ROOT` and `$TMT_ROOT`
-repositories are also saved in the form of a unified diff (`qtleap.diff` and
+repositories are also saved in the form of a unified diff (`qtlm.diff` and
 `tectomt.diff`), allowing us to recover the current source code in full extent.
 
 *WARNING*: only files already tracked by mercurial and SVN will be included in
@@ -210,7 +204,7 @@ are the first two components of `$QTLM_CONF`.
 #### Listing snapshots
 Listing all saved snapshots, from the most recent to the oldest:
 
-    qtleap list
+    qtlm list
 
 This will fetch an updated list of snapshots from the share server for the
 current `$QTLM_CONF`.  The list is presented as follows:
@@ -231,12 +225,12 @@ Unmarked snapshots exist only on the server.
 #### Comparing snapshots
 To compare current translations/evaluations with the ones from last snapshot:
 
-    qtleap compare
+    qtlm compare
 
 To compare current translations/evaluations with a specific snapshot (in this
 case 2015-01-20):
 
-    qtleap compare 2015-01-20
+    qtlm compare 2015-01-20
 
 Note: if the specified snapshot does not exist locally (ie, it does not appear
 marked with an asterisk in the list of snapshots), then the comparison will take
@@ -253,12 +247,12 @@ All configuration files are kept in directory `$QTLM_ROOT/conf`.
 The shell environment is configured by sourcing
 `$QTLM_ROOT/conf/env/default.sh` from your `~/.bashrc` as follows:
 
-    source $HOME/code/qtleap/conf/env/default.sh
+    source $HOME/code/qtlm/conf/env/default.sh
 
 This file defines and exports the following variables: `QTLM_ROOT`,
 `TMT_ROOT`, `TREEX_CONFIG`, `PATH`, and `PERL5LIB`. If you installed the
-qtleap and tectomt repositories into the recommended place
-(`~/code/qtleap` and `~/code/tectomt`), then you don't have to change this
+qtlm and tectomt repositories into the recommended place
+(`~/code/qtlm` and `~/code/tectomt`), then you don't have to change this
 file. Else, you should create a file with your username
 (`$QTLM_ROOT/conf/env/$USER.sh`) and source it from your `~/.bashrc` like
 this:
