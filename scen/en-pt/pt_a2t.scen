@@ -25,6 +25,7 @@ A2T::PT::SetGrammatemesFromAux
 A2T::AddPersPronSb
 A2T::MinimizeGrammatemes
 
+A2T::SetSentmod
 A2T::PT::FixImperatives
 
 A2T::PT::FixPersPron
