@@ -51,6 +51,7 @@ function translate_from_scratch {
         Read::Sentences \
             skip_empty=1 \
             lines_per_doc=1 \
+            _file_number_width=6 \
         W2A::ResegmentSentences \
         "$QTLM_ROOT/scen/$lang1-$lang2/${src}_w2a.scen" \
         "$QTLM_ROOT/scen/$lang1-$lang2/${src}_a2t.scen" \
