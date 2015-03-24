@@ -24,3 +24,8 @@ formeme_maxent_train_opts="$maxent_train_opts"
 
 rm_giza_files=false
 
+treex_socket_server_port_enpt=7001
+treex_mtmworker_port_enpt=8001
+
+treex_socket_server_port_pten=7002
+treex_mtmworker_port_pten=8002
