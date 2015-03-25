@@ -44,19 +44,19 @@ function serve__start {
         --scenario=treex-socket-server.${src}2${trg}.scen \
         > treex-socket-server.${src}2${trg}.log 2>&1 &
     echo $! > treex-socket-server.${src}2${trg}.pid
-    sleep 10
-    log "finished $doing"
+    log "treex-socket-server pid is $(cat treex-socket-server.${src}2${trg}.pid)"
+    sleep 2
 
     eval "mtmworker_port=\$treex_mtmworker_port_$src$trg"
     local doing="starting ${src^^}->${trg^^} mtmworker on $mtmworker_port"
     log "$doing"
 
     $TMT_ROOT/treex/bin/treex-mtmworker.pl \
-        -p $socket_server_port \
-        -s $mtmworker_port \
+        -p $mtmworker_port \
+        -s $socket_server_port \
         > treex-mtmworker.${src}2${trg}.log 2>&1 &
     echo $! > treex-mtmworker.${src}2${trg}.pid
+    log "treex-mtmworker pid is $(cat treex-mtmworker.${src}2${trg}.pid)"
     sleep 1
-    log "finished $doing"
 }
 
