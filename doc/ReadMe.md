@@ -333,8 +333,8 @@ All configuration files are kept in directory `$QTLM_ROOT/conf`.
 
 ### Environment Configuration
 
-The shell environment is configured by sourcing
-`$QTLM_ROOT/conf/env/default.sh` from your `$HOME/.bashrc` as follows:
+The shell environment is configured by adding the following line to your
+ `$HOME/.bashrc`:
 
     source $HOME/code/qtlm/conf/env/default.sh
 
@@ -342,9 +342,8 @@ This file defines and exports the following variables: `QTLM_ROOT`,
 `TMT_ROOT`, `TREEX_CONFIG`, `PATH`, and `PERL5LIB`. If you installed the
 qtlm and tectomt repositories into the recommended place
 (`$HOME/code/qtlm` and `$HOME/code/tectomt`), then you don't have to change this
-file. Else, you should create a file with your username
-(`$QTLM_ROOT/conf/env/$USER.sh`) and source it from your `$HOME/.bashrc` like
-this:
+file. Else, you should create a file with your username and source it from your
+ `$HOME/.bashrc` like this:
 
     source $QTLM_ROOT/conf/env/$USER.sh
 
