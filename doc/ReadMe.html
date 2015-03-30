@@ -10,6 +10,7 @@
   <link href="data:text/css,body%20%7B%0Amargin%3A%20auto%3B%0Apadding%2Dright%3A%201em%3B%0Apadding%2Dleft%3A%201em%3B%0Amax%2Dwidth%3A%2044em%3B%0Aborder%2Dleft%3A%201px%20solid%20black%3B%0Aborder%2Dright%3A%201px%20solid%20black%3B%0Acolor%3A%20black%3B%0Afont%2Dfamily%3A%20Verdana%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%20100%25%3B%0Aline%2Dheight%3A%20140%25%3B%0Acolor%3A%20%23333%3B%0A%7D%0Apre%20%7B%0Aborder%3A%201px%20dotted%20gray%3B%0Abackground%2Dcolor%3A%20%23ececec%3B%0Acolor%3A%20%231111111%3B%0Apadding%3A%200%2E5em%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20monospace%3B%0A%7D%0Ah1%20a%2C%20h2%20a%2C%20h3%20a%2C%20h4%20a%2C%20h5%20a%20%7B%0Atext%2Ddecoration%3A%20none%3B%0Acolor%3A%20%237a5ada%3B%0A%7D%0Ah1%2C%20h2%2C%20h3%2C%20h4%2C%20h5%20%7B%20font%2Dfamily%3A%20verdana%3B%0Afont%2Dweight%3A%20bold%3B%0Aborder%2Dbottom%3A%201px%20dotted%20black%3B%0Acolor%3A%20%237a5ada%3B%20%7D%0Ah1%20%7B%0Afont%2Dsize%3A%20130%25%3B%0A%7D%0A%0Ah2%20%7B%0Afont%2Dsize%3A%20110%25%3B%0A%7D%0A%0Ah3%20%7B%0Afont%2Dsize%3A%2095%25%3B%0A%7D%0A%0Ah4%20%7B%0Afont%2Dsize%3A%2090%25%3B%0Afont%2Dstyle%3A%20italic%3B%0A%7D%0A%0Ah5%20%7B%0Afont%2Dsize%3A%2090%25%3B%0Afont%2Dstyle%3A%20italic%3B%0A%7D%0A%0Ah1%2Etitle%20%7B%0Afont%2Dsize%3A%20200%25%3B%0Afont%2Dweight%3A%20bold%3B%0Apadding%2Dtop%3A%200%2E2em%3B%0Apadding%2Dbottom%3A%200%2E2em%3B%0Atext%2Dalign%3A%20left%3B%0Aborder%3A%20none%3B%0A%7D%0A%0Adt%20code%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Add%20p%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0A%0A%23footer%20%7B%0Apadding%2Dtop%3A%201em%3B%0Afont%2Dsize%3A%2070%25%3B%0Acolor%3A%20gray%3B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%0A%2F%2A%20Numbered%20headings%3A%20%2A%2F%0Abody%20%7B%0Acounter%2Dreset%3A%20h2counter%3B%0A%7D%0Ah1%20%7B%0Acounter%2Dreset%3A%20h2counter%3B%0A%7D%0Ah2%3Abefore%20%7B%0Acontent%3A%20counter%28h2counter%29%20%22%2E%5C0000a0%5C0000a0%22%3B%0Acounter%2Dincrement%3A%20h2counter%3B%0Acounter%2Dreset%3A%20h3counter%3B%0A%7D%0Ah3%3Abefore%20%7B%0Acontent%3A%20counter%28h2counter%29%20%22%2E%22%20counter%28h3counter%29%20%22%2E%5C0000a0%5C0000a0%22%3B%0Acounter%2Dincrement%3A%20h3counter%3B%0A%7D%0A" rel="stylesheet">
 </head>
 <body>
+<h1>Table of Contents</h1>
 <nav id="TOC">
 <ul>
 <li><a href="#qtleap-manager">QTLeap Manager</a><ul>
@@ -60,27 +61,29 @@ h='&#100;&#x69;&#46;&#102;&#x63;&#46;&#x75;&#108;&#46;&#112;&#116;';a='&#64;';n=
 document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+'a'+'>');
 // -->
 </script><noscript>luis.gomes at di dot fc dot ul dot pt</noscript>).</p>
+<p><em>Note:</em> <code>qtlm</code> as well as this document are <em>work in progress</em>.</p>
 <h2 id="installation"><a href="#TOC">Installation</a></h2>
 <p>Before starting, make sure that you have a working Treex installation. You can find instructions at the <a href="https://ufal.mff.cuni.cz/treex/">Treex web page</a>.</p>
-<p>The remainder of this installation guide assumes that you have checked-out the TectoMT repository into <code>~/code/tectomt</code>:</p>
-<pre><code>mkdir -p ~/code
+<p>The remainder of this installation guide assumes that you have checked-out the TectoMT repository into <code>$HOME/code/tectomt</code> as follows (adjust if necessary):</p>
+<pre><code>mkdir -p $HOME/code
 url=https://svn.ms.mff.cuni.cz/svn/tectomt_devel/trunk
-svn --username public co $url ~/code/tectomt</code></pre>
+svn --username public co $url $HOME/code/tectomt</code></pre>
 <p>Pre-requisites/dependencies of <code>qtlm</code>:</p>
-<ol type="1">
+<ul>
+<li>TectoMT (&gt;= rev14386)</li>
 <li>Perl (&gt;= v5.14.2)</li>
 <li>Python (&gt;= 3.2.3)</li>
 <li>Bash (&gt;= 4.2)</li>
-<li>gawk (&gt;= 3.1.8)</li>
+<li>Gawk (&gt;= 3.1.8)</li>
 <li>GIZA++ (&gt;= 1.0.7)</li>
-</ol>
-<p>Note: the BLEU scores reported for Pilot 1 by the EN-PT system are based on <code>tectomt</code> revision 14386, so if you are trying to reproduce the exact same setup you should update the repository to that revision.</p>
-<p>Extract the <em>QTLeap Manager</em> archive <code>qtlm_rev274.tgz</code> into <code>~/code/qtlm</code>:</p>
-<pre><code>mkdir -p ~/code
-tar xzf qtlm_rev273.tgz -C ~/code</code></pre>
-<p>Add the following ling to your <code>~/.bashrc</code>:</p>
-<pre><code>source ~/code/qtlm/conf/env/default.sh</code></pre>
-<p>And, run the previous command on your active terminal as well, before proceeding.</p>
+</ul>
+<p>Note: the BLEU scores reported for Pilot 1 by the EN-PT system are based on <code>tectomt</code> revision 14386.</p>
+<p>Extract the <em>QTLeap Manager</em> archive <code>qtlm_rev274.tgz</code> into <code>$HOME/code/qtlm</code>:</p>
+<pre><code>mkdir -p $HOME/code
+tar xzf qtlm_rev273.tgz -C $HOME/code</code></pre>
+<p>Add the following ling to your <code>$HOME/.bashrc</code>:</p>
+<pre><code>source $HOME/code/qtlm/conf/env/default.sh</code></pre>
+<p>And, run the previous command on your active terminal before proceeding.</p>
 <h2 id="usage"><a href="#TOC">Usage</a></h2>
 <p>If you type <code>qtlm help</code> on your terminal you shoud get the following usage summary:</p>
 <pre><code>Usage: qtlm &lt;command&gt; &lt;args&gt;...
@@ -122,6 +125,7 @@ List of commands:
 
   version
         Shows qtleap script version.</code></pre>
+<p><em>Note:</em> <code>save</code>, <code>list</code>, <code>compare</code> and <code>translate</code> are <em>upcomming</em> features. They are not yet available.</p>
 <p>Most of these commands require an environment variable <code>$QTLM_CONF</code> to be set. This variable should contain a string with three components separated by a forward slash (<code>/</code>):</p>
 <ol type="1">
 <li>the language pair (in the form of <code>L1-L2</code>);</li>
@@ -131,9 +135,11 @@ List of commands:
 <p>Example: <code>QTLM_CONF=en-pt/ep/2015-02-12</code></p>
 <p>The two languages must be lexicographically ordered (<code>en-pt</code> is OK, <code>pt-en</code> is not). The same configuration identifier is used for both translation directions. According to the <code>$QTLM_CONF</code> variable defined above, the file <code>$QTLM_ROOT/conf/datasets/en-pt/ep.sh</code> must exist (see <a href="#dataset-configuration">Dataset Configuration</a> section below for further details). The date suffix (in this case <code>2015-02-12</code>) indicates when the transfer models were trained.</p>
 <h3 id="training"><a href="#TOC">Training</a></h3>
-<p>Training transfer models (both translation directions are trained in parallel):</p>
+<p>Please see the relevant <a href="#dataset-configuration">configuration for training</a> Training transfer models (both translation directions are trained in parallel):</p>
 <pre><code>qtlm train</code></pre>
-<p>The training process will create a directory named <code>train_${DATASET}_${LANG1}-${LANG2}_${TRAIN_DATE}</code>, which would be <code>train_ep_en-pt_2015-02-12</code> for the previous example. The training process will create several files and sub-directories within that directory. For example, when training models for English-Portuguese, we get the following files and directories:</p>
+<p>The training process will create a directory named</p>
+<pre><code>train_${DATASET}_${LANG1}-${LANG2}_${TRAIN_DATE}</code></pre>
+<p>which would be <code>train_ep_en-pt_2015-02-12</code> for the previous example. The training process will create several files and sub-directories within that directory. For example, when training models for English-Portuguese, we get the following files and directories:</p>
 <pre><code>.
 `-- train_ep_en-pt_2015-02-12
     |-- [*] qtlm.info  # contains versioning information about qtlm
@@ -213,6 +219,7 @@ List of commands:
 <pre><code>qtlm clean</code></pre>
 <p>This will clean the cached trees for all configured testsets that have been already evaluated in the current directory.</p>
 <h3 id="snapshots"><a href="#TOC">Snapshots</a></h3>
+<p><em>Note:</em> snapshots are an <em>upcomming</em> feature. They are not yet available.</p>
 <p>A snapshot is a bundle of current evaluations together with all information needed to recover the exact state of the current pipeline.</p>
 <h4 id="creating-a-snapshot"><a href="#TOC">Creating a snapshot</a></h4>
 <p>To create a snapshot first you must ensure that all configured testsets have been evaluated using the current <code>$QTLM_CONF</code> for both translation directions. Then you may run:</p>
@@ -242,9 +249,9 @@ List of commands:
 <h2 id="configuration"><a href="#TOC">Configuration</a></h2>
 <p>All configuration files are kept in directory <code>$QTLM_ROOT/conf</code>.</p>
 <h3 id="environment-configuration"><a href="#TOC">Environment Configuration</a></h3>
-<p>The shell environment is configured by sourcing <code>$QTLM_ROOT/conf/env/default.sh</code> from your <code>~/.bashrc</code> as follows:</p>
+<p>The shell environment is configured by sourcing <code>$QTLM_ROOT/conf/env/default.sh</code> from your <code>$HOME/.bashrc</code> as follows:</p>
 <pre><code>source $HOME/code/qtlm/conf/env/default.sh</code></pre>
-<p>This file defines and exports the following variables: <code>QTLM_ROOT</code>, <code>TMT_ROOT</code>, <code>TREEX_CONFIG</code>, <code>PATH</code>, and <code>PERL5LIB</code>. If you installed the qtlm and tectomt repositories into the recommended place (<code>~/code/qtlm</code> and <code>~/code/tectomt</code>), then you don’t have to change this file. Else, you should create a file with your username (<code>$QTLM_ROOT/conf/env/$USER.sh</code>) and source it from your <code>~/.bashrc</code> like this:</p>
+<p>This file defines and exports the following variables: <code>QTLM_ROOT</code>, <code>TMT_ROOT</code>, <code>TREEX_CONFIG</code>, <code>PATH</code>, and <code>PERL5LIB</code>. If you installed the qtlm and tectomt repositories into the recommended place (<code>$HOME/code/qtlm</code> and <code>$HOME/code/tectomt</code>), then you don’t have to change this file. Else, you should create a file with your username (<code>$QTLM_ROOT/conf/env/$USER.sh</code>) and source it from your <code>$HOME/.bashrc</code> like this:</p>
 <pre><code>source $QTLM_ROOT/conf/env/$USER.sh</code></pre>
 <h3 id="host-configuration"><a href="#TOC">Host Configuration</a></h3>
 <p>The file <code>$QTLM_ROOT/conf/hosts/$(hostname).sh</code> will be used if it exists, else the file <code>$QTLM_ROOT/conf/hosts/default.sh</code> is used instead. Either of these files must define the following variables:</p>

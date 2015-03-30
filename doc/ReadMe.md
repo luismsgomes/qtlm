@@ -5,6 +5,8 @@ developers working on TectoMT-based translation systems.
 
 Comments and suggestions for improvement are welcome (<luis.gomes@di.fc.ul.pt>).
 
+*Note:* `qtlm` as well as this document are *work in progress*.
+
 ## Installation
 
 Before starting, make sure that you have a working Treex installation.
@@ -12,34 +14,34 @@ You can find instructions at the
 [Treex web page](https://ufal.mff.cuni.cz/treex/).
 
 The remainder of this installation guide assumes that you have checked-out the
- TectoMT repository into `~/code/tectomt`:
+ TectoMT repository into `$HOME/code/tectomt` as follows (adjust if necessary):
 
-    mkdir -p ~/code
+    mkdir -p $HOME/code
     url=https://svn.ms.mff.cuni.cz/svn/tectomt_devel/trunk
-    svn --username public co $url ~/code/tectomt
+    svn --username public co $url $HOME/code/tectomt
 
 Pre-requisites/dependencies of `qtlm`:
 
-1. Perl (>= v5.14.2)
-1. Python (>= 3.2.3)
-1. Bash (>= 4.2)
-1. gawk (>= 3.1.8)
-1. GIZA++ (>= 1.0.7)
+- TectoMT (>= rev14386)
+- Perl (>= v5.14.2)
+- Python (>= 3.2.3)
+- Bash (>= 4.2)
+- Gawk (>= 3.1.8)
+- GIZA++ (>= 1.0.7)
 
 Note: the BLEU scores reported for Pilot 1 by the EN-PT system are based on
-`tectomt` revision 14386, so if you are trying to reproduce the exact same setup
-you should update the repository to that revision.
+`tectomt` revision 14386.
 
-Extract the *QTLeap Manager* archive `qtlm_rev274.tgz` into `~/code/qtlm`:
+Extract the *QTLeap Manager* archive `qtlm_rev274.tgz` into `$HOME/code/qtlm`:
 
-    mkdir -p ~/code
-    tar xzf qtlm_rev273.tgz -C ~/code
+    mkdir -p $HOME/code
+    tar xzf qtlm_rev273.tgz -C $HOME/code
 
-Add the following ling to your `~/.bashrc`:
+Add the following ling to your `$HOME/.bashrc`:
 
-    source ~/code/qtlm/conf/env/default.sh
+    source $HOME/code/qtlm/conf/env/default.sh
 
-And, run the previous command on your active terminal as well, before proceeding.
+And, run the previous command on your active terminal before proceeding.
 
 ## Usage
 
@@ -87,6 +89,8 @@ summary:
       version
             Shows qtleap script version.
 
+*Note:* `save`, `list`, `compare` and `translate` are *upcomming* features.
+ They are not yet available.
 
 Most of these commands require an environment variable `$QTLM_CONF` to be set.
 This variable should contain a string with three components separated by a
@@ -108,16 +112,19 @@ According to the `$QTLM_CONF` variable defined above, the file
 
 ### Training
 
+Please see the relevant [configuration for training](#dataset-configuration)
 Training transfer models (both translation directions are trained in parallel):
 
     qtlm train
 
 The training process will create a directory named
-`train_${DATASET}_${LANG1}-${LANG2}_${TRAIN_DATE}`, which would be
-`train_ep_en-pt_2015-02-12` for the previous example. The training process will
-create several files and sub-directories within that directory. For example,
-when training models for English-Portuguese, we get the following files and
-directories:
+
+    train_${DATASET}_${LANG1}-${LANG2}_${TRAIN_DATE}
+
+which would be `train_ep_en-pt_2015-02-12` for the previous example. The
+training process will create several files and sub-directories within that
+directory. For example, when training models for English-Portuguese, we get the
+following files and directories:
 
     .
     `-- train_ep_en-pt_2015-02-12
@@ -244,6 +251,7 @@ This will clean the cached trees for all configured testsets that have been
 already evaluated in the current directory.
 
 ### Snapshots
+*Note:* snapshots are an *upcomming* feature. They are not yet available.
 
 A snapshot is a bundle of current evaluations together with all information
 needed to recover the exact state of the current pipeline.
@@ -326,16 +334,16 @@ All configuration files are kept in directory `$QTLM_ROOT/conf`.
 ### Environment Configuration
 
 The shell environment is configured by sourcing
-`$QTLM_ROOT/conf/env/default.sh` from your `~/.bashrc` as follows:
+`$QTLM_ROOT/conf/env/default.sh` from your `$HOME/.bashrc` as follows:
 
     source $HOME/code/qtlm/conf/env/default.sh
 
 This file defines and exports the following variables: `QTLM_ROOT`,
 `TMT_ROOT`, `TREEX_CONFIG`, `PATH`, and `PERL5LIB`. If you installed the
 qtlm and tectomt repositories into the recommended place
-(`~/code/qtlm` and `~/code/tectomt`), then you don't have to change this
+(`$HOME/code/qtlm` and `$HOME/code/tectomt`), then you don't have to change this
 file. Else, you should create a file with your username
-(`$QTLM_ROOT/conf/env/$USER.sh`) and source it from your `~/.bashrc` like
+(`$QTLM_ROOT/conf/env/$USER.sh`) and source it from your `$HOME/.bashrc` like
 this:
 
     source $QTLM_ROOT/conf/env/$USER.sh
