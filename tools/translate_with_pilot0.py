@@ -9,7 +9,7 @@ host = "194.117.45.194"
 port = 8081
 
 if len(sys.argv) != 3:
-    exit("usage: {} sourceLang targetLang < original.txt > translation.txt")
+    exit("usage: {} sourceLang targetLang < original.txt > translation.txt".format(sys.argv[0]))
 
 sourceLang, targetLang = sys.argv[1:]
 
