@@ -35,8 +35,6 @@ function serve__start {
             discr_model=maxent.model.gz \
         "$QTLM_ROOT/scen/$lang1-$lang2/${trg}_t2w.scen" \
         > treex-socket-server.${src}2${trg}.scen
-
-    if
     local socket_server=$TMT_ROOT/treex/bin/treex-socket-server.pl
     if ! test -x $socket_server; then # we may be using an older tectomt revision
         socket_server=$QTLM_ROOT/tool/treex-socket-server.pl
@@ -53,7 +51,7 @@ function serve__start {
     sleep 2
 
     eval "mtmworker_port=\$treex_mtmworker_port_$src$trg"
-    local doing="starting ${src^^}->${trg^^} mtmworker on $mtmworker_port"
+    doing="starting ${src^^}->${trg^^} mtmworker on $mtmworker_port"
     log "$doing"
 
     local mtmworker=$TMT_ROOT/treex/bin/treex-mtmworker.pl
