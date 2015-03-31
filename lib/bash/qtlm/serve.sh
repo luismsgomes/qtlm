@@ -2,13 +2,18 @@
 # March 2015, Luís Gomes <luismsgomes@gmail.com>
 #
 
-function serve {
-    src=$lang1 trg=$lang2 serve__start
-    src=$lang2 trg=$lang1 serve__start
+function start {
+    read socket_server_port1 socket_server_port2 <<< "$treex_socket_server_ports"
+    read mtmworker_port1 mtmworker_port2 <<< "$treex_mtmworker_ports"
+    src=$lang1 trg=$lang2 \
+        socket_server_port=$socket_server_port1 mtmworker_port=$mtmworker_port1 \
+        __start
+    src=$lang2 trg=$lang1 \
+        socket_server_port=$socket_server_port2 mtmworker_port=$mtmworker_port2 \
+        __start
 }
 
-function serve__start {
-    eval "socket_server_port=\$treex_socket_server_port_$src$trg"
+function __start {
     local doing="starting ${src^^}->${trg^^} treex socket server on $socket_server_port"
     log "$doing"
 
@@ -50,7 +55,6 @@ function serve__start {
     log "treex-socket-server pid is $(cat treex-socket-server.${src}2${trg}.pid)"
     sleep 2
 
-    eval "mtmworker_port=\$treex_mtmworker_port_$src$trg"
     doing="starting ${src^^}->${trg^^} mtmworker on $mtmworker_port"
     log "$doing"
 
@@ -67,3 +71,23 @@ function serve__start {
     sleep 1
 }
 
+function stop {
+    for f in treex-{mtmworker,socket-server}.{${lang1}2${lang2},${lang2}2${lang1}}.pid; do
+        if ! test -f "$f"; then
+            log "file $f does not exist"
+        else
+            local pid=$(cat "$f")
+            if test -d /proc/$pid; then
+                log "sending SIGTERM to PID $pid."
+                kill -s TERM $pid
+                sleep 5
+            fi
+            if test -d /proc/$pid; then
+                log "sending SIGKILL to PID $pid."
+                kill -s KILL $pid
+                sleep 2
+            fi
+            rm -f "$f"
+        fi
+    done
+}

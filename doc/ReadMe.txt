@@ -59,9 +59,15 @@ summary:
       train
             Trains the transfer models for the current configuration.
 
+      serve
+            Starts two MTMonkey workers, one for each translation direction.
+
       evaluate <src> <trg> [testset]...
             Evaluates current pipeline using given testset or all configured
             testsets if a testset is not specified.
+
+      list scores
+            Lists BLEU scores from all evaluations in current directory.
 
       clean <src> <trg> [testset]...
             Cleans cache files from last evaluation. Use this if you changed
@@ -74,9 +80,8 @@ summary:
             translation directions before saving a snapshot.
             Snapshots are uploaded to the share server.
 
-      list (snapshots|scores)
-            Lists all snapshots in reverse chronological order or list BLEU
-            scores from evaluations in current directory.
+      list snapshots
+            Lists all snapshots in reverse chronological order.
 
       compare [snapshot_id]
             Compare current evaluations with specified snapshot (or with
@@ -85,6 +90,8 @@ summary:
       translate <src> <trg>
             Translates text from STDIN (expects one sentence per line) and
             writes translations to STDOUT.
+            If environment variable $save_trees is set, then trees are saved
+            into the directory specified by the variable.
 
       help
             Shows this help.
@@ -92,8 +99,7 @@ summary:
       version
             Shows qtleap script version.
 
-Note: save, list, compare and translate are upcomming features. They are
-not yet available.
+Note: save, list snapshots, compare commands are under development.
 
 Most of these commands require an environment variable $QTLM_CONF to be
 set. This variable should contain a string with three components
@@ -176,13 +182,26 @@ STDIN and writes one sentence per line on STDOUT):
     qtlm translate en pt
 
 If you want to save the trees of each translated sentence (for debugging
-purposes for example), then give a directory name as argument:
+purposes for example), then set the target directory in the environment
+variable $save_trees:
 
-    qtlm translate en pt trees_dir
+    save_trees=somedir qtlm translate en pt
 
 This will read from STDIN and write to STDOUT as previously, but it will
-also create a file named trees_dir/###.treex.gz for each input line (###
-is replaced by the number of the line, starting with 001).
+also create a file named somedir/######.treex.gz for each input line
+(###### is replaced by the number of the line, starting with 000001).
+
+MTMonkey XML-RPC workers
+
+To start MTMonkey workers for the current configuration, just run:
+
+    qtlm serve
+
+This will launch a pair of treex-socket-servers (one for each
+translation direction) and a pair of treex-mtmworkers which provide a
+XML-RPC interface to the (plain-text) socket servers. The ports of these
+4 servers should be configured in the dataset configuration file. See
+Dataset Configuration section.
 
 Evaluation
 
@@ -234,6 +253,19 @@ $QTLM_ROOT/conf/testsets/en-pt just omit the evalset name:
 
     qtlm evaluate en pt
 
+To list BLEU and NIST scores for all testsets evaluated under the
+current directory:
+
+    qtlm list scores
+
+Which will output something like:
+
+    TESTSET          NIST    BLEU    SYSTEM
+    qtleap_2a.en2pt  5.4622  0.1942  qtleap:en-pt/ep/2015-01-19
+    qtleap_1a.en2pt  5.7766  0.2290  qtleap:en-pt/ep/2015-01-19
+    qtleap_2q.en2pt  4.8243  0.1419  qtleap:en-pt/ep/2015-01-19
+    qtleap_1q.en2pt  4.5370  0.1224  qtleap:en-pt/ep/2015-01-19
+
 Cleaning cached intermediate trees
 
 If you are developing the synthesis and you want to re-evaluate the
@@ -255,7 +287,7 @@ been already evaluated in the current directory.
 
 Snapshots
 
-Note: snapshots are an upcomming feature. They are not yet available.
+Note: snapshots are under development.
 
 A snapshot is a bundle of current evaluations together with all
 information needed to recover the exact state of the current pipeline.
@@ -299,7 +331,7 @@ Listing snapshots
 
 Listing all saved snapshots, from the most recent to the oldest:
 
-    qtlm list
+    qtlm list snapshots
 
 This will fetch an updated list of snapshots from the share server for
 the current $QTLM_CONF. The list is presented as follows:
@@ -340,8 +372,8 @@ All configuration files are kept in directory $QTLM_ROOT/conf.
 
 Environment Configuration
 
-The shell environment is configured by sourcing
-$QTLM_ROOT/conf/env/default.sh from your $HOME/.bashrc as follows:
+The shell environment is configured by adding the following line to your
+$HOME/.bashrc:
 
     source $HOME/code/qtlm/conf/env/default.sh
 
@@ -349,8 +381,8 @@ This file defines and exports the following variables: QTLM_ROOT,
 TMT_ROOT, TREEX_CONFIG, PATH, and PERL5LIB. If you installed the qtlm
 and tectomt repositories into the recommended place ($HOME/code/qtlm and
 $HOME/code/tectomt), then you don’t have to change this file. Else, you
-should create a file with your username ($QTLM_ROOT/conf/env/$USER.sh)
-and source it from your $HOME/.bashrc like this:
+should create a file with your username and source it from your
+$HOME/.bashrc like this:
 
     source $QTLM_ROOT/conf/env/$USER.sh
 
@@ -364,22 +396,25 @@ $num_procs
 
 The maximum number of concurrent processes that should be executed.
 Specify a number lower than the number of available processors in your
-machine. (default: 2)
+machine.  
+(default: 2)
 
 $sort_mem
 
-How much memory can we use for sorting? (default: 50%)
+How much memory can we use for sorting?  
+(default: 50%)
 
 $big_machine
 
 Set this to true only if your machine has enough memory to run several
 concurrent analysis pipelines (for example a machine with 32 cores and
-256 GB RAM). (default: false)
+256 GB RAM).  
+(default: false)
 
 $giza_dir
 
-Where GIZA++ has been installed. (default:
-"$TMT_ROOT/share/installed_tools/giza")
+Where GIZA++ has been installed.  
+(default: "$TMT_ROOT/share/installed_tools/giza")
 
 Sharing Configuration
 
@@ -432,12 +467,16 @@ machine.
 
 $*_train_opts
 
-These are the options affecting the behaviour of the machine learning
-algorithm for training each transfer model. Four variables must be
-defined: $lemma_static_train_opts, $lemma_maxent_train_opts,
-$formeme_static_train_opts, and $formeme_maxent_train_opts. Refer to
-$TMT_ROOT/treex/training/mt/transl_models/train.pl for further details.
-Example:
+Four variables set the options affecting the behaviour of the machine
+learning algorithms for training each transfer model:
+
+-   $lemma_static_train_opts
+-   $lemma_maxent_train_opts
+-   $formeme_static_train_opts
+-   $formeme_maxent_train_opts
+
+Refer to $TMT_ROOT/treex/training/mt/transl_models/train.pl for further
+details. Example:
 
     static_train_opts="--instances 10000 \
         --min_instances 2 \
@@ -461,6 +500,24 @@ Example:
 $rm_giza_files
 
 If true then GIZA models are removed after the aligment is produced.
+
+$treex_socket_server_ports
+
+This variable defines the two ports of Treex socket servers (one for
+each translation direction).
+
+Example:
+
+    treex_socket_server_ports="7001 7002"
+
+$treex_mtmworker_ports
+
+This variable defines the two ports of Treex MTMonkey XML-RPC servers
+(one for each translation direction).
+
+Example:
+
+    treex_mtmworker_ports="8001 8002"
 
 Testset Configuration
 

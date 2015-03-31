@@ -11,29 +11,34 @@
 ##?   train
 ##?         Trains the transfer models for the current configuration.
 ##?
-##?   serve
+##?   start
 ##?         Starts two MTMonkey workers, one for each translation direction.
+##?
+##?   stop
+##?         Stops MTMonkey workers.
 ##?
 ##?   evaluate <src> <trg> [testset]...
 ##?         Evaluates current pipeline using given testset or all configured
 ##?         testsets if a testset is not specified.
 ##?
+##?   list scores
+##?         Lists BLEU scores from all evaluations in current directory.
+##?
 ##?   clean <src> <trg> [testset]...
 ##?         Cleans cache files from last evaluation. Use this if you changed
 ##?         the <src> languages analysis.
 ##?
-##?   save <testset> <description>
+##?   *save <testset> <description>
 ##?         Saves a snapshot of the current evaluation of <testset>.
 ##?         <description> should be a brief description of what changed since
 ##?         last save. Note that <testset> must have been evaluated in both
 ##?         translation directions before saving a snapshot.
 ##?         Snapshots are uploaded to the share server.
 ##?
-##?   list (snapshots|scores)
-##?         Lists all snapshots in reverse chronological order or list BLEU
-##?         scores from evaluations in current directory.
+##?   *list snapshots
+##?         Lists all snapshots in reverse chronological order.
 ##?
-##?   compare [snapshot_id]
+##?   *compare [snapshot_id]
 ##?         Compare current evaluations with specified snapshot (or with
 ##?         latest snapshot if snapshot_id is not given).
 ##?
@@ -48,6 +53,10 @@
 ##?
 ##?   version
 ##?         Shows qtleap script version.
+##?
+##?
+##? Note: commands "save", "list snapshots" and "compare" are under development.
+##?
 ##?
 
 function main {
@@ -133,11 +142,11 @@ function main {
             check_src_trg
             translate
         ;;
-        serve)
+        start|stop)
             if test $# -ne 0; then
                 fatal "command $cmd takes no arguments"
             fi
-            serve
+            $cmd
         ;;
         *)
         stderr "invalid command \"$cmd\""
