@@ -32,10 +32,10 @@ Pre-requisites/dependencies of `qtlm`:
 Note: the BLEU scores reported for Pilot 1 by the EN-PT system are based on
 `tectomt` revision 14386.
 
-Extract the *QTLeap Manager* archive `qtlm_rev274.tgz` into `$HOME/code/qtlm`:
+Extract the *QTLeap Manager* archive `qtlm_rev293.tgz` into `$HOME/code/qtlm`:
 
     mkdir -p $HOME/code
-    tar xzf qtlm_rev273.tgz -C $HOME/code
+    tar xzf qtlm_rev293.tgz -C $HOME/code
 
 Add the following ling to your `$HOME/.bashrc`:
 

@@ -42,7 +42,7 @@ function __start {
         > treex-socket-server.${src}2${trg}.scen
     local socket_server=$TMT_ROOT/treex/bin/treex-socket-server.pl
     if ! test -x $socket_server; then # we may be using an older tectomt revision
-        socket_server=$QTLM_ROOT/tool/treex-socket-server.pl
+        socket_server=$QTLM_ROOT/tools/treex-socket-server.pl
     fi
     $socket_server \
         --detail \
