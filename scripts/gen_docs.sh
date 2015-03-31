@@ -25,3 +25,8 @@ tools/search_replace.py '==>' '|||' \
 \begin{document}
 \verbatimfont{\small}%
 ' doc/ReadMe.tex
+
+{
+    cd doc
+    pdflatex ReadMe > ReadMe.pdflatex 2>&1
+}
