@@ -11,6 +11,9 @@
 ##?   train
 ##?         Trains the transfer models for the current configuration.
 ##?
+##?   serve
+##?         Starts two MTMonkey workers, one for each translation direction.
+##?
 ##?   evaluate <src> <trg> [testset]...
 ##?         Evaluates current pipeline using given testset or all configured
 ##?         testsets if a testset is not specified.
