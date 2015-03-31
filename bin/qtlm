@@ -40,6 +40,8 @@
 ##?   translate <src> <trg>
 ##?         Translates text from STDIN (expects one sentence per line) and
 ##?         writes translations to STDOUT.
+##?         If environment variable $save_trees is set, then trees are saved
+##?         into the directory specified by the variable.
 ##?
 ##?   help
 ##?         Shows this help.
@@ -53,7 +55,7 @@ function main {
     source "$QTLM_ROOT/lib/bash/qtlm/common.sh" || exit 1
     source "$QTLM_ROOT/lib/bash/qtlm/train.sh" || exit 1
     source "$QTLM_ROOT/lib/bash/qtlm/evaluate.sh" || exit 1
-    #source "$QTLM_ROOT/lib/bash/qtlm/translate.sh" || exit 1
+    source "$QTLM_ROOT/lib/bash/qtlm/translate.sh" || exit 1
     source "$QTLM_ROOT/lib/bash/qtlm/serve.sh" || exit 1
     set_pedantic_bash_options
     load_config
@@ -129,6 +131,7 @@ function main {
             src="$1"
             trg="$2"
             check_src_trg
+            translate
         ;;
         serve)
             if test $# -ne 0; then
