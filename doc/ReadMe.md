@@ -509,7 +509,7 @@ Example:
 
 A testset is a combination of parallel corpora that is used to test the
  whole pipeline.  For each `TESTSET` we must create a respective file
- `$QTLM_ROOT/conf/datasets/L1-L2/TESTSET.sh` and it must define the following
+ `$QTLM_ROOT/conf/testsets/L1-L2/TESTSET.sh` and it must define the following
  variables:
 
 #### \$testset_files

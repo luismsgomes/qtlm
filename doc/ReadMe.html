@@ -343,7 +343,7 @@ formeme_maxent_train_opts=&quot;$maxent_train_opts&quot;</code></pre>
 <p>Example:</p>
 <pre><code>treex_mtmworker_ports=&quot;8001 8002&quot;</code></pre>
 <h3 id="testset-configuration"><a href="#TOC">Testset Configuration</a></h3>
-<p>A testset is a combination of parallel corpora that is used to test the whole pipeline. For each <code>TESTSET</code> we must create a respective file <code>$QTLM_ROOT/conf/datasets/L1-L2/TESTSET.sh</code> and it must define the following variables:</p>
+<p>A testset is a combination of parallel corpora that is used to test the whole pipeline. For each <code>TESTSET</code> we must create a respective file <code>$QTLM_ROOT/conf/testsets/L1-L2/TESTSET.sh</code> and it must define the following variables:</p>
 <h4 id="testset_files"><a href="#TOC">$testset_files</a></h4>
 <p>A space-separated list of files (may be gzipped), each containing tab-separated pairs of human translated sentences. The file paths specified here must be relative to <code>$download_base_url</code> configured in <code>$QTLM_ROOT/conf/sharing.sh</code>.</p>
 <p>Example: <code>testset_files=&quot;corpora/qtleap/qtleap_1a.gz&quot;</code></p>
