@@ -1,0 +1,7 @@
+syntax:glob
+*.aux
+*.log
+*.out
+*.pdflatex
+doc/ReadMe.tex
+
