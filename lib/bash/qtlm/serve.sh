@@ -36,7 +36,12 @@ function serve__start {
         "$QTLM_ROOT/scen/$lang1-$lang2/${trg}_t2w.scen" \
         > treex-socket-server.${src}2${trg}.scen
 
-    $TMT_ROOT/treex/bin/treex-socket-server.pl \
+    if
+    local socket_server=$TMT_ROOT/treex/bin/treex-socket-server.pl
+    if ! test -x $socket_server; then # we may be using an older tectomt revision
+        socket_server=$QTLM_ROOT/tool/treex-socket-server.pl
+    fi
+    $socket_server \
         --detail \
         --port=$socket_server_port \
         --source_zone=$src:src \
@@ -51,7 +56,11 @@ function serve__start {
     local doing="starting ${src^^}->${trg^^} mtmworker on $mtmworker_port"
     log "$doing"
 
-    $TMT_ROOT/treex/bin/treex-mtmworker.pl \
+    local mtmworker=$TMT_ROOT/treex/bin/treex-mtmworker.pl
+    if ! test -x $mtmworker; then # we may be using an older tectomt revision
+        mtmworker=$QTLM_ROOT/tools/treex-mtmworker.pl
+    fi
+    $mtmworker \
         -p $mtmworker_port \
         -s $socket_server_port \
         > treex-mtmworker.${src}2${trg}.log 2>&1 &
