@@ -54,3 +54,6 @@ T2A::DeleteSuperfluousAuxCP
 T2A::EN::CapitalizeSentStart
 
 A2W::EN::ConcatenateTokens
+
+# this is the place for temporary regex-based hacks:
+A2W::EN::DirtyTricks
