@@ -1,6 +1,8 @@
 
 function load_config {
-    check_required_variables QTLM_CONF QTLM_ROOT
+    if ! check_required_variables QTLM_CONF QTLM_ROOT; then
+        exit 1
+    fi
     lang_pair=${QTLM_CONF%/*/*}
     lang1=${lang_pair%-*}
     lang2=${lang_pair#*-}
