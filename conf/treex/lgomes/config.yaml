@@ -1,0 +1,9 @@
+---
+resource_path:
+  - /home/lgomes/code/tectomt/share
+share_dir: /home/lgomes/code/tectomt/share
+share_url: http://ufallab.ms.mff.cuni.cz/tectomt/share
+tmp_dir: /tmp
+pml_schema_dir: /home/lgomes/code/tectomt/treex/lib/Treex/Core/share/tred_extension/treex/resources
+tred_dir: /home/lgomes/tred
+tred_extension_dir: /home/lgomes/code/tectomt/treex/lib/Treex/Core/share/tred_extension
