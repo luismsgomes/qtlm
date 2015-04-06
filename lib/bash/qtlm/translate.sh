@@ -6,7 +6,7 @@ function translate {
     local now=$(date '+%Y%m%d_%H%M%S')
     local write_treex=""
     if is_set save_trees; then
-        write_treex="Write::Treex storable=0 compress=1 file_stem='' path='$save_trees'"
+        write_treex="Write::Treex storable=0 compress=1 file_stem= path='$save_trees'"
         create_dir "$save_trees"
     fi
 
