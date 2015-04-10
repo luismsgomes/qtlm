@@ -15,6 +15,7 @@ fi
 
 sudo apt-get install --yes \
     unattended-upgrades \
+    cpanminus \
     bash-completion \
     build-essential \
     git \
