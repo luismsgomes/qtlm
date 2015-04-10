@@ -1,5 +1,18 @@
 #! /bin/bash
 
+if [ -z ${TMT_ROOT} ]; then
+	echo "$TMT_ROOT is not set." >&2
+	echo "Please set TMT_ROOT to the directory where you want tectomt to be checked out." >&2
+	echo "For example: TMT_ROOT=$HOME/code/tectomt" >&2
+	exit 1
+fi
+
+if ! [ -d "$TMT_ROOT" ]; then
+	svn checkout --username public --password public \
+		"https://svn.ms.mff.cuni.cz/svn/tectomt_devel/trunk" \
+		"$TMT_ROOT"
+fi
+
 sudo apt-get install --yes \
 	unattended-upgrades \
 	bash-completion \
@@ -30,7 +43,6 @@ sudo cpanm \
 	URI::Find::Schemeless \
 	PerlIO::gzip \
 	Text::Iconv \
-	AI::MaxEntropy \
 	Cache::Memcached \
 	Email::Find XML::Twig \
 	String::Util \
@@ -42,6 +54,23 @@ sudo cpanm \
 	Text::Brew \
 	App::Ack \
 	RPC::XML \
-	UUID::Generator::PurePerl
+	UUID::Generator::PurePerl \
+	App/whichpm.pm \
+
+sudo cpanm --force \
+	AI::MaxEntropy \
 
 sudo pip install scikit-learn numpy scipy
+
+mkdir -p $TMT_ROOT/share/data/models/morce/en
+pushd $TMT_ROOT/share/data/models/morce/en/
+wget -c http://ufallab.ms.mff.cuni.cz/tectomt/share/data/models/morce/en/{morce.{alph,dct,ft,ftrs},tags_for_form-from_wsj.dat}
+popd
+
+pushd $TMT_ROOT/libs/packaged/Morce-English
+perl Build.PL && ./Build && ./Build test && sudo ./Build install
+popd
+
+pushd $TMT_ROOT/install/tool_installation/NADA
+perl Makefile.PL && make && sudo make install
+popd
