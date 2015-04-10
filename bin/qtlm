@@ -60,6 +60,19 @@
 ##?
 
 function main {
+    if ! test -d "$QTLM_ROOT"; then
+        echo "$0: check environment variable QTLM_ROOT" >&2
+        exit 1
+    fi
+    if ! test -d "$TMT_ROOT"; then
+        echo "$0: check environment variable TMT_ROOT" >&2
+        exit 1
+    fi
+    if test -f "$QTLM_ROOT/conf/env/$USER.sh"; then
+        source "$QTLM_ROOT/conf/env/$USER.sh"
+    else
+        source "$QTLM_ROOT/conf/env/default.sh"
+    fi
     source "$QTLM_ROOT/lib/bash/utils.sh" || exit 1
     source "$QTLM_ROOT/lib/bash/qtlm/common.sh" || exit 1
     source "$QTLM_ROOT/lib/bash/qtlm/train.sh" || exit 1
