@@ -39,9 +39,13 @@ function translate_from_scratch {
     log "$doing"
     if test -d "eval_$testset/$test_file.${src}2${trg}.cache"; then
         find "eval_$testset/$test_file.${src}2${trg}.cache" -type f -name "*.treex.gz" -delete
+    else
+        create_dir "eval_$testset/$test_file.${src}2${trg}.cache"
     fi
     if test -d "eval_$testset/$test_file.${src}2${trg}.final.new"; then
         find "eval_$testset/$test_file.${src}2${trg}.final.new" -type f -name "*.treex.gz" -delete
+    else
+        create_dir "eval_$testset/$test_file.${src}2${trg}.final.new"
     fi
     $TMT_ROOT/treex/bin/treex --dump_scenario \
         Util::SetGlobal \
@@ -110,6 +114,8 @@ function translate_from_cache {
     log "$doing"
     if test -d "eval_$testset/$test_file.${src}2${trg}.final.new"; then
         find "eval_$testset/$test_file.${src}2${trg}.final.new" -type f -name "*.treex.gz" -delete
+    else
+        create_dir "eval_$testset/$test_file.${src}2${trg}.final.new"
     fi
     $TMT_ROOT/treex/bin/treex --dump_scenario \
         Read::Treex \
