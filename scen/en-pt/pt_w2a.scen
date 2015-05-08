@@ -3,8 +3,6 @@ Util::SetGlobal language=pt
 Util::SetGlobal lxsuite_host=194.117.45.198 lxsuite_port=10000
 Util::SetGlobal lxsuite_key=nlx.qtleap.13417612987549387402
 
-#Util::SetGlobal error_level=DEBUG
-
 W2A::ResegmentSentences
 
 W2A::PT::TokenizeAndTag
@@ -13,6 +11,14 @@ W2A::NormalizeForms
 W2A::MarkChunks min_quotes=3
 
 # a-layer
+W2A::PT::WSD
+
 W2A::PT::Parse lxsuite_mode=conll.pos:parser:conll.usd
 HamleDT::PT::HarmonizeCintilUSD
 W2A::PT::FixAfuns
+
+# Experiment 541
+#W2A::PT::ReplaceLemmasWithSynsetId
+
+# Experiment 541 (b)
+#W2A::PT::AppendSynsetIdToLemmas

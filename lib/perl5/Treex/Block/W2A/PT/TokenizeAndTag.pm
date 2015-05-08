@@ -45,7 +45,7 @@ sub process_zone {
             lemma          => $lemmas->[$i],
             'conll/pos'    => $postags->[$i],
             'conll/cpos'   => $cpostags->[$i],
-            'conll/feat'   => $feats->[$i]
+            'conll/feat'   => $feats->[$i],
         });
     }
     return 1;
