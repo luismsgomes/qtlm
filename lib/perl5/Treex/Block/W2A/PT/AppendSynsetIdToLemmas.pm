@@ -7,7 +7,10 @@ sub process_anode {
     my $synsetid = $anode->wild->{lx_wsd} // 'UNK';
     my $lemma = $anode->lemma;
     if ($synsetid ne 'UNK') {
-        $anode->set_lemma($lemma."~".$synsetid);
+        my $alpha_synsetid = "$synsetid";
+        $alpha_synsetid =~ tr/0-9/a-j/;
+        #$anode->set_lemma($alpha_synsetid);
+        $anode->set_lemma($lemma."__".$alpha_synsetid);
     }  
     return 1;
 }
