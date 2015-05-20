@@ -1,7 +1,8 @@
 syntax:glob
+*.hgignore
 *.aux
 *.log
 *.out
 *.pdflatex
 doc/ReadMe.tex
-
+local/*
