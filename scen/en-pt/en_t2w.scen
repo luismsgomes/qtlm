@@ -1,35 +1,26 @@
 Util::SetGlobal language=en
 
 T2T::FixPunctFormemes
-
-#Util::DefinedAttr tnode=t_lemma,formeme message="after TrLFCompounds"
-#T2T::SelectCompatibleTlemmaFormeme
 T2T::SetClauseNumber
-
 T2T::PT2EN::RestoreUrl
 T2T::PT2EN::MoveAdjsBeforeNouns
 T2T::PT2EN::FixThereIs
 T2T::PT2EN::FixValency
 
-
 T2A::DeleteGeneratedNodes
 T2A::CopyTtree
+
 T2A::EN::InitMorphcat
 T2A::EN::MarkSubject
-
 T2A::EN::WordOrder
-
 T2A::EN::ImposeSubjpredAgr
-
 T2A::EN::DeleteYouInImperatives
-
 T2A::EN::AddPrepos
 T2A::EN::AddSubconjs
 T2A::EN::AddInfinitiveParticles
 T2A::EN::AddPhrasalVerbParticles
 T2A::EN::AddPossessiveMarkers
 T2A::EN::AddArticles
-
 T2A::EN::AddAuxVerbCompoundPassive
 T2A::EN::AddAuxVerbModalTense
 T2A::EN::AddVerbNegation
@@ -37,22 +28,18 @@ T2A::EN::AddVerbNegation
 T2A::ProjectClauseNumber
 T2A::AddParentheses
 T2A::AddSentFinalPunct
-## TODO create for English
-#T2A::EN::AddSubordClausePunct -- seems that this is solved by AddIntroPunct
+
 T2A::EN::AddCoordPunct
 T2A::EN::AddIntroPunct
 T2A::EN::AddAppositionPunct
 T2A::EN::AddPhrasalPunct
-
 T2A::EN::FixLemmas
 T2A::EN::GenerateWordforms
 T2A::EN::IndefArticlePhonetics
-
 T2A::EN::FixThereIs
 
 T2A::DeleteSuperfluousAuxCP
 T2A::EN::CapitalizeSentStart
-
 A2W::EN::ConcatenateTokens
 
 # this is the place for temporary regex-based hacks:
