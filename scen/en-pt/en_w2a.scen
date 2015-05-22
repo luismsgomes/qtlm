@@ -30,3 +30,4 @@ W2A::FixQuotes
 W2A::EN::PreferImperatives
 
 A2A::ConvertTags input_driver=en::penn
+A2A::EN::EnhanceInterset
