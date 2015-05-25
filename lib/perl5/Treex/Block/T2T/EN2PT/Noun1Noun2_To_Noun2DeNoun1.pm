@@ -24,6 +24,7 @@ sub process_ttree {
         if (( $tnode->formeme || "" ) =~ /^n:(?:attr|de\+X)/ and
                 (( $parent->functor || "" ) !~ /^(CONJ|COORD)$/ ) and
                 (( $parent->formeme || "" ) =~ /^n:/ ) and
+                ($tnode->functor || "") !~ /^RSTR$/ and
                 $tnode->precedes($parent)) {
 
             my $before = $tnode->t_lemma."(".($tnode->formeme // "").") ".$parent->t_lemma."(".($parent->formeme // "").")";
