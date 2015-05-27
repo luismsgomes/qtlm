@@ -21,10 +21,35 @@ sub process_ttree {
     my ( $self, $troot ) = @_;
     foreach my $tnode ( $troot->get_descendants ) {
         my $parent = $tnode->get_parent;
+
+        # When a node is part of a menu chain (ex. fo to Tools > Word Count) 
+        # don't move adjectives after nouns if tnode has a formeme X 
+
+        if ($tnode->t_lemma =~ /^>$/ or 
+            $parent->t_lemma =~ /^(>|\/)$/){
+            next;
+        }
+
+        # TODO: Simplificar, siblings ou parent à direita sem < ou / pelo meio...
+        my $right_neighbor = $tnode->get_right_neighbor();
+
+        if (defined $right_neighbor){
+            if ($right_neighbor->t_lemma =~ /^(>|\/)$/ ) {
+                next;
+            }
+
+            my $right_right_neighbor =  $right_neighbor->get_right_neighbor();
+            if (defined $right_right_neighbor){
+                if ($right_right_neighbor->t_lemma =~ /^(>|\/)$/ ) {
+                    next;
+                }
+            }
+        }
+
+
         if (( $tnode->formeme || "" ) =~ /^n:(?:attr|de\+X)/ and
                 (( $parent->functor || "" ) !~ /^(CONJ|COORD)$/ ) and
                 (( $parent->formeme || "" ) =~ /^n:/ ) and
-                ($tnode->functor || "") !~ /^RSTR$/ and
                 $tnode->precedes($parent)) {
 
             my $before = $tnode->t_lemma."(".($tnode->formeme // "").") ".$parent->t_lemma."(".($parent->formeme // "").")";
