@@ -61,6 +61,13 @@ sub process_ttree {
     foreach my $tnode ( $troot->get_descendants ) {
 
         my $parent = $tnode->get_parent;
+
+        # When a node is part of a menu chain (ex. fo to Tools > Word Count) 
+        # don't move adjectives after nouns
+        if (any {($_->functor || "") =~ /^RSTR$/} $tnode->get_siblings) {
+            return;
+        }
+
         if (( $tnode->formeme || "" ) =~ /^(?:adj:|n:attr)/
             and ! exists($prenominal_adjs{lc($tnode->t_lemma)})
             and ! exists($ord{lc($tnode->t_lemma)})
@@ -71,7 +78,6 @@ sub process_ttree {
             and not $tnode->is_parenthesis
             and not (($tnode->gram_sempos // '' ) =~ /pron/)
             and not ((lc $tnode->t_lemma) ~~ @LX::Data::PT::exceptionsMoveAdjsAfterNouns)
-            and ($tnode->functor || "") !~ /^RSTR$/ 
             ) {
                 while (($parent->get_parent->formeme || "" ) =~ /^n:/
                        and $tnode->precedes($parent->get_parent)) {
