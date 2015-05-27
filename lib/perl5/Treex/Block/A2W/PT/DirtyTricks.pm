@@ -8,8 +8,11 @@ sub process_zone {
     my ( $self, $zone ) = @_;
     my $sentence = $zone->sentence;
 
-    $sentence =~ s/``\s*/“/g;
+    $sentence =~ s/``\s*/“/g; # Isto ainda é necessario?
     $sentence =~ s/\s*''/”/g;
+
+    $sentence =~ s/“//g;
+    $sentence =~ s/”//g;
 
     $zone->set_sentence($sentence);
     return;
