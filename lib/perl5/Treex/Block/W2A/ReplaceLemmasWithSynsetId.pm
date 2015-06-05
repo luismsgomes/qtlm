@@ -1,16 +1,14 @@
-package Treex::Block::W2A::PT::AppendSynsetIdToLemmas;
+package Treex::Block::W2A::ReplaceLemmasWithSynsetId;
 use Moose;
 extends 'Treex::Core::Block';
 
 sub process_anode {
     my ( $self, $anode ) = @_;
     my $synsetid = $anode->wild->{lx_wsd} // 'UNK';
-    my $lemma = $anode->lemma;
     if ($synsetid ne 'UNK') {
         my $alpha_synsetid = "$synsetid";
         $alpha_synsetid =~ tr/0-9/a-j/;
-        #$anode->set_lemma($alpha_synsetid);
-        $anode->set_lemma($lemma."__".$alpha_synsetid);
+        $anode->set_lemma($alpha_synsetid);
     }  
     return 1;
 }
@@ -23,11 +21,11 @@ __END__
 
 =head1 NAME 
 
-Treex::Block::W2A::PT::AppendSynsetIdToLemmas
+Treex::Block::W2A::ReplaceLemmasWithSynsetId
 
 =head1 DESCRIPTION
 
-Appends synset ids to lemmas (where applicable).
+Replaces lemmas with synset ids (where applicable).
 
 =head1 AUTHORS
 
