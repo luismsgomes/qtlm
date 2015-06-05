@@ -8,7 +8,6 @@ use File::Temp 'tempdir';
 extends 'Treex::Core::Block';
 
 has [qw( _reader _writer _pid _tmpdir )] => ( is => 'rw' );
-has lang => ( isa => 'Str', is => 'ro', required => 0, default => "pt" );
 
 sub write {
     my $self = shift;
@@ -33,7 +32,7 @@ sub read {
 
 sub BUILD {
     my $self = shift;
-    my $lang = $self->lang;
+    my $lang = $self->language;
     my $tmpdir = tempdir("lx-wsd-module-workdir-XXXXX", CLEANUP => 1);
     $self->_set_tmpdir($tmpdir);
     my $cmd = $ENV{'QTLM_ROOT'}."/tools/lx-wsd-module-v1.5/lx-wsd-module "
