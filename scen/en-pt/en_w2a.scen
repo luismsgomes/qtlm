@@ -34,3 +34,8 @@ W2A::EN::PreferImperatives
 A2A::ConvertTags input_driver=en::penn
 A2A::EN::EnhanceInterset
 
+# Experiment 541
+#W2A::ReplaceLemmasWithSynsetId
+
+# Experiment 541 (b)
+#W2A::AppendSynsetIdToLemmas

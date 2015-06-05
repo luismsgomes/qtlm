@@ -17,7 +17,7 @@ HamleDT::PT::HarmonizeCintilUSD
 W2A::PT::FixAfuns
 
 # Experiment 541
-#W2A::PT::ReplaceLemmasWithSynsetId
+#W2A::ReplaceLemmasWithSynsetId
 
 # Experiment 541 (b)
-#W2A::PT::AppendSynsetIdToLemmas
+#W2A::AppendSynsetIdToLemmas
