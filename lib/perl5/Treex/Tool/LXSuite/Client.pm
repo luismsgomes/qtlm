@@ -6,9 +6,6 @@ use Treex::Tool::ProcessUtils;
 use File::Basename;
 
 
-has lxsuite_host => ( isa => 'Str', is => 'ro', required => 0, default => "localhost" );
-has lxsuite_port => ( isa => 'Int', is => 'ro', required => 0, default => 10000 );
-has lxsuite_key => ( isa => 'Str', is => 'ro', required => 1 );
 has lxsuite_mode => ( isa => 'Str', is => 'ro', required => 1 );
 has [qw( _reader _writer _pid )] => ( is => 'rw' );
 
@@ -37,17 +34,14 @@ sub read {
 sub BUILD {
     my $self = shift;
     my $client_dir = dirname(__FILE__);
-    my $host = $self->lxsuite_host;
-    my $port = $self->lxsuite_port;
-    my $key  = $self->lxsuite_key;
     my $mode = $self->lxsuite_mode;
-    my $cmd = "$client_dir/lxsuite_client.py $host $port $key $mode - -";
+    my $cmd = "$client_dir/lxsuite_client.py $mode - -";
     my ( $reader, $writer, $pid ) =
         Treex::Tool::ProcessUtils::bipipe($cmd, ':encoding(utf-8)');
     $self->_set_reader( $reader );
     $self->_set_writer( $writer );
     $self->_set_pid( $pid );
-    log_debug("Launching lxsuite_host=$host lxsuite_port:$port lxsuite_mode:$mode pid=$pid", 1);
+    log_debug("Launching lxsuite_mode=$mode pid=$pid", 1);
 }
 
 sub DEMOLISH {

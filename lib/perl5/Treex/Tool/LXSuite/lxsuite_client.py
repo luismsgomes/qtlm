@@ -7,7 +7,7 @@
 import fcntl, os, re, select, signal, socket, subprocess, sys
 
 usage = """
-usage: {progname} HOST PORT KEY MODE INPUTFILE OUTPUTFILE
+usage: {progname} [HOST PORT KEY] MODE INPUTFILE OUTPUTFILE
 
 HOST is the lxsuite service host (e.g. nlx-server.di.fc.ul.pt).
 PORT is the lxsuite service port (e.g. 10000).
@@ -30,7 +30,7 @@ MODE is one of:
 
     chunker:OUT
         Runs only the chunker, which tries to detect where each
-         sentence ends and the next begins, trying to undo 
+         sentence ends and the next begins, trying to undo
          linebreaks that were inserted within sentences (usually
          called "word wrapping").
          Each paragraph should be delimited at the input by an
@@ -54,13 +54,13 @@ MODE is one of:
         IN/OUT is either "plain" or "ctags" (see FORMATS below).
 
     IN:tagger_parser:OUT
-        Runs PoS tagger and dependency parser. Assumes text has been sentence-chunked
-         and tokenized.
+        Runs PoS tagger and dependency parser. Assumes text has been
+         sentence-chunked and tokenized.
         IN is either "plain" or "ctags" (see FORMATS below).
         OUT is either "conll.lx", "conll.usd" or "lxtriples" (see FORMATS below).
 
     IN:tagger:OUT
-        Runs PoS tagger. Assumes text has been sentence-chunked 
+        Runs PoS tagger. Assumes text has been sentence-chunked
          and tokenized.
         IN is either "plain" or "ctags" (see FORMATS below).
         OUT is either "plain", "ctags" or "conll.pos" (see FORMATS below).
@@ -70,6 +70,12 @@ MODE is one of:
          sentence-chunked, tokenized and PoS-tagged.
         IN is either "plain", "ctags" or "conll.pos" (see FORMATS below).
         OUT is either "conll.lx", "conll.usd" or "lxtriples" (see FORMATS below).
+
+    IN:ner:OUT
+        Finds Named Entities in the text. Assumes text has been
+         sentence-chunked, tokenized and PoS-tagged.
+        IN is "ctags" (see FORMATS below).
+        OUT is "ctags.ner" (see FORMATS below).
 
     IN:to:OUT
         Converts IN format to OUT format.
@@ -84,22 +90,37 @@ MODE is one of:
         Input format:
           word,category,gender,number,<boolean>superlative,<boolean>diminutive
 
+    version
+        Shows the version of lxsuite.
+
     help
         Shows this information.
 
 FORMATS
     Use "plain" when the input/output text is plain text.
     Use "ctags" when the input/output text is marked with chunk
+    Use "ctags.ner" when you want the Named Entities in ctags format.
      tags (<p></p> and <s>/</s>).
     Use "conll.pos" when you want the tagged text in CoNLL tabular format.
-    Use "conll.lx" when you want the parsed text in CoNLL tabular format 
+    Use "conll.lx" when you want the parsed text in CoNLL tabular format
       using LX dependency relations.
-    Use "conll.usd" when you want the parsed text in CoNLL tabular format 
+    Use "conll.usd" when you want the parsed text in CoNLL tabular format
       using Stanford dependency relations.
     Use "lxtriples" when you want the parsed text in the LX triples format
       (using LX dependency relations).
 
 Note: input and output are assumed to be UTF-8.
+
+CONFIGURATION FILE
+You should have a configuration file $HOME/.lxsuite with the following format:
+
+    HOST=localhost
+    PORT=10000
+    KEY=xxxxxxxxxxxxx
+
+HOST is the lxsuite service host.
+PORT is the lxsuite service port.
+KEY is your access key.
 
 """.format(progname=sys.argv[0])
 
@@ -109,17 +130,22 @@ mode_regex = (
     "chunker_tokenizer:(?:plain|ctags)|"
     "chunker_tokenizer_tagger:(?:plain|ctags|conll.pos)|"
     "chunker_tokenizer_tagger_parser:(?:conll.(?:lx|usd)|lxtriples)|"
+    "chunker_tokenizer_tagger_ner:ctags.ner|"
     "(?:ctags|plain):tokenizer_tagger_parser:(?:conll.(?:lx|usd)|lxtriples)|"
+    "(?:ctags|plain):tokenizer_tagger_ner:ctags.ner|"
     "(?:ctags|plain):tokenizer_tagger:(?:plain|ctags|conll.pos)|"
     "(?:ctags|plain):tokenizer:(?:plain|ctags)|"
     "(?:ctags|plain):tagger_parser:(?:conll.(?:lx|usd)|lxtriples)|"
+    "(?:ctags|plain):tagger_ner:ctags.ner|"
     "(?:ctags|plain):tagger:(?:plain|ctags|conll.pos)|"
     "(?:ctags|plain|conll.pos):parser:(?:conll.(?:lx|usd)|lxtriples)|"
+    "ctags:ner:ctags.ner|"
     "(?:conll.lx|lxtriples):to:conll.usd|"
     "conll.lx:to:lxtriples|"
     "ctags:to:conll.pos|"
     "conjugator|"
-    "inflector"
+    "inflector|"
+    "version"
     ")$"
 )
 
@@ -128,6 +154,34 @@ signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
 _def_maxbuf = 1024*1024
 _chunksize = 4096
+
+
+def parse_config():
+    fname = os.path.join(os.environ["HOME"], ".lxsuite")
+    if not os.path.isfile(fname):
+        err = "{}: config file \"{}\" does not exist; aborting."
+        exit(err.format(sys.argv[0], fname))
+    host = "localhost"
+    port = 10000
+    key = ""
+    with open(fname) as lines:
+        for num, line in enumerate(lines, start=1):
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if "=" not in line:
+                err = "{}: invalid syntax in line {} of {}"
+                exit(err.format(sys.argv[0], num, fname))
+            k, _, v = line.partition("=")
+            k = k.lower().strip()
+            v = v.strip()
+            if k == "host":
+                host = v
+            elif k == "port":
+                port = int(v)
+            elif k == "key":
+                key = v
+    return host, port, key
 
 
 def set_nonblocking(stream):
@@ -210,10 +264,13 @@ def _pump(sock, istream, ostream, maxbuf=_def_maxbuf):
 
 
 
-if len(sys.argv) != 7:
+if len(sys.argv) == 4:
+    host, port, key = parse_config()
+    mode, ifname, ofname = sys.argv[1:]
+elif len(sys.argv) == 7:
+    host, port, key, mode, ifname, ofname = sys.argv[1:]
+else:
     exit(usage)
-
-host, port, key, mode, ifname, ofname = sys.argv[1:]
 
 if not re.match(mode_regex, mode):
     exit("{}: Invalid mode ({})".format(sys.argv[0], mode))

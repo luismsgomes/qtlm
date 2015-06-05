@@ -8,9 +8,6 @@ use Treex::Tool::LXSuite::LXParser;
 has _parser => ( isa => 'Treex::Tool::LXSuite::LXParser', is => 'ro',
     required => 1, builder => '_build_parser', lazy=>1 );
 
-has lxsuite_host => ( isa => 'Str', is => 'ro', required => 1);
-has lxsuite_port => ( isa => 'Int', is => 'ro', required => 1);
-has lxsuite_key  => ( isa => 'Str', is => 'ro', required => 1 );
 has lxsuite_mode => ( isa => 'Str', is => 'ro', required => 0,
                       default => 'conll.pos:parser:conll.lx');
 
@@ -22,9 +19,6 @@ sub BUILD {
 sub _build_parser {
     my $self = shift;
     return Treex::Tool::LXSuite::LXParser->new({
-        lxsuite_key => $self->lxsuite_key,
-        lxsuite_host => $self->lxsuite_host,
-        lxsuite_port => $self->lxsuite_port,
         lxsuite_mode => $self->lxsuite_mode
     });
 }
