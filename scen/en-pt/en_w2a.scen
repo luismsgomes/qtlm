@@ -8,6 +8,8 @@ W2A::EN::TagMorce
 W2A::EN::FixTags
 W2A::EN::Lemmatize
 
+W2A::WSD
+
 # named entities
 A2N::EN::StanfordNamedEntities model=ner-eng-ie.crf-3-all2008.ser.gz
 A2N::EN::NameTag
@@ -31,3 +33,4 @@ W2A::EN::PreferImperatives
 
 A2A::ConvertTags input_driver=en::penn
 A2A::EN::EnhanceInterset
+
