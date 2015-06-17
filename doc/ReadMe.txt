@@ -35,10 +35,10 @@ Pre-requisites/dependencies of qtlm:
 Note: the BLEU scores reported for Pilot 1 by the EN-PT system are based
 on tectomt revision 14386.
 
-Extract the QTLeap Manager archive qtlm_rev274.tgz into $HOME/code/qtlm:
+Extract the QTLeap Manager archive qtlm_rev293.tgz into $HOME/code/qtlm:
 
     mkdir -p $HOME/code
-    tar xzf qtlm_rev273.tgz -C $HOME/code
+    tar xzf qtlm_rev293.tgz -C $HOME/code
 
 Add the following ling to your $HOME/.bashrc:
 
@@ -422,20 +422,14 @@ Corpora and transfer models are downloaded/uploaded automatically,
 without user intervention. All data is stored in a central server, which
 is configured in $QTLM_ROOT/conf/sharing.sh:
 
-$upload_ssh_*
-
-These variables configure SSH access for automatic uploading of transfer
-models after training. Example:
+$upload_ssh_* These variables configure SSH access for automatic uploading of transfer models after training. Example:
 
     upload_ssh_user="lgomes"
     upload_ssh_host="nlx-server.di.fc.ul.pt"
     upload_ssh_port=22
     upload_ssh_path="public_html/qtleap/share"
 
-$download_http_*
-
-These variables configure HTTP access for automatic downloading of
-datasets, testsets, and transfer models as needed. Example:
+$download_http_* These variables configure HTTP access for automatic downloading of datasets, testsets, and transfer models as needed. Example:
 
     download_http_base_url="http://nlx-server.di.fc.ul.pt/~lgomes/qtleap/share"
     download_http_user="qtleap"

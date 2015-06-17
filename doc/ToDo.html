@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="data:text/css,body%20%7B%0Amargin%3A%20auto%3B%0Apadding%2Dright%3A%201em%3B%0Apadding%2Dleft%3A%201em%3B%0Amax%2Dwidth%3A%2044em%3B%0Aborder%2Dleft%3A%201px%20solid%20black%3B%0Aborder%2Dright%3A%201px%20solid%20black%3B%0Acolor%3A%20black%3B%0Afont%2Dfamily%3A%20Verdana%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%20100%25%3B%0Aline%2Dheight%3A%20140%25%3B%0Acolor%3A%20%23333%3B%0A%7D%0Apre%20%7B%0Aborder%3A%201px%20dotted%20gray%3B%0Abackground%2Dcolor%3A%20%23ececec%3B%0Acolor%3A%20%231111111%3B%0Apadding%3A%200%2E5em%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20monospace%3B%0A%7D%0Ah1%20a%2C%20h2%20a%2C%20h3%20a%2C%20h4%20a%2C%20h5%20a%20%7B%0Atext%2Ddecoration%3A%20none%3B%0Acolor%3A%20%237a5ada%3B%0A%7D%0Ah1%2C%20h2%2C%20h3%2C%20h4%2C%20h5%20%7B%20font%2Dfamily%3A%20verdana%3B%0Afont%2Dweight%3A%20bold%3B%0Aborder%2Dbottom%3A%201px%20dotted%20black%3B%0Acolor%3A%20%237a5ada%3B%20%7D%0Ah1%20%7B%0Afont%2Dsize%3A%20130%25%3B%0A%7D%0A%0Ah2%20%7B%0Afont%2Dsize%3A%20110%25%3B%0A%7D%0A%0Ah3%20%7B%0Afont%2Dsize%3A%2095%25%3B%0A%7D%0A%0Ah4%20%7B%0Afont%2Dsize%3A%2090%25%3B%0Afont%2Dstyle%3A%20italic%3B%0A%7D%0A%0Ah5%20%7B%0Afont%2Dsize%3A%2090%25%3B%0Afont%2Dstyle%3A%20italic%3B%0A%7D%0A%0Ah1%2Etitle%20%7B%0Afont%2Dsize%3A%20200%25%3B%0Afont%2Dweight%3A%20bold%3B%0Apadding%2Dtop%3A%200%2E2em%3B%0Apadding%2Dbottom%3A%200%2E2em%3B%0Atext%2Dalign%3A%20left%3B%0Aborder%3A%20none%3B%0A%7D%0A%0Adt%20code%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Add%20p%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0A%0A%23footer%20%7B%0Apadding%2Dtop%3A%201em%3B%0Afont%2Dsize%3A%2070%25%3B%0Acolor%3A%20gray%3B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%0A%2F%2A%20Numbered%20headings%3A%20%2A%2F%0Abody%20%7B%0Acounter%2Dreset%3A%20h2counter%3B%0A%7D%0Ah1%20%7B%0Acounter%2Dreset%3A%20h2counter%3B%0A%7D%0Ah2%3Abefore%20%7B%0Acontent%3A%20counter%28h2counter%29%20%22%2E%5C0000a0%5C0000a0%22%3B%0Acounter%2Dincrement%3A%20h2counter%3B%0Acounter%2Dreset%3A%20h3counter%3B%0A%7D%0Ah3%3Abefore%20%7B%0Acontent%3A%20counter%28h2counter%29%20%22%2E%22%20counter%28h3counter%29%20%22%2E%5C0000a0%5C0000a0%22%3B%0Acounter%2Dincrement%3A%20h3counter%3B%0A%7D%0A" rel="stylesheet">
+</head>
+<body>
+<h1 id="qtleap-manager-development-roadmap">QTLeap Manager Development Roadmap</h1>
+<ol type="1">
+<li><p>fix <code>save_code_snapshot</code> (it worked for old tectomt SVN repository, has to be updated for github)</p>
+<ol type="1">
+<li>also, make <code>save_code_snapshot</code> optional</li>
+</ol></li>
+<li><p>use XMLRPC to communicate with LX-Suite instead of plain sockets</p></li>
+<li><p>qtlm evaluate and translate should not need a dataset configuration file (setting QTLM_CONF should be enough)</p></li>
+<li><p>qtlm should use multiple processors for <code>qtlm evaluate</code></p></li>
+<li><p><code>ReverseAlignment</code> is no longer needed (though it works as it is)</p></li>
+<li><p>add hooks for saving snapshots of dependency repositories (such as LX-Suite)</p></li>
+</ol>
+</body>
+</html>

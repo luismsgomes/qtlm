@@ -3,7 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
@@ -19,53 +21,30 @@
 <li><a href="#training">Training</a></li>
 <li><a href="#translation">Translation</a></li>
 <li><a href="#mtmonkey-xml-rpc-workers">MTMonkey XML-RPC workers</a></li>
-<li><a href="#evaluation">Evaluation</a><ul>
-<li><a href="#cleaning-cached-intermediate-trees">Cleaning cached intermediate trees</a></li>
-</ul></li>
-<li><a href="#snapshots">Snapshots</a><ul>
-<li><a href="#creating-a-snapshot">Creating a snapshot</a></li>
-<li><a href="#listing-snapshots">Listing snapshots</a></li>
-<li><a href="#comparing-snapshots">Comparing snapshots</a></li>
-</ul></li>
+<li><a href="#evaluation">Evaluation</a></li>
+<li><a href="#snapshots">Snapshots</a></li>
 </ul></li>
 <li><a href="#configuration">Configuration</a><ul>
 <li><a href="#environment-configuration">Environment Configuration</a></li>
-<li><a href="#host-configuration">Host Configuration</a><ul>
-<li><a href="#num_procs">$num_procs</a></li>
-<li><a href="#sort_mem">$sort_mem</a></li>
-<li><a href="#big_machine">$big_machine</a></li>
-<li><a href="#giza_dir">$giza_dir</a></li>
-</ul></li>
-<li><a href="#sharing-configuration">Sharing Configuration</a><ul>
-<li><a href="#upload_ssh_">$upload_ssh_*</a></li>
-<li><a href="#download_http_">$download_http_*</a></li>
-</ul></li>
-<li><a href="#dataset-configuration">Dataset Configuration</a><ul>
-<li><a href="#dataset_files">$dataset_files</a></li>
-<li><a href="#train_hostname">$train_hostname</a></li>
-<li><a href="#train_opts">$*_train_opts</a></li>
-<li><a href="#rm_giza_files">$rm_giza_files</a></li>
-<li><a href="#treex_socket_server_ports">$treex_socket_server_ports</a></li>
-<li><a href="#treex_mtmworker_ports">$treex_mtmworker_ports</a></li>
-</ul></li>
-<li><a href="#testset-configuration">Testset Configuration</a><ul>
-<li><a href="#testset_files">$testset_files</a></li>
-</ul></li>
+<li><a href="#host-configuration">Host Configuration</a></li>
+<li><a href="#sharing-configuration">Sharing Configuration</a></li>
+<li><a href="#dataset-configuration">Dataset Configuration</a></li>
+<li><a href="#testset-configuration">Testset Configuration</a></li>
 <li><a href="#treex-configuration">Treex Configuration</a></li>
 </ul></li>
 </ul></li>
 </ul>
 </nav>
-<h1 id="qtleap-manager"><a href="#TOC">QTLeap Manager</a></h1>
+<h1 id="qtleap-manager"><a href="#qtleap-manager">QTLeap Manager</a></h1>
 <p>The purpose of <code>qtlm</code> (QTLeap Manager) is to make life easier for QTLeap developers working on TectoMT-based translation systems.</p>
 <p>Comments and suggestions for improvement are welcome (<script type="text/javascript">
 <!--
 h='&#100;&#x69;&#46;&#102;&#x63;&#46;&#x75;&#108;&#46;&#112;&#116;';a='&#64;';n='&#108;&#x75;&#x69;&#x73;&#46;&#x67;&#x6f;&#x6d;&#x65;&#x73;';e=n+a+h;
-document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'<code>'+e+'</code>'+'<\/'+'a'+'>');
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
 // -->
 </script><noscript>luis.gomes at di dot fc dot ul dot pt</noscript>).</p>
 <p><em>Note:</em> <code>qtlm</code> as well as this document are <em>work in progress</em>.</p>
-<h2 id="installation"><a href="#TOC">Installation</a></h2>
+<h2 id="installation"><a href="#installation">Installation</a></h2>
 <p>Before starting, make sure that you have a working Treex installation. You can find instructions at the <a href="https://ufal.mff.cuni.cz/treex/">Treex web page</a>.</p>
 <p>The remainder of this installation guide assumes that you have checked-out the TectoMT repository into <code>$HOME/code/tectomt</code> as follows (adjust if necessary):</p>
 <pre><code>mkdir -p $HOME/code
@@ -81,13 +60,13 @@ svn --username public co $url $HOME/code/tectomt</code></pre>
 <li>GIZA++ (&gt;= 1.0.7)</li>
 </ul>
 <p>Note: the BLEU scores reported for Pilot 1 by the EN-PT system are based on <code>tectomt</code> revision 14386.</p>
-<p>Extract the <em>QTLeap Manager</em> archive <code>qtlm_rev274.tgz</code> into <code>$HOME/code/qtlm</code>:</p>
+<p>Extract the <em>QTLeap Manager</em> archive <code>qtlm_rev293.tgz</code> into <code>$HOME/code/qtlm</code>:</p>
 <pre><code>mkdir -p $HOME/code
-tar xzf qtlm_rev273.tgz -C $HOME/code</code></pre>
+tar xzf qtlm_rev293.tgz -C $HOME/code</code></pre>
 <p>Add the following ling to your <code>$HOME/.bashrc</code>:</p>
 <pre><code>source $HOME/code/qtlm/conf/env/default.sh</code></pre>
 <p>And, run the previous command on your active terminal before proceeding.</p>
-<h2 id="usage"><a href="#TOC">Usage</a></h2>
+<h2 id="usage"><a href="#usage">Usage</a></h2>
 <p>If you type <code>qtlm help</code> on your terminal you shoud get the following usage summary:</p>
 <pre><code>Usage: qtlm &lt;command&gt; &lt;args&gt;...
 
@@ -144,7 +123,7 @@ List of commands:
 </ol>
 <p>Example: <code>QTLM_CONF=en-pt/ep/2015-02-12</code></p>
 <p>The two languages must be lexicographically ordered (<code>en-pt</code> is OK, <code>pt-en</code> is not). The same configuration identifier is used for both translation directions. According to the <code>$QTLM_CONF</code> variable defined above, the file <code>$QTLM_ROOT/conf/datasets/en-pt/ep.sh</code> must exist (see <a href="#dataset-configuration">Dataset Configuration</a> section below for further details). The date suffix (in this case <code>2015-02-12</code>) indicates when the transfer models were trained.</p>
-<h3 id="training"><a href="#TOC">Training</a></h3>
+<h3 id="training"><a href="#training">Training</a></h3>
 <p>Please see the relevant <a href="#dataset-configuration">configuration for training</a> Training transfer models (both translation directions are trained in parallel):</p>
 <pre><code>qtlm train</code></pre>
 <p>The training process will create a directory named</p>
@@ -184,17 +163,17 @@ List of commands:
     |-- atrees/          # analytical-level trees
     `-- ttrees/          # tectogrammatical-level trees</code></pre>
 <p>When training is finished, the files prefixed with <code>[*]</code> in the above tree are automatically uploaded to the share server into the directory <code>$upload_ssh_path/$QTLM_CONF</code>. See <a href="#upload_ssh_">Sharing Configuration</a> section for details about <code>$upload_ssh_path</code> and related variables.</p>
-<h3 id="translation"><a href="#TOC">Translation</a></h3>
+<h3 id="translation"><a href="#translation">Translation</a></h3>
 <p>Translating from English to Portuguese (reads one sentence per line from <code>STDIN</code> and writes one sentence per line on <code>STDOUT</code>):</p>
 <pre><code>qtlm translate en pt</code></pre>
 <p>If you want to save the trees of each translated sentence (for debugging purposes for example), then set the target directory in the environment variable <code>$save_trees</code>:</p>
 <pre><code>save_trees=somedir qtlm translate en pt</code></pre>
 <p>This will read from <code>STDIN</code> and write to <code>STDOUT</code> as previously, but it will also create a file named <code>somedir/######.treex.gz</code> for each input line (<code>######</code> is replaced by the number of the line, starting with <code>000001</code>).</p>
-<h3 id="mtmonkey-xml-rpc-workers"><a href="#TOC">MTMonkey XML-RPC workers</a></h3>
+<h3 id="mtmonkey-xml-rpc-workers"><a href="#mtmonkey-xml-rpc-workers">MTMonkey XML-RPC workers</a></h3>
 <p>To start MTMonkey workers for the current configuration, just run:</p>
 <pre><code>qtlm serve</code></pre>
 <p>This will launch a pair of <code>treex-socket-servers</code> (one for each translation direction) and a pair of <code>treex-mtmworkers</code> which provide a XML-RPC interface to the (plain-text) socket servers. The ports of these 4 servers should be configured in the dataset configuration file. See <a href="#dataset-configuration">Dataset Configuration</a> section.</p>
-<h3 id="evaluation"><a href="#TOC">Evaluation</a></h3>
+<h3 id="evaluation"><a href="#evaluation">Evaluation</a></h3>
 <p>Evaluating the current pipeline on a specific evaluation set (in this example <code>qtleap_2a</code>):</p>
 <pre><code>qtlm evaluate en pt qtleap_2a</code></pre>
 <p>For this command to succeed the file <code>$QTLM_ROOT/conf/testsets/en-pt/qtleap_2a.sh</code> must exist and define a variable named <code>testset_files</code> as described below in <a href="#testset-configuration">Testset Configuration</a> section.</p>
@@ -234,16 +213,16 @@ qtleap_2a.en2pt  5.4622  0.1942  qtleap:en-pt/ep/2015-01-19
 qtleap_1a.en2pt  5.7766  0.2290  qtleap:en-pt/ep/2015-01-19
 qtleap_2q.en2pt  4.8243  0.1419  qtleap:en-pt/ep/2015-01-19
 qtleap_1q.en2pt  4.5370  0.1224  qtleap:en-pt/ep/2015-01-19</code></pre>
-<h4 id="cleaning-cached-intermediate-trees"><a href="#TOC">Cleaning cached intermediate trees</a></h4>
+<h4 id="cleaning-cached-intermediate-trees"><a href="#cleaning-cached-intermediate-trees">Cleaning cached intermediate trees</a></h4>
 <p>If you are developing the synthesis and you want to re-evaluate the pipeline you just repeat the above commands to re-synthesize the translations.</p>
 <p>The re-runs will be much faster than the first evaluation because <code>qtlm evaluate</code> will reuse the previously created <code>*.cache.treex.gz</code> files (which contain the trees after analysis and transfer), and only the synthesis step is done.</p>
 <p><em>However, if you have changed the analysis or transfer steps</em>, then you should remove the cached trees by running:</p>
 <pre><code>qtlm clean</code></pre>
 <p>This will clean the cached trees for all configured testsets that have been already evaluated in the current directory.</p>
-<h3 id="snapshots"><a href="#TOC">Snapshots</a></h3>
+<h3 id="snapshots"><a href="#snapshots">Snapshots</a></h3>
 <p><em>Note:</em> snapshots are under development.</p>
 <p>A snapshot is a bundle of current evaluations together with all information needed to recover the exact state of the current pipeline.</p>
-<h4 id="creating-a-snapshot"><a href="#TOC">Creating a snapshot</a></h4>
+<h4 id="creating-a-snapshot"><a href="#creating-a-snapshot">Creating a snapshot</a></h4>
 <p>To create a snapshot first you must ensure that all configured testsets have been evaluated using the current <code>$QTLM_CONF</code> for both translation directions. Then you may run:</p>
 <pre><code>qtlm save &quot;brief description of what changed since last snapshot&quot;</code></pre>
 <p>This command will create a new directory <code>snapshots/YYYY-MM-DDL</code> (year, month, day, and a letter) within the current directory and it will copy all current evaluations into it.</p>
@@ -251,7 +230,7 @@ qtleap_1q.en2pt  4.5370  0.1224  qtleap:en-pt/ep/2015-01-19</code></pre>
 <p>Furthermore, uncommited changes to the <code>$QTLM_ROOT</code> and <code>$TMT_ROOT</code> repositories are also saved in the form of a unified diff (<code>qtlm.diff</code> and <code>tectomt.diff</code>), allowing us to recover the current source code in full extent.</p>
 <p><em>WARNING</em>: only files already tracked by mercurial and SVN will be included in the unified diff of every snapshot, ie, all files appearing with a question mark when you issue the commands <code>hg status</code> or <code>svn status</code> <em>WILL NOT</em> be included in the diff.</p>
 <p>The snapshot is also uploaded to the configured share server, making it readily available for comparison and analysis to other users. The URL of a snapshot is <code>$download_http_base_url/snapshots/LANGPAIR/DATASET/YYYY-MM-DDL</code>, where <code>$download_http_base_url</code> is a configuration variable described in <a href="#sharing-configuration">Sharing Configuration</a>, and <code>LANGPAIR</code> and <code>DATASET</code> are the first two components of <code>$QTLM_CONF</code>.</p>
-<h4 id="listing-snapshots"><a href="#TOC">Listing snapshots</a></h4>
+<h4 id="listing-snapshots"><a href="#listing-snapshots">Listing snapshots</a></h4>
 <p>Listing all saved snapshots, from the most recent to the oldest:</p>
 <pre><code>qtlm list snapshots</code></pre>
 <p>This will fetch an updated list of snapshots from the share server for the current <code>$QTLM_CONF</code>. The list is presented as follows:</p>
@@ -262,50 +241,48 @@ qtleap_1q.en2pt  4.5370  0.1224  qtleap:en-pt/ep/2015-01-19</code></pre>
    2015-02-02a |  9.56 |  4.69 | some reordering rules for noun phrases
 ------------------------------------------------------------------------</code></pre>
 <p>Columns <code>en2pt</code> and <code>pt2en</code> show the average BLEU scores over all configured evalsets for both translation directions. Snapshots marked with an asterisk (<code>*</code>) exist both locally and on the server. Unmarked snapshots exist only on the server.</p>
-<h4 id="comparing-snapshots"><a href="#TOC">Comparing snapshots</a></h4>
+<h4 id="comparing-snapshots"><a href="#comparing-snapshots">Comparing snapshots</a></h4>
 <p>To compare current translations/evaluations with the ones from last snapshot:</p>
 <pre><code>qtlm compare</code></pre>
 <p>To compare current translations/evaluations with a specific snapshot (in this case 2015-01-20):</p>
 <pre><code>qtlm compare 2015-01-20</code></pre>
 <p>Note: if the specified snapshot does not exist locally (ie, it does not appear marked with an asterisk in the list of snapshots), then the comparison will take longer because the snapshot will be automatically downloaded from the server.</p>
-<h2 id="configuration"><a href="#TOC">Configuration</a></h2>
+<h2 id="configuration"><a href="#configuration">Configuration</a></h2>
 <p>All configuration files are kept in directory <code>$QTLM_ROOT/conf</code>.</p>
-<h3 id="environment-configuration"><a href="#TOC">Environment Configuration</a></h3>
+<h3 id="environment-configuration"><a href="#environment-configuration">Environment Configuration</a></h3>
 <p>The shell environment is configured by adding the following line to your <code>$HOME/.bashrc</code>:</p>
 <pre><code>source $HOME/code/qtlm/conf/env/default.sh</code></pre>
 <p>This file defines and exports the following variables: <code>QTLM_ROOT</code>, <code>TMT_ROOT</code>, <code>TREEX_CONFIG</code>, <code>PATH</code>, and <code>PERL5LIB</code>. If you installed the qtlm and tectomt repositories into the recommended place (<code>$HOME/code/qtlm</code> and <code>$HOME/code/tectomt</code>), then you don’t have to change this file. Else, you should create a file with your username and source it from your <code>$HOME/.bashrc</code> like this:</p>
 <pre><code>source $QTLM_ROOT/conf/env/$USER.sh</code></pre>
-<h3 id="host-configuration"><a href="#TOC">Host Configuration</a></h3>
+<h3 id="host-configuration"><a href="#host-configuration">Host Configuration</a></h3>
 <p>The file <code>$QTLM_ROOT/conf/hosts/$(hostname).sh</code> will be used if it exists, else the file <code>$QTLM_ROOT/conf/hosts/default.sh</code> is used instead. Either of these files must define the following variables:</p>
-<h4 id="num_procs"><a href="#TOC">$num_procs</a></h4>
-<p>The maximum number of concurrent processes that should be executed. Specify a number lower than the number of available processors in your machine.<br>(default: <code>2</code>)</p>
-<h4 id="sort_mem"><a href="#TOC">$sort_mem</a></h4>
-<p>How much memory can we use for sorting?<br>(default: 50%)</p>
-<h4 id="big_machine"><a href="#TOC">$big_machine</a></h4>
-<p>Set this to <code>true</code> only if your machine has enough memory to run several concurrent analysis pipelines (for example a machine with 32 cores and 256 GB RAM).<br>(default: <code>false</code>)</p>
-<h4 id="giza_dir"><a href="#TOC">$giza_dir</a></h4>
-<p>Where GIZA++ has been installed.<br>(default: <code>&quot;$TMT_ROOT/share/installed_tools/giza&quot;</code>)</p>
-<h3 id="sharing-configuration"><a href="#TOC">Sharing Configuration</a></h3>
+<h4 id="num_procs"><a href="#num_procs">$num_procs</a></h4>
+<p>The maximum number of concurrent processes that should be executed. Specify a number lower than the number of available processors in your machine.<br />(default: <code>2</code>)</p>
+<h4 id="sort_mem"><a href="#sort_mem">$sort_mem</a></h4>
+<p>How much memory can we use for sorting?<br />(default: 50%)</p>
+<h4 id="big_machine"><a href="#big_machine">$big_machine</a></h4>
+<p>Set this to <code>true</code> only if your machine has enough memory to run several concurrent analysis pipelines (for example a machine with 32 cores and 256 GB RAM).<br />(default: <code>false</code>)</p>
+<h4 id="giza_dir"><a href="#giza_dir">$giza_dir</a></h4>
+<p>Where GIZA++ has been installed.<br />(default: <code>&quot;$TMT_ROOT/share/installed_tools/giza&quot;</code>)</p>
+<h3 id="sharing-configuration"><a href="#sharing-configuration">Sharing Configuration</a></h3>
 <p>Corpora and transfer models are downloaded/uploaded automatically, without user intervention. All data is stored in a central server, which is configured in <code>$QTLM_ROOT/conf/sharing.sh</code>:</p>
-<h4 id="upload_ssh_"><a href="#TOC">$upload_ssh_*</a></h4>
-<p>These variables configure SSH access for automatic uploading of transfer models after training. Example:</p>
+<h4 id="upload_ssh_-these-variables-configure-ssh-access-for-automatic-uploading-of-transfer-models-after-training.-example"><a href="#upload_ssh_-these-variables-configure-ssh-access-for-automatic-uploading-of-transfer-models-after-training.-example">$upload_ssh_* These variables configure SSH access for automatic uploading of transfer models after training. Example:</a></h4>
 <pre><code>upload_ssh_user=&quot;lgomes&quot;
 upload_ssh_host=&quot;nlx-server.di.fc.ul.pt&quot;
 upload_ssh_port=22
 upload_ssh_path=&quot;public_html/qtleap/share&quot;</code></pre>
-<h4 id="download_http_"><a href="#TOC">$download_http_*</a></h4>
-<p>These variables configure HTTP access for automatic downloading of datasets, testsets, and transfer models as needed. Example:</p>
+<h4 id="download_http_-these-variables-configure-http-access-for-automatic-downloading-of-datasets-testsets-and-transfer-models-as-needed.-example"><a href="#download_http_-these-variables-configure-http-access-for-automatic-downloading-of-datasets-testsets-and-transfer-models-as-needed.-example">$download_http_* These variables configure HTTP access for automatic downloading of datasets, testsets, and transfer models as needed. Example:</a></h4>
 <pre><code>download_http_base_url=&quot;http://nlx-server.di.fc.ul.pt/~lgomes/qtleap/share&quot;
 download_http_user=&quot;qtleap&quot;
 download_http_password=&quot;paeltqtleap&quot;</code></pre>
-<h3 id="dataset-configuration"><a href="#TOC">Dataset Configuration</a></h3>
+<h3 id="dataset-configuration"><a href="#dataset-configuration">Dataset Configuration</a></h3>
 <p>A dataset is a combination of parallel corpora that is used to train the transfer models. For each <code>DATASET</code> we must create a respective file <code>$QTLM_ROOT/conf/datasets/L1-L2/DATASET.sh</code> and it must define the following variables:</p>
-<h4 id="dataset_files"><a href="#TOC">$dataset_files</a></h4>
+<h4 id="dataset_files"><a href="#dataset_files">$dataset_files</a></h4>
 <p>A space-separated list of files (may be gzipped), each containing tab-separated pairs of human translated sentences. The file paths specfied here must be relative to <code>$download_base_url</code> configured in <code>$QTLM_ROOT/conf/sharing.sh</code>.</p>
 <p>Example: <code>dataset_files=&quot;corpora/europarl/ep.enpt.gz&quot;</code></p>
-<h4 id="train_hostname"><a href="#TOC">$train_hostname</a></h4>
+<h4 id="train_hostname"><a href="#train_hostname">$train_hostname</a></h4>
 <p>The hostname of the machine where the transfer models are to be trained. This must be the exact string returned by the hostname command. It is used as a safety guard to prevent training on an under-resourced machine. You may use an <code>*</code> to allow training of this dataset on any machine.</p>
-<h4 id="train_opts"><a href="#TOC">$*_train_opts</a></h4>
+<h4 id="train_opts"><a href="#train_opts">$*_train_opts</a></h4>
 <p>Four variables set the options affecting the behaviour of the machine learning algorithms for training each transfer model:</p>
 <ul>
 <li>$lemma_static_train_opts</li>
@@ -332,22 +309,22 @@ formeme_static_train_opts=&quot;$static_train_opts&quot;
 
 lemma_maxent_train_opts=&quot;$maxent_train_opts&quot;
 formeme_maxent_train_opts=&quot;$maxent_train_opts&quot;</code></pre>
-<h4 id="rm_giza_files"><a href="#TOC">$rm_giza_files</a></h4>
+<h4 id="rm_giza_files"><a href="#rm_giza_files">$rm_giza_files</a></h4>
 <p>If <code>true</code> then GIZA models are removed after the aligment is produced.</p>
-<h4 id="treex_socket_server_ports"><a href="#TOC">$treex_socket_server_ports</a></h4>
+<h4 id="treex_socket_server_ports"><a href="#treex_socket_server_ports">$treex_socket_server_ports</a></h4>
 <p>This variable defines the two ports of Treex socket servers (one for each translation direction).</p>
 <p>Example:</p>
 <pre><code>treex_socket_server_ports=&quot;7001 7002&quot;</code></pre>
-<h4 id="treex_mtmworker_ports"><a href="#TOC">$treex_mtmworker_ports</a></h4>
+<h4 id="treex_mtmworker_ports"><a href="#treex_mtmworker_ports">$treex_mtmworker_ports</a></h4>
 <p>This variable defines the two ports of Treex MTMonkey XML-RPC servers (one for each translation direction).</p>
 <p>Example:</p>
 <pre><code>treex_mtmworker_ports=&quot;8001 8002&quot;</code></pre>
-<h3 id="testset-configuration"><a href="#TOC">Testset Configuration</a></h3>
+<h3 id="testset-configuration"><a href="#testset-configuration">Testset Configuration</a></h3>
 <p>A testset is a combination of parallel corpora that is used to test the whole pipeline. For each <code>TESTSET</code> we must create a respective file <code>$QTLM_ROOT/conf/testsets/L1-L2/TESTSET.sh</code> and it must define the following variables:</p>
-<h4 id="testset_files"><a href="#TOC">$testset_files</a></h4>
+<h4 id="testset_files"><a href="#testset_files">$testset_files</a></h4>
 <p>A space-separated list of files (may be gzipped), each containing tab-separated pairs of human translated sentences. The file paths specified here must be relative to <code>$download_base_url</code> configured in <code>$QTLM_ROOT/conf/sharing.sh</code>.</p>
 <p>Example: <code>testset_files=&quot;corpora/qtleap/qtleap_1a.gz&quot;</code></p>
-<h3 id="treex-configuration"><a href="#TOC">Treex Configuration</a></h3>
+<h3 id="treex-configuration"><a href="#treex-configuration">Treex Configuration</a></h3>
 <p>Treex configuration for each user is kept in <code>$QTLM_ROOT/conf/treex/$USER/config.yaml</code>. If you wonder why we don’t simply use <code>$QTLM_ROOT/conf/treex/$USER.yaml</code>, it is because Treex expects its configuration file to be named exactly <code>config.yaml</code>.</p>
 <p>Here’s a Treex configuration (<code>$QTLM_ROOT/conf/treex/luis/config.yaml</code>) for guidance:</p>
 <pre><code>---
