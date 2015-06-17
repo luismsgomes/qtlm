@@ -77,7 +77,7 @@ def calculate_statistics(dict_grams):
         sort_gram_missing = sort_gram[-number_items_show:]
         sort_gram_extra = sort_gram[:number_items_show]
 
-        print("Top missing\t\t\t\tTop extra")
+        print("Top missing\t\t\t\t\tTop extra")
         print('-'.join(str('-').ljust(35)))
 
         for item in range(number_items_show):
