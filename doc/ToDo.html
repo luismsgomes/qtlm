@@ -14,15 +14,15 @@
 <body>
 <h1 id="qtleap-manager-development-roadmap">QTLeap Manager Development Roadmap</h1>
 <ol type="1">
-<li><p>fix <code>save_code_snapshot</code> (it worked for old tectomt SVN repository, has to be updated for github)</p>
+<li><p>(GN) fix <code>save_code_snapshot</code> (it worked for old tectomt SVN repository, has to be updated for github)</p>
 <ol type="1">
-<li>also, make <code>save_code_snapshot</code> optional</li>
+<li>(LG) also, make <code>save_code_snapshot</code> optional</li>
 </ol></li>
-<li><p>use XMLRPC to communicate with LX-Suite instead of plain sockets</p></li>
-<li><p>qtlm evaluate and translate should not need a dataset configuration file (setting QTLM_CONF should be enough)</p></li>
-<li><p>qtlm should use multiple processors for <code>qtlm evaluate</code></p></li>
-<li><p><code>ReverseAlignment</code> is no longer needed (though it works as it is)</p></li>
-<li><p>add hooks for saving snapshots of dependency repositories (such as LX-Suite)</p></li>
+<li><p>(SN;LG) use XMLRPC to communicate with LX-Suite instead of plain sockets</p></li>
+<li><p>(GN) qtlm evaluate and translate should not need a dataset configuration file (setting QTLM_CONF should be enough)</p></li>
+<li><p>(*) qtlm should use multiple processors for <code>qtlm evaluate</code></p></li>
+<li><p>(*) add hooks for saving snapshots of dependency repositories (such as LX-Suite)</p></li>
+<li><p>(GN) <code>ReverseAlignment</code> is no longer needed (though it works as it is)</p></li>
 </ol>
 </body>
 </html>
