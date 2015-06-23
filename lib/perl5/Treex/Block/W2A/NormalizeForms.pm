@@ -21,14 +21,6 @@ sub process_anode {
             $anode->set_lemma("''");
         }
     }
-    elsif ( $anode->form eq '[' ) {
-        $anode->set_form('-LRB-');
-        $anode->set_lemma('-LRB-');
-    }
-    elsif ( $anode->form eq ']' ) {
-        $anode->set_form('-RRB-');
-        $anode->set_lemma('-RRB-');
-    }
     elsif ( $anode->form eq '’' ) {
         $anode->set_form("'");
         $anode->set_lemma("'");
