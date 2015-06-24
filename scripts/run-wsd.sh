@@ -7,7 +7,7 @@ fi
 
 lang=$1 sel=$2 treesdir=$3
 
-files=$(find $treesdir | grep -P '\.streex$' | sort -g | head -n 2)
+files=$(find $treesdir | grep -P '\.streex$' | sort -g)
 treex -L $lang -S $sel \
     Write::ToWSD path=$treesdir.wsd.$lang.$sel.in \
     -- $files
