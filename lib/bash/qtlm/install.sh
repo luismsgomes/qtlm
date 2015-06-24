@@ -10,7 +10,7 @@ function install {
     while true; do
         $TMT_ROOT/treex/bin/treex -d \
             $(find $QTLM_ROOT/scen -name '*.scen') \
-            > /dev/null 2> $errors
+            > /dev/null 2> $errors || true
         perl -ne "/^Can't locate (.*\.pm) in \@INC/ && print \"\$1\n\";" \
             < $errors > $missing
         if ! test -s $missing; then
