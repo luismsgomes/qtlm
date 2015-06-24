@@ -13,7 +13,7 @@ function train {
     log "$doing"
     local train_dir=train_${lang_pair}_${dataset}_${train_date}
     create_dir $train_dir/logs
-    save_code_snapshot $train_dir
+    #save_code_snapshot $train_dir # TODO fix this
     get_corpus $train_dir
     w2a $train_dir
     align $train_dir
