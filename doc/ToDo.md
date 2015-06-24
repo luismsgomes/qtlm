@@ -7,10 +7,12 @@
 
 1. use XMLRPC to communicate with LX-Suite instead of plain sockets (SN;LG)
 
+1. qtlm should use multiple processors for `qtlm evaluate`
+
 1. qtlm evaluate and translate should not need a dataset configuration file (GN)
     (setting QTLM_CONF should be enough)
 
-1. qtlm should use multiple processors for `qtlm evaluate`
+1. allow use of different scenarios for training and testing (GN)
 
 1. add hooks for saving snapshots of dependency repositories (such as LX-Suite)
 
