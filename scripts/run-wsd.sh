@@ -13,14 +13,13 @@ treex -L $lang -S $sel \
     -- $files
 
 
-for f in $(ls $treesdir.wsd.$lang.$sel.in); do
-    ukb_work_dir=$treesdir.wsd.$lang.$sel.in/$f.ukb
-    mkdir $ukb_work_dir
+find $treesdir.wsd.$lang.$sel.in -name '*.wsd-input' |
+while read f; do
+    ukb_work_dir=$f.ukb
+    mkdir -vp $ukb_work_dir
 
     $QTLM_ROOT/tools/lx-wsd-module-v1.5/lx-wsd-doc-module.sh \
         $QTLM_ROOT/tools/lx-wsd-module-v1.5/UKB \
-        $ukb_work_dir \
-        $lang \
-        $treesdir.$lang.$sel.wsd.in
+        $ukb_work_dir $lang $f
 done
 

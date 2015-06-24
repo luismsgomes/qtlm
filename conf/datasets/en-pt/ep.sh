@@ -1,7 +1,8 @@
 
 dataset_files="corpora/europarl/ep.enpt.gz"
 
-train_hostname="qtleap-worker"
+#train_hostname="qtleap-worker"
+train_hostname="*"
 
 static_train_opts="\
     --instances 10000 \

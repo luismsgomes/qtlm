@@ -35,9 +35,11 @@ sub BUILD {
     my $lang = $self->language;
     my $tmpdir = tempdir("lx-wsd-module-workdir-XXXXX", CLEANUP => 1);
     $self->_set_tmpdir($tmpdir);
-    my $cmd = $ENV{'QTLM_ROOT'}."/tools/lx-wsd-module-v1.5/lx-wsd-module "
+    my $cmd = "tee $tmpdir/DEBUG_input.txt |"
+             .$ENV{'QTLM_ROOT'}."/tools/lx-wsd-module-v1.5/lx-wsd-module "
              .$ENV{'QTLM_ROOT'}."/tools/lx-wsd-module-v1.5/UKB ".$tmpdir
-             ." ".$lang;
+             ." ".$lang
+             ."| tee $tmpdir/DEBUG_output.txt";
     my ( $reader, $writer, $pid ) =
         Treex::Tool::ProcessUtils::bipipe($cmd, ':encoding(utf-8)');
     log_debug("executing $cmd", 1);
