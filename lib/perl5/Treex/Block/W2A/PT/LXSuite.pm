@@ -56,7 +56,7 @@ sub process_zone {
         "lemma"        => ($_->{"lemma"} // uc $_->{"form"}),
         "conll/pos"    => $_->{"pos"},
         "conll/cpos"   => $_->{"pos"},
-        "conll/feat"   => $_->{"infl"},
+        "conll/feat"   => $_->{"infl"} // '',
         "conll/deprel" => $_->{"udeprel"},
     }); } @$tokens;
 
