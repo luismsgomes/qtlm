@@ -6,14 +6,38 @@ use Encode;
 
 extends 'Treex::Core::Block';
 
-has server => ( isa => 'Frontier::Client',
-    is => 'ro', required => 1, builder => '_build_server', lazy => 1 );
+sub _get_config {
+    open FILE, $ENV{"HOME"}."/.lxsuite2";
+    my @lines = <FILE>;
+    close FILE;
+    my %config;
+    for my $line (@lines) {
+        if ($line =~ /^\s*(.*)\s*=\s*([^ \n]*)\s*$/) {
+            $config{lc $1} = $2;
+        }
+    }
+    if (defined $ENV{'LXSUITE2_KEY'}) {
+        $config{"key"} = $ENV{'LXSUITE2_KEY'};
+    }
+    if (defined $ENV{'LXSUITE2_SERVER'}) {
+        $config{"url"} = 'http://'.$ENV{'LXSUITE2_SERVER'};
+    } else {
+        $config{"url"} = 'http://'.($config{"host"} // "localhost").
+                                ":".($config{"port"} // "10000");
+    }
+    return %config;
+    say STDERR, %config;
+}
 
-has key => ( isa => 'Str', is => 'ro', required => 1,
-    default => ($ENV{'LXSUITE_KEY'} // ''));
+my %config = _get_config;
+
+has server => ( isa => 'Frontier::Client',
+    is => 'ro', required => 1, builder => '_build_server', lazy => 0 );
 
 sub _build_server {
-    my $url = 'http://'.($ENV{'LXSUITE_SERVER'} // 'localhost:10000');
+    my $self = @_;
+    my $url = $config{"url"};
+    print STDERR "LXSuite server is $url\n";
     return Frontier::Client->new(url => $url, debug => 0);
 }
 
@@ -21,7 +45,7 @@ sub process_zone {
     my ( $self, $zone ) = @_;
 
     my $utf8_sentence = encode('UTF-8', $zone->sentence, Encode::FB_CROAK);
-    my $tokens = $self->server->call("analyse", $self->key, $utf8_sentence);
+    my $tokens = $self->server->call("analyse", $config{"key"}, $utf8_sentence);
 
     my $a_root = $zone->create_atree();
     # create nodes
