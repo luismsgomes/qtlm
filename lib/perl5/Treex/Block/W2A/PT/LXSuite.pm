@@ -71,7 +71,7 @@ sub process_zone {
         } elsif ($token->{"form"} =~ /_$/) {
             $a_nodes[$i]->set_no_space_after(1);
         }
-        if ($token->{"parent"}) {
+        if ($token->{"parent"} && (int $token->{"parent"}) <= scalar @a_nodes) {
             $a_nodes[$i]->set_parent(@a_nodes[(int $token->{"parent"})-1]);
         } else {
             push @roots, $a_nodes[$i];
