@@ -1,14 +1,15 @@
 Util::SetGlobal language=pt
 
-W2A::PT::TokenizeAndTag
+W2A::PT::LXSuite
+#W2A::PT::TokenizeAndTag
 W2A::PT::FixTags
 W2A::NormalizeForms
-W2A::MarkChunks min_quotes=3
+#W2A::MarkChunks min_quotes=3
 
 # a-layer
 #W2A::WSD
 
-W2A::PT::Parse lxsuite_mode=conll.pos:parser:conll.usd
+#W2A::PT::Parse lxsuite_mode=conll.pos:parser:conll.usd
 HamleDT::PT::HarmonizeCintilUSD
 W2A::PT::FixAfuns
 
