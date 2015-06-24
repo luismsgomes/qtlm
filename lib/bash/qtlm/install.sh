@@ -17,7 +17,7 @@ function install {
             break
         fi
         echo "Installing $(cat $missing)" >&2
-        xargs -r sudo cpanm < $missing
+        xargs -r sudo cpanm < $missing || xargs -r sudo cpanm --force < $missing
     done
     rm -f $errors $missing
 }
