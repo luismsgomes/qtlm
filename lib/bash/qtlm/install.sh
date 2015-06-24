@@ -8,7 +8,7 @@ function install {
     local missing=$(tempfile)
 
     while true; do
-        $TMT_ROOT/treex/bin/treex -d \
+        $TMT_ROOT/treex/bin/treex \
             $(find $QTLM_ROOT/scen -name '*.scen') \
             > /dev/null 2> $errors || true
         perl -ne "/^Can't locate (.*\.pm) in \@INC/ && print \"\$1\n\";" \
