@@ -3,6 +3,7 @@
 #
 
 function evaluate {
+    load_config
     local doing="evaluating ${src^^}->${trg^^} translation of testset $testset"
     log "$doing"
     load_testset_config

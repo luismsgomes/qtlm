@@ -3,6 +3,7 @@
 #
 
 function start {
+    load_config
     read socket_server_port1 socket_server_port2 <<< "$treex_socket_server_ports"
     read mtmworker_port1 mtmworker_port2 <<< "$treex_mtmworker_ports"
     src=$lang1 trg=$lang2 \

@@ -5,6 +5,7 @@
 #
 
 function train {
+    load_config
     if [[ "$(hostname)" != $train_hostname ]]; then
         fatal "dataset '$dataset/$lang1-$lang2' must be trained on '$train_hostname'"
     fi

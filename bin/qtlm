@@ -48,6 +48,9 @@
 ##?         If environment variable $save_trees is set, then trees are saved
 ##?         into the directory specified by the variable.
 ##?
+##?   install
+##?         Attempts to install missing CPAN modules.
+##?
 ##?   help
 ##?         Shows this help.
 ##?
@@ -79,8 +82,8 @@ function main {
     source "$QTLM_ROOT/lib/bash/qtlm/evaluate.sh" || exit 1
     source "$QTLM_ROOT/lib/bash/qtlm/translate.sh" || exit 1
     source "$QTLM_ROOT/lib/bash/qtlm/serve.sh" || exit 1
+    source "$QTLM_ROOT/lib/bash/qtlm/install.sh" || exit 1
     set_pedantic_bash_options
-    load_config
     if test $# == 0; then
         stderr "no command given"
         help
@@ -90,7 +93,7 @@ function main {
     shift
     # set apropriate variables for each command from command line arguments
     case $cmd in
-        train|help|version)
+        train|help|version|start|stop|install)
             if test $# -gt 0; then
                 fatal "command $cmd takes no arguments"
             fi
@@ -154,12 +157,6 @@ function main {
             trg="$2"
             check_src_trg
             translate
-        ;;
-        start|stop)
-            if test $# -ne 0; then
-                fatal "command $cmd takes no arguments"
-            fi
-            $cmd
         ;;
         *)
         stderr "invalid command \"$cmd\""
