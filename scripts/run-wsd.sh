@@ -17,11 +17,11 @@ lang=$1 sel=$2 treesdir=${3%/}
 
 export PYTHONPATH=$QTLM_ROOT/lib/python3
 
-find $treesdir.wsd.$lang.$sel.in -name '*.wsd-input' |
+find $treesdir-wsd-$lang-$sel -name '*.wsd-input' |
 while read f; do
 	python3 -m ukb $lang < $f > ${f/wsd-input/wsd-output}
 
-    # ukb_work_dir=$f.ukb
+    # ukb_work_dir=$f-ukb
     # mkdir -vp $ukb_work_dir
 
     # $QTLM_ROOT/tools/lx-wsd-module-v1.5/lx-wsd-doc-module.sh \
