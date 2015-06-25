@@ -4,6 +4,8 @@ Util::SetGlobal language=pt
 #T2T::SelectCompatibleTlemmaFormeme
 T2T::SetClauseNumber
 
+#T2T::RecoverUnknownLemmas.pm
+
 T2T::FixPunctFormemes
 
 T2T::FixFormemeWrtNodetype
