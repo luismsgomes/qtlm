@@ -1,4 +1,8 @@
+"""
+Wrapper for UKB word sense disambiguation tool.
 
+2015 Luís Gomes <luismsgomes@gmail.com>
+"""
 
 import collections
 import os
@@ -70,9 +74,15 @@ def wsd(lang, sentences, debugfile=None):
     if debugfile:
         print(" ".join(argv), file=debugfile)
     try:
-        ukb_output = subprocess.check_output(argv, universal_newlines=True)
+        stderr = subprocess.DEVNULL if debugfile is None else debugfile
+        ukb_output = subprocess.check_output(argv, universal_newlines=True,
+                                             stderr=stderr)
     finally:
-        #os.remove(ukb_input_fname)
+        if debugfile:
+            print("LEAVING UKB INPUT FILE FOR INSPECTION: "+ukb_input_fname,
+                  file=debugfile)
+        else:
+            os.remove(ukb_input_fname)
         pass
     for line in map(str.strip, ukb_output.split("\n")):
         if not line or line.startswith("!!"):
@@ -112,7 +122,7 @@ if __name__ == "__main__":
             [TokenObject(wsd=None, **token._asdict()) for token in sentence]
             for sentence in sentences
         ]
-        sentences = wsd(lang, sentences, debugfile=sys.stderr)
+        sentences = wsd(lang, sentences)
         sentences = [ # convert objects to namedtuples
             [TokenTuple(**token.__dict__) for token in sentence]
             for sentence in sentences
