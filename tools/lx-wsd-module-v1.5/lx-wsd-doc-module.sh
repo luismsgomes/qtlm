@@ -2,11 +2,11 @@
 
 #read test
 
-document=$4
 
 UKBDir=$1
 outputDir=$2
 language=$3
+document=$4
 
 sentences=()
 
@@ -213,8 +213,8 @@ do
 done
 
 echo -e $contextString > $outputDir"/UKBContext.txt"
-UKBContext=$contextString
-echo -e $finalWordString > $outputDir"/unmappedOutput.txt"
+#UKBContext=$contextString
+#echo -e $finalWordString > $outputDir"/unmappedOutput.txt"
 
 # Run UKB
 
@@ -222,11 +222,11 @@ echo -e "*** Running UKB:\n"
 
 if [ $language == "pt" ]
 then
-	$UKBDir/ukb_wsd --ppr -K $UKBDir/mwnpt30verified-true.bin -D $UKBDir/mwnpt30verified-true_dict.txt $outputDir/UKBContext.txt > $outputDir/UKBOutput.txt 2>&1
+	time $UKBDir/ukb_wsd --ppr -K $UKBDir/mwnpt30verified-true.bin -D $UKBDir/mwnpt30verified-true_dict.txt $outputDir/UKBContext.txt > $outputDir/UKBOutput.txt 2>&1
 fi
 
 if [ $language == "en" ]
 then
-	$UKBDir/ukb_wsd --ppr -K $UKBDir/wn30.bin -D $UKBDir/wnet30_dict.txt $outputDir/UKBContext.txt > $outputDir/UKBOutput.txt 2>&1
+	time $UKBDir/ukb_wsd --ppr -K $UKBDir/wn30.bin -D $UKBDir/wnet30_dict.txt $outputDir/UKBContext.txt > $outputDir/UKBOutput.txt 2>&1
 fi
 
