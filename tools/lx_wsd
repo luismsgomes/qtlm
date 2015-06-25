@@ -1,0 +1,26 @@
+#! /bin/bash
+
+progname=$(basename $0)
+
+if ! [ -d "$QTLM_ROOT" ]; then
+	echo "$progname: check environment variable QTLM_ROOT" >&2
+	exit
+fi
+
+if [[ ":$PYTHONPATH:" != *":$QTLM_ROOT/lib/python3:"* ]]; then
+	export PYTHONPATH="$QTLM_ROOT/lib/python3"${PYTHONPATH:+":$PYTHONPATH"}
+fi
+
+export PYTHONDONTWRITEBYTECODE=1
+
+python3=$(which python3)
+if ! [ -x "$python3" ]; then
+	echo "$progname: could not find python3." >&2
+	if [ -n "$(which apt-get)" ]; then
+		echo "To install python3 run:" >&2
+		echo "    sudo apt-get install python3" >&2
+	fi
+	exit
+fi
+
+$python3 -m ukb "$@"
