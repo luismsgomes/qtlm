@@ -49,6 +49,8 @@ for lang in config:
         for tag in config[lang]["tags"][ukb_tag]
     }
 
+def escape_lemma(lemma):
+    return re.sub(r"\W", "_", lemma)
 
 def wsd(lang, sentences, debugfile=None):
     if lang not in config:
@@ -61,7 +63,8 @@ def wsd(lang, sentences, debugfile=None):
             print(ukb_input_fname, file=debugfile)
         for sent_id, sentence in enumerate(sentences):
             words = [
-                "{}#{}#w{}#1".format(tok.lemma.lower().replace(" ", "_"), ukb_tags[tok.pos], word_id)
+                "{}#{}#w{}#1".format(escape_lemma(tok.lemma.lower()),
+                                     ukb_tags[tok.pos], word_id)
                 for word_id, tok in enumerate(sentence)
                 if tok.lemma != "_" and tok.pos in ukb_tags
             ]
@@ -88,7 +91,7 @@ def wsd(lang, sentences, debugfile=None):
         if not line or line.startswith("!!"):
             continue
         line, _, lemma = line.rpartition("!!")
-        lemma = lemma.strip()
+        #lemma = lemma.strip()
         ctx_id, w_id, *synsetids = line.strip().split()
         if not synsetids:
             continue
