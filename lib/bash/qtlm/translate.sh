@@ -4,6 +4,7 @@
 
 function translate {
     load_config
+    check_src_trg
     local now=$(date '+%Y%m%d_%H%M%S')
     local write_treex=""
     if is_set save_trees; then

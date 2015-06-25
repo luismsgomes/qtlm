@@ -119,7 +119,6 @@ function main {
             shift
             trg="$1"
             shift
-            check_src_trg
             if test $# -eq 0; then
                 testsets=$(list_all_testsets | grep -vP "^_")
             else
@@ -155,7 +154,6 @@ function main {
             fi
             src="$1"
             trg="$2"
-            check_src_trg
             translate
         ;;
         *)
