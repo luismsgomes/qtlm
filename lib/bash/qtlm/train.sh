@@ -150,7 +150,7 @@ function align {
     create_dir $train_dir/giza
     $TMT_ROOT/treex/devel/qtleap/bin/gizawrapper.pl \
         --tempdir=$train_dir/giza \
-        --bindir=$giza_dir \
+        --bindir=$QTLM_ROOT/tools/$(uname -m) \
         $train_dir/lemmas.gz \
         --lcol=1 \
         --rcol=2 \
