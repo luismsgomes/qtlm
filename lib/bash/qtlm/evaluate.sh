@@ -73,6 +73,7 @@ function translate_from_scratch {
         T2T::CopyTtree \
             source_language=$src \
             source_selector=src \
+        T2T::EN2PT::TrGazeteerItems \
         T2T::TrFAddVariants \
             model_dir=data/models/transfer/$dataset/$train_date/$src-$trg/formeme \
             static_model=static.model.gz \
