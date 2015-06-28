@@ -73,6 +73,7 @@ function translate_from_scratch {
         T2T::CopyTtree \
             source_language=$src \
             source_selector=src \
+        "$QTLM_ROOT/scen/$lang1-$lang2/${src}${trg}_t2t.scen" \
         T2T::TrFAddVariants \
             model_dir=data/models/transfer/$dataset/$train_date/$src-$trg/formeme \
             static_model=static.model.gz \

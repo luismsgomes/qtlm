@@ -4,6 +4,9 @@ Util::SetGlobal language=en
 W2A::EN::Tokenize
 W2A::NormalizeForms
 W2A::EN::FixTokenization
+
+W2A::EN::GazeteerMatch
+
 W2A::EN::TagMorce
 W2A::EN::FixTags
 W2A::EN::Lemmatize
