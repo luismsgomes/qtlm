@@ -114,14 +114,29 @@ sub features_from_src_tnode {
             $features{determiner} = 'a';
         }
     }
-    if ( $arg_ref && $arg_ref->{encode} ) {
-        encode_features_for_tsv( \%features );
-    }
 
     # WSD features (2015-06-29, luis.gomes@di.fc.ul.pt)
     my $anode = $node->get_lex_anode();
-    if (defined $anode->wild->{lx_wsd} && $anode->wild->{lx_wsd} ne "UNK") {
+    if (defined $anode and defined $anode->wild->{lx_wsd}
+        and $anode->wild->{lx_wsd} ne "UNK") {
         $features{synsetid} = $anode->wild->{lx_wsd};
+    }
+
+    # Domain adaptation features (2015-06-29, luis.gomes@di.fc.ul.pt)
+    # This code should appear just before calling encode_features_for_tsv
+    # because all features should be already in $features:
+    my $doc = $node->get_document();
+    if ( defined $doc and defined $doc->in_domain ) {
+        my $key_prefix = $doc->in_domain ? "indomain_" : "outdomain_";
+        my @keys = keys %features;
+        foreach my $key (@keys) {
+            my $new_key   = $key_prefix.$key ;
+            $features{$new_key} = $features{$key};
+        }
+    }
+    
+    if ( $arg_ref && $arg_ref->{encode} ) {
+        encode_features_for_tsv( \%features );
     }
 
     return \%features;
