@@ -70,7 +70,7 @@ sub process_atree {
     foreach my $a_node ($a_root->get_descendants({ ordered => 1 })) {
         my $ws = shift @word_senses;
         $a_node->wild->{lx_wsd} = $ws
-            if $ws ne '_';
+            if defined $ws and $ws ne '_';
     }
     return;
 }
