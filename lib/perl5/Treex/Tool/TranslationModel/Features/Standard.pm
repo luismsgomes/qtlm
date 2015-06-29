@@ -115,12 +115,39 @@ sub features_from_src_tnode {
         }
     }
 
-    # WSD features (2015-06-29, luis.gomes@di.fc.ul.pt)
+    # BEGIN WSD features (2015-06-29, luis.gomes@di.fc.ul.pt)
+
     my $anode = $node->get_lex_anode();
     if (defined $anode and defined $anode->wild->{lx_wsd}
         and $anode->wild->{lx_wsd} ne "UNK") {
         $features{synsetid} = $anode->wild->{lx_wsd};
     }
+
+    my $parent_anode = $node->get_parent()->get_lex_anode();
+    if (defined $parent_anode and defined $parent_anode->wild->{lx_wsd}
+        and $parent_anode->wild->{lx_wsd} ne "UNK") {
+        $features{parent_synsetid} = $parent_anode->wild->{lx_wsd};
+    }
+
+    my $left_sibling = $node->get_left_neighbor();
+    if ( defined $left_sibling ) {
+        my $left_sibling_anode = $left_sibling->get_lex_anode();
+        if (defined $left_sibling_anode and defined $left_sibling_anode->wild->{lx_wsd}
+            and $left_sibling_anode->wild->{lx_wsd} ne "UNK") {
+            $features{left_synsetid} = $left_sibling_anode->wild->{lx_wsd};
+        }
+    }
+
+    my $right_sibling = $node->get_right_neighbor();
+    if ( defined $right_sibling ) {
+        my $right_sibling_anode = $right_sibling->get_lex_anode();
+        if (defined $right_sibling_anode and defined $right_sibling_anode->wild->{lx_wsd}
+            and $right_sibling_anode->wild->{lx_wsd} ne "UNK") {
+            $features{right_synsetid} = $right_sibling_anode->wild->{lx_wsd};
+        }
+    }
+
+    # END WSD features
 
     # Domain adaptation features (2015-06-29, luis.gomes@di.fc.ul.pt)
     # This code should appear just before calling encode_features_for_tsv
