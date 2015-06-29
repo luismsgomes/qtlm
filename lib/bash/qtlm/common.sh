@@ -54,7 +54,7 @@ function load_config {
     # let's check if all scenarios exist
     local scen scendir
     scendir=$QTLM_ROOT/scen/$lang1-$lang2
-    for scen in $scendir/{{$lang1,$lang2}_{w2a,a2t,t2w},{$lang1$lang2,$lang2$lang1}_t2t}.scen; do
+    for scen in $scendir/{{${lang1},${lang2}}_{w2a,a2t,t2w},{${lang1}${lang2},${lang2}${lang1}}_t2t}.scen; do
         if ! test -f "$scen"; then
             fatal "missing scenario $scen"
         fi
