@@ -126,8 +126,8 @@ sub features_from_src_tnode {
     # This code should appear just before calling encode_features_for_tsv
     # because all features should be already in $features:
     my $doc = $node->get_document();
-    if ( defined $doc and defined $doc->in_domain ) {
-        my $key_prefix = $doc->in_domain ? "indomain_" : "outdomain_";
+    if ( defined $doc and defined $doc->wild->{in_domain} ) {
+        my $key_prefix = $doc->wild->{in_domain} ? "indomain_" : "outdomain_";
         my @keys = keys %features;
         foreach my $key (@keys) {
             my $new_key   = $key_prefix.$key ;
