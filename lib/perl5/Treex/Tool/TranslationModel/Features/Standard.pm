@@ -129,23 +129,23 @@ sub features_from_src_tnode {
         $features{parent_synsetid} = $parent_anode->wild->{lx_wsd};
     }
 
-    my $left_sibling = $node->get_left_neighbor();
-    if ( defined $left_sibling ) {
-        my $left_sibling_anode = $left_sibling->get_lex_anode();
-        if (defined $left_sibling_anode and defined $left_sibling_anode->wild->{lx_wsd}
-            and $left_sibling_anode->wild->{lx_wsd} ne "UNK") {
-            $features{left_synsetid} = $left_sibling_anode->wild->{lx_wsd};
-        }
-    }
+    # my $left_sibling = $node->get_left_neighbor();
+    # if ( defined $left_sibling ) {
+    #     my $left_sibling_anode = $left_sibling->get_lex_anode();
+    #     if (defined $left_sibling_anode and defined $left_sibling_anode->wild->{lx_wsd}
+    #         and $left_sibling_anode->wild->{lx_wsd} ne "UNK") {
+    #         $features{left_synsetid} = $left_sibling_anode->wild->{lx_wsd};
+    #     }
+    # }
 
-    my $right_sibling = $node->get_right_neighbor();
-    if ( defined $right_sibling ) {
-        my $right_sibling_anode = $right_sibling->get_lex_anode();
-        if (defined $right_sibling_anode and defined $right_sibling_anode->wild->{lx_wsd}
-            and $right_sibling_anode->wild->{lx_wsd} ne "UNK") {
-            $features{right_synsetid} = $right_sibling_anode->wild->{lx_wsd};
-        }
-    }
+    # my $right_sibling = $node->get_right_neighbor();
+    # if ( defined $right_sibling ) {
+    #     my $right_sibling_anode = $right_sibling->get_lex_anode();
+    #     if (defined $right_sibling_anode and defined $right_sibling_anode->wild->{lx_wsd}
+    #         and $right_sibling_anode->wild->{lx_wsd} ne "UNK") {
+    #         $features{right_synsetid} = $right_sibling_anode->wild->{lx_wsd};
+    #     }
+    # }
 
     # END WSD features
 
