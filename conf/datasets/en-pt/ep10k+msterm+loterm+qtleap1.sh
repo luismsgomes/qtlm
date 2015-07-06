@@ -1,13 +1,10 @@
 
 dataset_files="
+    corpora/europarl/ep_10k.enpt.gz
     corpora/msterm/msterm.enpt.gz
+    corpora/libreoffice/terminology.enpt.gz
     corpora/qtleap/v1.1/qtleap_1a.enpt.gz
     corpora/qtleap/v1.1/qtleap_1q.enpt.gz
-    corpora/libreoffice/libo_help.enpt.gz
-    corpora/libreoffice/libo_ui.enpt.gz
-    corpora/libreoffice/terminology.enpt.gz
-    corpora/libreoffice/website.enpt.gz
-    lexica/wikipedia/wiki.enpt.gz
 "
 
 train_hostname="*"

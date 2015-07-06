@@ -1,5 +1,13 @@
 
-dataset_files="corpora/europarl/ep_1k.enpt.gz"
+dataset_files="
+    corpora/europarl/ep_10k.enpt.gz
+    corpora/msterm/msterm.enpt.gz
+    corpora/libreoffice/terminology.enpt.gz
+    corpora/qtleap/v1.1/qtleap_1a.enpt.gz
+    corpora/qtleap/v1.1/qtleap_1q.enpt.gz
+    corpora/qtleap/v1.1/qtleap_3a.enpt.gz
+    corpora/qtleap/v1.1/qtleap_3q.enpt.gz
+"
 
 train_hostname="*"
 
