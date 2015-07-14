@@ -312,7 +312,7 @@ function train_lemma {
     log "$doing"
     eval "local train_opts=\$lemma_${model_type}_train_opts"
     zcat $train_dir/models/$src-$trg/lemma/train.gz |
-    eval $TMT_ROOT/treex/training/mt/transl_models/train.pl \
+    eval $QTLM_ROOT/tools/train_transfer_models.pl \
         $model_type $train_opts \
         $train_dir/models/$src-$trg/lemma/$model_type.model.gz \
         >& $train_dir/logs/train_${src}-${trg}_lemma_$model_type.log
@@ -333,7 +333,7 @@ function train_formeme {
     log "$doing"
     eval "local train_opts=\$formeme_${model_type}_train_opts"
     zcat $train_dir/models/$src-$trg/formeme/train.gz |
-    eval $TMT_ROOT/treex/training/mt/transl_models/train.pl \
+    eval $QTLM_ROOT/tools/train_transfer_models.pl \
         $model_type $train_opts \
         $train_dir/models/$src-$trg/formeme/$model_type.model.gz \
         >& $train_dir/logs/train_${src}-${trg}_formeme_$model_type.log
