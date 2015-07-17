@@ -68,9 +68,25 @@ sub process_atree {
     my @word_senses = map { $_ =~ /.*\/([^\/]+)$/ } (split / /, $wsd_output);
 
     foreach my $a_node ($a_root->get_descendants({ ordered => 1 })) {
-        my $ws = shift @word_senses;
-        $a_node->wild->{lx_wsd} = $ws
-            if defined $ws and $ws ne '_';
+        #my $ws = shift @word_senses;
+        #$a_node->wild->{synsetid} = $ws
+        #    if defined $ws and $ws ne '_';
+        
+        # EDIT BY STEVE NEALE - SEPARATE WILD ATTRIBUTES FOR SYNSETID AND SUPERSENSE
+        my $word_sense_info = shift @word_senses;
+
+        if (defined $word_sense_info and $word_sense_info ne '_') {
+            if($word_sense_info ne 'UNK') {
+                my @sense_info_types = split(/\|\|/, $word_sense_info);
+                $a_node->wild->{synsetid} = $sense_info_types[0];
+                #print "synset id: @sense_info_types[0]";
+                $a_node->wild->{supersense} = $sense_info_types[1];
+                #print "supersense: @sense_info_types[1]";
+            } else {
+                $a_node->wild->{synsetid} = $word_sense_info;
+                $a_node->wild->{supersense} = "UNK"; 
+            }
+        }
     }
     return;
 }
