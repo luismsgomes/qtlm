@@ -18,16 +18,21 @@ sub process_atree {
     my $file_handle = $self->file_handle;
     log_info "begin sentence";
     foreach my $a_node ($a_root->get_descendants({ ordered => 1 })) {
-    	my $wsd_output_line = < $file_handle >;
-    	my ($form, $lemma, $pos, $ws) = split / /, $wsd_output_line;
+    	my $wsd_output_line = <$file_handle>;
+    	my ($form, $lemma, $pos, $_synsetids, $_supersenses) = split /\t/, $wsd_output_line;
         if ($a_node->form ne $form) {
             log_warn $a_node->form." != ".$form;
         } else {
-            log_debug $a_node->form." WS=".$ws;
-            $a_node->wild->{lx_wsd} = $ws if $ws ne '_';
+            my @synsetids = split /\t/, $_synsetids;
+            my @supersenses = split /\t/, $_supersenses;
+            if (@synsetids) {
+                log_debug $a_node->form." synsetid=".$synsetids[0]. " supersense=".$supersenses[0];
+                $a_node->wild->{synsetid} = $synsetids[0] if $synsetids[0] ne '_';
+                $a_node->wild->{supersense} = $supersenses[0] if $supersenses[0] ne '_';
+            }
         }
     }
-    my $empty_line = < $file_handle >;
+    my $empty_line = <$file_handle>;
     if ($empty_line ne "") {
     	log_warn "expected empty line";
     }
@@ -38,9 +43,9 @@ sub process_atree {
 sub read_header {
     my ( $self, $document ) = @_;
     my $file_handle = $self->file_handle;
-    my $header = < $file_handle >;
-    if ( $header ne "form\tlemma\tpos\twsd" ) {
-    	log_fatal "expected header line: form\\tlemma\\tpos\\twsd\n"
+    my $header = <$file_handle>;
+    if ( $header ne "form\tlemma\tpos\tsynsetids\tsupersenses\n" ) {
+    	log_fatal "expected header line: form\\tlemma\\tpos\\tsynsetids\\tsupersenses\n"
     			 ."but I got:\n$header";
     }
     return;
@@ -72,9 +77,10 @@ override 'process_end' => sub {
 sub _prepare_file_handle {
     my $self = shift;
 	$self->_close_file_handle();
+    my $handle;
 	my $filename = $self->filename;
     log_info "Reading from $filename";
-    open ( my $handle, '<', $filename );
+    open ( $handle, '<', $filename );
     $self->_set_file_handle($handle);
 }
 

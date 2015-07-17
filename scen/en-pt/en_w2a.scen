@@ -13,9 +13,9 @@ W2A::EN::Lemmatize
 
 #W2A::WSD
 
-#W2A::ToWSD filename=wsd.in
-#W2A::RunDocWSD input_filename=wsd.in output_filename=wsd.out
-#W2A::FromWSD filename=wsd.out
+W2A::ToWSD filename=wsd.in
+W2A::RunDocWSD input_filename=wsd.in output_filename=wsd.out
+W2A::FromWSD filename=wsd.out
 
 # named entities
 A2N::EN::StanfordNamedEntities model=ner-eng-ie.crf-3-all2008.ser.gz
