@@ -19,6 +19,7 @@ sub process_atree {
     log_info "begin sentence";
     foreach my $a_node ($a_root->get_descendants({ ordered => 1 })) {
     	my $wsd_output_line = <$file_handle>;
+        chomp $wsd_output_line;
     	my ($form, $lemma, $pos, $_synsetids, $_supersenses) = split /\t/, $wsd_output_line;
         if ($a_node->form ne $form) {
             log_warn $a_node->form." != ".$form;
@@ -33,6 +34,7 @@ sub process_atree {
         }
     }
     my $empty_line = <$file_handle>;
+    chomp $empty_line;
     if ($empty_line ne "") {
     	log_warn "expected empty line";
     }
