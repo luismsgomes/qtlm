@@ -74,7 +74,7 @@ sub _prepare_file_handle {
     my $self = shift;
 	$self->_close_file_handle();
     my $handle;
-	my $filename = $self->filename;
+	my $filename = $self->filename.".$$";
     log_info "Writing to $filename";
     open ( $handle, '>', $filename );
     $self->_set_file_handle($handle);

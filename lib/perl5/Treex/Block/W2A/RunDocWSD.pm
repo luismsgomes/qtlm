@@ -14,12 +14,20 @@ sub process_document {
     my $cmd = $ENV{'QTLM_ROOT'}."/tools/lx_wsd "
               .$self->language
               ." < "
-              .$self->input_filename
+              .$self->input_filename.".$$"
               ." > "
-              .$self->output_filename;
+              .$self->output_filename.".$$";
     `$cmd`;
     return;
 }
+
+
+sub DESTROY {
+  my $self = shift;
+  unlink $self->input_filename.".$$";
+  unlink $self->output_filename.".$$";
+}
+
 
 1;
 

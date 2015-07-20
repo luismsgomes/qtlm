@@ -16,7 +16,6 @@ has file_handle => (
 sub process_atree {
     my ( $self, $a_root ) = @_;
     my $file_handle = $self->file_handle;
-    log_info "begin sentence";
     foreach my $a_node ($a_root->get_descendants({ ordered => 1 })) {
     	my $wsd_output_line = <$file_handle>;
         chomp $wsd_output_line;
@@ -38,7 +37,6 @@ sub process_atree {
     if ($empty_line ne "") {
     	log_warn "expected empty line";
     }
-    log_info "end sentence";
     return;
 }
 
@@ -47,7 +45,7 @@ sub read_header {
     my $file_handle = $self->file_handle;
     my $header = <$file_handle>;
     if ( $header ne "form\tlemma\tpos\tsynsetids\tsupersenses\n" ) {
-    	log_fatal "expected header line: form\\tlemma\\tpos\\tsynsetids\\tsupersenses\n"
+        log_fatal "expected header line: form\\tlemma\\tpos\\tsynsetids\\tsupersenses\n"
     			 ."but I got:\n$header";
     }
     return;
@@ -80,7 +78,7 @@ sub _prepare_file_handle {
     my $self = shift;
 	$self->_close_file_handle();
     my $handle;
-	my $filename = $self->filename;
+	my $filename = $self->filename.".$$";
     log_info "Reading from $filename";
     open ( $handle, '<', $filename );
     $self->_set_file_handle($handle);
