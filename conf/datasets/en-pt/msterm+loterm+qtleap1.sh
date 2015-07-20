@@ -2,7 +2,7 @@
 dataset_files="
     corpora/msterm/msterm.enpt.gz
     corpora/libreoffice/terminology.enpt.gz
-    corpora/qtleap/v1.1/qtleap_1a.enpt.gz
+    corpora/qtleap/v1.1.1/qtleap_1a.enpt.gz
     corpora/qtleap/v1.1/qtleap_1q.enpt.gz
 "
 
