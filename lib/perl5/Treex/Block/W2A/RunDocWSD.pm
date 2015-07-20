@@ -2,7 +2,7 @@ package Treex::Block::W2A::RunDocWSD;
 use Moose;
 extends 'Treex::Core::Block';
 
-has [qw( language input_filename output_filename )] => (
+has [qw( language input_filename_prefix output_filename_prefix )] => (
     is => 'ro',
     isa => 'Str',
     required => 1
@@ -14,9 +14,9 @@ sub process_document {
     my $cmd = $ENV{'QTLM_ROOT'}."/tools/lx_wsd "
               .$self->language
               ." < "
-              .$self->input_filename.".$$"
+              .$self->input_filename_prefix.".$$"
               ." > "
-              .$self->output_filename.".$$";
+              .$self->output_filename_prefix.".$$";
     `$cmd`;
     return;
 }
@@ -24,8 +24,8 @@ sub process_document {
 
 sub DESTROY {
   my $self = shift;
-  unlink $self->input_filename.".$$";
-  unlink $self->output_filename.".$$";
+  unlink $self->input_filename_prefix.".$$";
+  unlink $self->output_filename_prefix.".$$";
 }
 
 

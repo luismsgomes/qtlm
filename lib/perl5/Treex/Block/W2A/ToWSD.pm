@@ -7,7 +7,7 @@ extends 'Treex::Core::Block';
 # TODO: get W2A::ToWSD + W2A::RunDocWSD + W2A::FromWSD in a single block called
 #       BatchWSD and rename W2A::WSD as W2A::OnlineWSD
 
-has 'filename' => ( is => 'ro', isa => 'Str', required => 1 );
+has 'filename_prefix' => ( is => 'ro', isa => 'Str', required => 1 );
 
 has file_handle => (
     isa           => 'Maybe[FileHandle]',
@@ -74,7 +74,7 @@ sub _prepare_file_handle {
     my $self = shift;
 	$self->_close_file_handle();
     my $handle;
-	my $filename = $self->filename.".$$";
+    my $filename = $self->filename_prefix.".$$";
     log_info "Writing to $filename";
     open ( $handle, '>', $filename );
     $self->_set_file_handle($handle);

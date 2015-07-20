@@ -4,7 +4,7 @@ use Treex::Core::Log;
 use open ':encoding(utf8)';
 extends 'Treex::Core::Block';
 
-has 'filename' => ( is => 'ro', isa => 'Str', required => 1 );
+has 'filename_prefix' => ( is => 'ro', isa => 'Str', required => 1 );
 
 has file_handle => (
     isa           => 'Maybe[FileHandle]',
@@ -78,7 +78,7 @@ sub _prepare_file_handle {
     my $self = shift;
 	$self->_close_file_handle();
     my $handle;
-	my $filename = $self->filename.".$$";
+	my $filename = $self->filename_prefix.".$$";
     log_info "Reading from $filename";
     open ( $handle, '<', $filename );
     $self->_set_file_handle($handle);
