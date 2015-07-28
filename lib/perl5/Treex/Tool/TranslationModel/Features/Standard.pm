@@ -135,7 +135,7 @@ sub features_from_src_tnode {
         }
     }
 
-    if (defined $ENV{"WSD_CONF"} and $ENV{"WSD_CONF"} =~ /siblings_synsetid/) {
+    if (defined $ENV{"WSD_CONF"} and $ENV{"WSD_CONF"} =~ /siblings_synsetids/) {
         # Please check if this is correct (what is a sibling...)
 
         my $left_sibling = $node->get_left_neighbor();
@@ -177,7 +177,7 @@ sub features_from_src_tnode {
         }
     }
 
-    if (defined $ENV{"WSD_CONF"} and $ENV{"WSD_CONF"} =~ /siblings_supersense/) {
+    if (defined $ENV{"WSD_CONF"} and $ENV{"WSD_CONF"} =~ /siblings_supersenses/) {
         # Please check if this is correct (what is a sibling...)
 
         my $left_sibling = $node->get_left_neighbor();
