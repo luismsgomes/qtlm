@@ -121,21 +121,21 @@ sub features_from_src_tnode {
         my $anode = $node->get_lex_anode();
         if (defined $anode and defined $anode->wild->{synsetid}
             and $anode->wild->{synsetid} ne "UNK") {
-            say STDERR "adding node+synsetid";
+            # say STDERR "adding node+synsetid";
             $features{synsetid} = $anode->wild->{synsetid};
         }
     }
 
-    if (defined $ENV{"WSD_CONF"} and $ENV{"WSD_CONF"} =~ /nodepar_synsetid/) {
+    if (defined $ENV{"WSD_CONF"} and $ENV{"WSD_CONF"} =~ /parent_synsetid/) {
         my $parent_anode = $node->get_parent()->get_lex_anode();
         if (defined $parent_anode and defined $parent_anode->wild->{synsetid}
             and $parent_anode->wild->{synsetid} ne "UNK") {
-            say STDERR "adding node+par+synsetid";
+            # say STDERR "adding node+par+synsetid";
             $features{parent_synsetid} = $parent_anode->wild->{synsetid};
         }
     }
 
-    if (defined $ENV{"WSD_CONF"} and $ENV{"WSD_CONF"} =~ /nodesibs_synsetid/) {
+    if (defined $ENV{"WSD_CONF"} and $ENV{"WSD_CONF"} =~ /siblings_synsetid/) {
         # Please check if this is correct (what is a sibling...)
 
         my $left_sibling = $node->get_left_neighbor();
@@ -143,7 +143,7 @@ sub features_from_src_tnode {
             my $left_sibling_anode = $left_sibling->get_lex_anode();
             if (defined $left_sibling_anode and defined $left_sibling_anode->wild->{synsetid}
                 and $left_sibling_anode->wild->{synsetid} ne "UNK") {
-                say STDERR "adding node+leftsib+synsetid";
+                # say STDERR "adding node+leftsib+synsetid";
                 $features{left_synsetid} = $left_sibling_anode->wild->{synsetid};
             }
         }
@@ -153,18 +153,51 @@ sub features_from_src_tnode {
             my $right_sibling_anode = $right_sibling->get_lex_anode();
             if (defined $right_sibling_anode and defined $right_sibling_anode->wild->{synsetid}
                 and $right_sibling_anode->wild->{synsetid} ne "UNK") {
-                say STDERR "adding node+rightsib+synsetid";
+                # say STDERR "adding node+rightsib+synsetid";
                 $features{right_synsetid} = $right_sibling_anode->wild->{synsetid};
             }
         }
     }
 
-    if (defined $ENV{"WSD_CONF"} and $ENV{"WSD_CONF"} =~ /node_supersen/) {
+    if (defined $ENV{"WSD_CONF"} and $ENV{"WSD_CONF"} =~ /node_supersense/) {
         my $anode = $node->get_lex_anode();
         if (defined $anode and defined $anode->wild->{supersense}
             and $anode->wild->{supersense} ne "UNK") {
-            say STDERR "adding node+supersense";
+            # say STDERR "adding node+supersense";
             $features{supersense} = $anode->wild->{supersense};
+        }
+    }
+
+    if (defined $ENV{"WSD_CONF"} and $ENV{"WSD_CONF"} =~ /parent_supersense/) {
+        my $parent_anode = $node->get_parent()->get_lex_anode();
+        if (defined $parent_anode and defined $parent_anode->wild->{supersense}
+            and $parent_anode->wild->{supersense} ne "UNK") {
+            # say STDERR "adding node+par+supersense";
+            $features{parent_supersense} = $parent_anode->wild->{supersense};
+        }
+    }
+
+    if (defined $ENV{"WSD_CONF"} and $ENV{"WSD_CONF"} =~ /siblings_supersense/) {
+        # Please check if this is correct (what is a sibling...)
+
+        my $left_sibling = $node->get_left_neighbor();
+        if ( defined $left_sibling ) {
+            my $left_sibling_anode = $left_sibling->get_lex_anode();
+            if (defined $left_sibling_anode and defined $left_sibling_anode->wild->{supersense}
+                and $left_sibling_anode->wild->{supersense} ne "UNK") {
+                # say STDERR "adding node+leftsib+supersense";
+                $features{left_supersense} = $left_sibling_anode->wild->{supersense};
+            }
+        }
+
+        my $right_sibling = $node->get_right_neighbor();
+        if ( defined $right_sibling ) {
+            my $right_sibling_anode = $right_sibling->get_lex_anode();
+            if (defined $right_sibling_anode and defined $right_sibling_anode->wild->{supersense}
+                and $right_sibling_anode->wild->{supersense} ne "UNK") {
+                # say STDERR "adding node+rightsib+supersense";
+                $features{right_supersense} = $right_sibling_anode->wild->{supersense};
+            }
         }
     }
 
