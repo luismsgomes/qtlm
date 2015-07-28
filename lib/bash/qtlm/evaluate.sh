@@ -23,8 +23,12 @@ function evaluate {
                   cut -f 2 > $eval_dir/$test_file.$lang2.txt
         fi
         check_transfer_models
-        if test -f $eval_dir/$test_file.${src}2$trg.cache/.finaltouch; then
-            translate_from_cache $testset $test_file
+        if test -f $eval_dir/$test_file.${src}2$trg.cache/.finaltouch \
+            && (! is_set QTLM_FROM || test $QTLM_FROM == "t"); then
+            translate_from_cached_ttrees $testset $test_file
+        elif test -f $eval_dir/$test_file.${src}.final/.finaltouch \
+            && (! is_set QTLM_FROM || test $QTLM_FROM != "w"); then
+            translate_from_cached_atrees $testset $test_file
         else
             translate_from_scratch $testset $test_file
         fi
@@ -100,8 +104,11 @@ function translate_from_scratch {
     postprocessing > "$eval_dir/$test_file.${trg}_mt.new.txt"
     ls $eval_dir/$test_file.${src}2${trg}.cache |
     sort --general-numeric-sort --key=1,1 --field-separator=. |
-    grep -P "\.treex.gz\$" > $eval_dir/$test_file.${src}2${trg}.cache/list.txt
+    grep -P "\.treex.gz\$" |
+    tee   $eval_dir/$test_file.$src.final.new/list.txt \
+        > $eval_dir/$test_file.${src}2${trg}.cache/list.txt
     touch $eval_dir/$test_file.${src}2${trg}.{cache,final.new}/.finaltouch
+    touch $eval_dir/$test_file.$src.final.new/.finaltouch
 
     rotate_new_old $eval_dir/$test_file.${src}2${trg}.from_scratch scen
     rotate_new_old $eval_dir/$test_file.${trg}_mt txt
@@ -112,9 +119,62 @@ function translate_from_scratch {
     log "finished $doing"
 }
 
-function translate_from_cache {
+function translate_from_cached_atrees {
     local testset=$1 test_file=$2
-    local doing="translating $eval_dir/$test_file (using cached trees)"
+    local doing="translating $eval_dir/$test_file (using cached a-trees)"
+    log "$doing"
+    if test -d "$eval_dir/$test_file.${src}2${trg}.final.new"; then
+        find "$eval_dir/$test_file.${src}2${trg}.final.new" -type f -name "*.treex.gz" -delete
+    else
+        create_dir "$eval_dir/$test_file.${src}2${trg}.final.new"
+    fi
+    $TMT_ROOT/treex/bin/treex --dump_scenario \
+        Read::Treex \
+            from=@$eval_dir/$test_file.${src}.final/list.txt \
+        Util::SetGlobal \
+            if_missing_bundles=ignore \
+            language=$trg \
+            selector=tst \
+        T2T::CopyTtree \
+            source_language=$src \
+            source_selector=src \
+        "$QTLM_ROOT/scen/$lang1-$lang2/${src}${trg}_t2t.scen" \
+        T2T::TrFAddVariants \
+            model_dir=data/models/transfer/$dataset/$train_date/$src-$trg/formeme \
+            static_model=static.model.gz \
+            discr_model=maxent.model.gz \
+        T2T::TrLAddVariants \
+            model_dir=data/models/transfer/$dataset/$train_date/$src-$trg/lemma \
+            static_model=static.model.gz \
+            discr_model=maxent.model.gz \
+        Write::Treex \
+            storable=0 \
+            compress=1 \
+            path=$eval_dir/$test_file.${src}2${trg}.cache \
+        "$QTLM_ROOT/scen/$lang1-$lang2/${trg}_t2w.scen" \
+        Misc::JoinBundles \
+        Write::Treex \
+            storable=0 \
+            compress=1 \
+            path="$eval_dir/$test_file.${src}2${trg}.final.new" \
+        Write::Sentences > $eval_dir/$test_file.${src}2${trg}.from_cached_atrees.new.scen
+
+    $TMT_ROOT/treex/bin/treex $eval_dir/$test_file.${src}2${trg}.from_cached_atrees.new.scen \
+        2> "$eval_dir/$test_file.${src}2${trg}.treexlog.new" |
+    postprocessing > "$eval_dir/$test_file.${trg}_mt.new.txt"
+    touch $eval_dir/$test_file.${src}2${trg}.{cache,final.new}/.finaltouch
+
+    rotate_new_old $eval_dir/$test_file.${src}2${trg}.from_cached_atrees scen
+    rotate_new_old $eval_dir/$test_file.${trg}_mt txt
+    rotate_new_old $eval_dir/$test_file.${src}2${trg}.treexlog
+    rotate_new_old $eval_dir/$test_file.${src}2${trg}.final
+
+    log "finished $doing"
+}
+
+function translate_from_cached_ttrees {
+    local testset=$1 test_file=$2
+    local doing="translating $eval_dir/$test_file (using cached t-trees)"
     log "$doing"
     if test -d "$eval_dir/$test_file.${src}2${trg}.final.new"; then
         find "$eval_dir/$test_file.${src}2${trg}.final.new" -type f -name "*.treex.gz" -delete
@@ -134,14 +194,14 @@ function translate_from_cache {
             storable=0 \
             compress=1 \
             path="$eval_dir/$test_file.${src}2${trg}.final.new" \
-        Write::Sentences > $eval_dir/$test_file.${src}2${trg}.from_cache.new.scen
+        Write::Sentences > $eval_dir/$test_file.${src}2${trg}.from_cached_ttrees.new.scen
 
-    $TMT_ROOT/treex/bin/treex $eval_dir/$test_file.${src}2${trg}.from_cache.new.scen \
+    $TMT_ROOT/treex/bin/treex $eval_dir/$test_file.${src}2${trg}.from_cached_ttrees.new.scen \
         2> "$eval_dir/$test_file.${src}2${trg}.treexlog.new" |
     postprocessing > "$eval_dir/$test_file.${trg}_mt.new.txt"
     touch $eval_dir/$test_file.${src}2${trg}.final.new/.finaltouch
 
-    rotate_new_old $eval_dir/$test_file.${src}2${trg}.from_cache scen
+    rotate_new_old $eval_dir/$test_file.${src}2${trg}.from_cached_ttrees scen
     rotate_new_old $eval_dir/$test_file.${trg}_mt txt
     rotate_new_old $eval_dir/$test_file.${src}2${trg}.treexlog
     rotate_new_old $eval_dir/$test_file.${src}2${trg}.final
