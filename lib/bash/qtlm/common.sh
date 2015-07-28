@@ -76,6 +76,18 @@ function check_src_trg {
     fi
 }
 
+function check_qtlm_from {
+    if is_set QTLM_FROM; then
+        case "$QTLM_FROM" in
+            w|a|t) # OK
+            ;;
+            *)
+            fatal "invalid value for QTLM_FROM; please specify either w, a, or t."
+            ;;
+        esac
+    fi
+}
+
 function save_code_snapshot {
     local dest_dir="$1"
     if ! test "${dest_dir:0:1}" == "/"; then

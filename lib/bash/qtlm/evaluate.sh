@@ -5,6 +5,7 @@
 function evaluate {
     load_config
     check_src_trg
+    check_qtlm_from
     local doing="evaluating ${src^^}->${trg^^} translation of testset $testset"
     log "$doing"
     load_testset_config

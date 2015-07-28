@@ -6,6 +6,7 @@
 
 function train {
     load_config
+    check_qtlm_from
     if [[ "$(hostname)" != $train_hostname ]]; then
         fatal "dataset '$dataset/$lang1-$lang2' must be trained on '$train_hostname'"
     fi
@@ -68,7 +69,8 @@ function check_dataset_files_config {
 
 function w2a {
     local train_dir=$1
-    if test -f $train_dir/atrees/.finaltouch; then
+    if test -f $train_dir/atrees/.finaltouch \
+        && ( ! is_set QTLM_FROM || test "$QTLM_FROM" != "w" ); then
         log "a-trees are up-to-date"
         return
     fi
@@ -168,7 +170,8 @@ function align {
 
 function a2t {
     local train_dir=$1
-    if test -f $train_dir/ttrees/.finaltouch; then
+    if test -f $train_dir/ttrees/.finaltouch \
+        && ( ! is_set QTLM_FROM || test "$QTLM_FROM" == "t" ); then
         log "t-trees are up-to-date"
         return
     fi
@@ -263,7 +266,8 @@ function train_transfer_models_direction {
     local trg=$3
     create_dir $train_dir/models/$src-$trg/{lemma,formeme}
     if test $train_dir/models/$src-$trg/.finaltouch -nt \
-            $train_dir/ttrees/.finaltouch; then
+            $train_dir/ttrees/.finaltouch \
+            && ( ! is_set QTLM_FROM ); then
             log "transfer models for $src-$trg are up-to-date"
         return 0
     fi
