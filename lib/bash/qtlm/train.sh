@@ -69,7 +69,7 @@ function check_dataset_files_config {
 
 function w2a {
     local train_dir=$1
-    if test -f $train_dir/atrees/.finaltouch \
+    if test $train_dir/atrees/.finaltouch -nt $train_dir/corpus/.finaltouch \
         && ( ! is_set QTLM_FROM || test "$QTLM_FROM" != "w" ); then
         log "a-trees are up-to-date"
         return
@@ -170,7 +170,7 @@ function align {
 
 function a2t {
     local train_dir=$1
-    if test -f $train_dir/ttrees/.finaltouch \
+    if test $train_dir/ttrees/.finaltouch -nt $train_dir/atrees/.finaltouch \
         && ( ! is_set QTLM_FROM || test "$QTLM_FROM" == "t" ); then
         log "t-trees are up-to-date"
         return
@@ -252,9 +252,7 @@ function a2t {
 
 function train_transfer_models {
     local train_dir=$1
-    if is_set QTLM_FROM; then
-        recompute_vectors $train_dir
-    fi
+    get_vectors $train_dir
     train_transfer_models_direction $train_dir $lang1 $lang2 &
     if ! test $big_machine; then
         wait
@@ -263,9 +261,13 @@ function train_transfer_models {
     wait
 }
 
-function recompute_vectors {
+function get_vectors {
     local train_dir=$1
-    local doing="creating vectors from t-trees"
+    if test $train_dir/vectors/.finaltouch -nt $train_dir/ttrees/.finaltouch \
+            && ! is_set QTLM_FROM; then
+        return
+    fi
+    local doing="creating vectors for training models"
     log "$doing"
     mkdir -p $train_dir/batches
     find -L $train_dir/batches -name "t2v_*" -delete
@@ -355,7 +357,7 @@ function train_lemma {
     local trg=$3
     local model_type=$4
     if test $train_dir/models/$src-$trg/lemma/$model_type.model.gz -nt \
-            $train_dir/ttrees/.finaltouch; then
+            $train_dir/vectors/.finaltouch; then
             log "$src-$trg lemma $model_type model is up-to-date"
         return 0
     fi
@@ -376,7 +378,7 @@ function train_formeme {
     local trg=$3
     local model_type=$4
     if test $train_dir/models/$src-$trg/formeme/$model_type.model.gz -nt \
-            $train_dir/ttrees/.finaltouch; then
+            $train_dir/vectors/.finaltouch; then
             log "$src-$trg formeme $model_type model is up-to-date"
         return 0
     fi
