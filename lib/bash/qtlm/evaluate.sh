@@ -46,12 +46,12 @@ function translate_from_scratch {
     local doing="translating $eval_dir/$test_file from scratch"
     log "$doing"
     if test -d "$eval_dir/$test_file.${src}2${trg}.cache"; then
-        find "$eval_dir/$test_file.${src}2${trg}.cache" -type f -name "*.treex.gz" -delete
+        find -L "$eval_dir/$test_file.${src}2${trg}.cache" -type f -name "*.treex.gz" -delete
     else
         create_dir "$eval_dir/$test_file.${src}2${trg}.cache"
     fi
     if test -d "$eval_dir/$test_file.${src}2${trg}.final.new"; then
-        find "$eval_dir/$test_file.${src}2${trg}.final.new" -type f -name "*.treex.gz" -delete
+        find -L "$eval_dir/$test_file.${src}2${trg}.final.new" -type f -name "*.treex.gz" -delete
     else
         create_dir "$eval_dir/$test_file.${src}2${trg}.final.new"
     fi
@@ -125,7 +125,7 @@ function translate_from_cached_atrees {
     local doing="translating $eval_dir/$test_file (using cached a-trees)"
     log "$doing"
     if test -d "$eval_dir/$test_file.${src}2${trg}.final.new"; then
-        find "$eval_dir/$test_file.${src}2${trg}.final.new" -type f -name "*.treex.gz" -delete
+        find -L "$eval_dir/$test_file.${src}2${trg}.final.new" -type f -name "*.treex.gz" -delete
     else
         create_dir "$eval_dir/$test_file.${src}2${trg}.final.new"
     fi
@@ -178,7 +178,7 @@ function translate_from_cached_ttrees {
     local doing="translating $eval_dir/$test_file (using cached t-trees)"
     log "$doing"
     if test -d "$eval_dir/$test_file.${src}2${trg}.final.new"; then
-        find "$eval_dir/$test_file.${src}2${trg}.final.new" -type f -name "*.treex.gz" -delete
+        find -L "$eval_dir/$test_file.${src}2${trg}.final.new" -type f -name "*.treex.gz" -delete
     else
         create_dir "$eval_dir/$test_file.${src}2${trg}.final.new"
     fi
@@ -311,7 +311,7 @@ function list_scores {
     local nist_regex='NIST score = ([0-9]*.[0-9]*)'
     local bleu_regex='BLEU score = ([0-9]*.[0-9]*)'
     local system_regex='for system "(.*)"$'
-    find . -maxdepth 2 -name '*.bleu' |
+    find -L . -maxdepth 2 -name '*.bleu' |
     xargs --no-run-if-empty grep --with-filename 'BLEU score' |
     perl -pe "s/$file_regex\s*$nist_regex\s*$bleu_regex\s*$system_regex/\1\t\2\t\3\t\4/g" |
     cat <(echo -e "TESTSET\tNIST\tBLEU\tSYSTEM") - |

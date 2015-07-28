@@ -11,7 +11,7 @@ function install {
     # done before calling load_config
     while true; do
         $TMT_ROOT/treex/bin/treex \
-            $(find $QTLM_ROOT/scen -name '*.scen') \
+            $(find -L $QTLM_ROOT/scen -name '*.scen') \
             Util::Eval doc='die;' \
             > /dev/null 2> $errors || true
         perl -ne "/^Can't locate (.*\.pm) in \@INC/ && print \"\$1\n\";" \

@@ -46,7 +46,7 @@ function get_corpus {
     $QTLM_ROOT/tools/prune_unaligned_sentpairs.py |
     tee >(cut -f 1 | split $SPLITOPTS - $train_dir/corpus/$lang1/part_) |
           cut -f 2 | split $SPLITOPTS - $train_dir/corpus/$lang2/part_
-    find $train_dir/corpus/$lang1 -name 'part_*.txt' -printf '%f\n' |
+    find -L $train_dir/corpus/$lang1 -name 'part_*.txt' -printf '%f\n' |
     sed 's/\.txt$//' |
     sort > $train_dir/corpus/parts.txt
     touch $train_dir/corpus/.finaltouch
@@ -75,18 +75,18 @@ function w2a {
         return
     fi
     create_dir $train_dir/{atrees,lemmas,batches,scens}
-    find $train_dir/batches -name "w2a_*" -delete
+    find -L $train_dir/batches -name "w2a_*" -delete
     rm -f $train_dir/todo.w2a
     comm -23 \
         <(sed 's/$/.streex/' $train_dir/corpus/parts.txt) \
-        <(find $train_dir/atrees -name '*.streex' -printf '%f\n' | sort) \
+        <(find -L $train_dir/atrees -name '*.streex' -printf '%f\n' | sort) \
         > $train_dir/todo.w2a
     if test -s $train_dir/todo.w2a; then
         split -d -a 3 -n l/$num_procs $train_dir/todo.w2a \
             $train_dir/batches/w2a_
         rm -f $train_dir/todo.w2a
     fi
-    local batches=$(find $train_dir/batches -name "w2a_*" -printf '%f\n')
+    local batches=$(find -L $train_dir/batches -name "w2a_*" -printf '%f\n')
 
     local changed=false
     if test -n "$batches"; then
@@ -132,7 +132,7 @@ function w2a {
     fi
     if $changed || ! test -f $train_dir/lemmas.gz; then
         log "gzipping lemmas"
-        find $train_dir/lemmas -name 'part_*' | sort | xargs cat |
+        find -L $train_dir/lemmas -name 'part_*' | sort | xargs cat |
         gzip > $train_dir/lemmas.gz
         log "finished gzipping lemmas"
     fi
@@ -176,17 +176,17 @@ function a2t {
         return
     fi
     create_dir $train_dir/{ttrees,batches,vectors/{$lang1-$lang2,$lang2-$lang1}}
-    find $train_dir/batches -name "a2t_*" -delete
+    find -L $train_dir/batches -name "a2t_*" -delete
     rm -f $train_dir/todo.a2t
     comm -23 \
-        <(find $train_dir/atrees -name '*.streex' -printf '%f\n' | sort) \
-        <(find $train_dir/ttrees -name '*.streex' -printf '%f\n' | sort) \
+        <(find -L $train_dir/atrees -name '*.streex' -printf '%f\n' | sort) \
+        <(find -L $train_dir/ttrees -name '*.streex' -printf '%f\n' | sort) \
         > $train_dir/todo.a2t
     if test -s $train_dir/todo.a2t; then
         split -d -a 3 -n l/$num_procs $train_dir/todo.a2t $train_dir/batches/a2t_
         rm -f $train_dir/todo.a2t
     fi
-    batches=$(find $train_dir/batches -name "a2t_*" -printf '%f\n')
+    batches=$(find -L $train_dir/batches -name "a2t_*" -printf '%f\n')
     if test -n "$batches"; then
         local doing="analysing parallel data (a2t)"
         log "$doing"
@@ -267,16 +267,17 @@ function recompute_vectors {
     local train_dir=$1
     local doing="creating vectors from t-trees"
     log "$doing"
-    find $train_dir/batches -name "t2v_*" -delete
+    mkdir -p $train_dir/batches
+    find -L $train_dir/batches -name "t2v_*" -delete
     rm -f $train_dir/todo.t2v
-    find $train_dir/ttrees -name '*.streex' -printf '%f\n' | sort \
+    find -L $train_dir/ttrees -name '*.streex' -printf '%f\n' | sort \
         > $train_dir/todo.t2v
     if test -s $train_dir/todo.t2v; then
         split -d -a 3 -n l/$num_procs $train_dir/todo.t2v $train_dir/batches/t2v_
-        rm -f $train_dir/todo.t2v
+        #rm -f $train_dir/todo.t2v
     fi
     mkdir -p $train_dir/vectors/{$lang1-$lang2,$lang2-$lang1}
-    batches=$(find $train_dir/batches -name "t2v_*" -printf '%f\n')
+    batches=$(find -L $train_dir/batches -name "t2v_*" -printf '%f\n')
     for batch in $batches; do
         test -s $train_dir/batches/$batch || continue
         ln -vf $train_dir/batches/$batch $train_dir/ttrees/batch_$batch.txt
@@ -303,7 +304,7 @@ function recompute_vectors {
     for batch in $batches; do
         rm -f $train_dir/ttrees/batch_$batch.txt
     done
-    touch $train_dir/vectors/.finaltouch            
+    touch $train_dir/vectors/.finaltouch
     log "finished $doing"
 }
 
@@ -319,7 +320,7 @@ function train_transfer_models_direction {
     fi
     local doing="sorting $src-$trg vectors by $src lemmas"
     log "$doing"
-    find $train_dir/vectors/$src-$trg -name "part_*.gz" |
+    find -L $train_dir/vectors/$src-$trg -name "part_*.gz" |
     sort |
     xargs zcat |
     cut -f1,2,5 |
@@ -327,7 +328,7 @@ function train_transfer_models_direction {
     gzip > $train_dir/models/$src-$trg/lemma/train.gz
     log "finished $doing"
     doing="sorting $src-trg vectors for formemes"
-    find $train_dir/vectors/$src-$trg -name "part_*.gz" |
+    find -L $train_dir/vectors/$src-$trg -name "part_*.gz" |
     sort |
     xargs zcat |
     cut -f3,4,5 |
