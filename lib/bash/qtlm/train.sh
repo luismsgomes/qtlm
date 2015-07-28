@@ -175,7 +175,7 @@ function a2t {
         log "t-trees are up-to-date"
         return
     fi
-    create_dir $train_dir/{ttrees,batches,models/{$lang1-$lang2,$lang2-$lang1}/v}
+    create_dir $train_dir/{ttrees,batches,vectors/{$lang1-$lang2,$lang2-$lang1}}
     find $train_dir/batches -name "a2t_*" -delete
     rm -f $train_dir/todo.a2t
     comm -23 \
@@ -230,13 +230,13 @@ function a2t {
                     selector=src \
                     trg_lang=$lang1 \
                     compress=1 \
-                    path=$train_dir/models/$lang2-$lang1/v \
+                    path=$train_dir/vectors/$lang2-$lang1 \
                 Print::VectorsForTM \
                     language=$lang1 \
                     selector=src \
                     trg_lang=$lang2 \
                     compress=1 \
-                    path=$train_dir/models/$lang1-$lang2/v \
+                    path=$train_dir/vectors/$lang1-$lang2 \
                 &> $train_dir/logs/$batch.log &
         done
         wait
@@ -252,6 +252,9 @@ function a2t {
 
 function train_transfer_models {
     local train_dir=$1
+    if is_set QTLM_FROM; then
+        recompute_vectors $train_dir
+    fi
     train_transfer_models_direction $train_dir $lang1 $lang2 &
     if ! test $big_machine; then
         wait
@@ -260,20 +263,64 @@ function train_transfer_models {
     wait
 }
 
+function recompute_vectors {
+    local train_dir=$1
+    local doing="creating $src-$trg vectors from t-trees"
+    log "$doing"
+    find $train_dir/batches -name "t2v_*" -delete
+    rm -f $train_dir/todo.t2v
+    find $train_dir/ttrees -name '*.streex' -printf '%f\n' | sort \
+        > $train_dir/todo.t2v
+    if test -s $train_dir/todo.t2v; then
+        split -d -a 3 -n l/$num_procs $train_dir/todo.t2v $train_dir/batches/t2v_
+        rm -f $train_dir/todo.t2v
+    fi
+    mkdir -p $train_dir/vectors/{$lang1-$lang,$lang2-$lang1}
+    batches=$(find $train_dir/batches -name "t2v_*" -printf '%f\n')
+    for batch in $batches; do
+        test -s $train_dir/batches/$batch || continue
+        ln -vf $train_dir/batches/$batch $train_dir/ttrees/batch_$batch.txt
+        $TMT_ROOT/treex/bin/treex \
+            Util::SetGlobal \
+                selector=src \
+            Read::Treex \
+                from=@$train_dir/ttrees/batch_$batch.txt \
+            Read::Treex from=
+            Print::VectorsForTM \
+                language=$lang2 \
+                selector=src \
+                trg_lang=$lang1 \
+                compress=1 \
+                path=$train_dir/vectors/$lang2-$lang1 \
+            Print::VectorsForTM \
+                language=$lang1 \
+                selector=src \
+                trg_lang=$lang2 \
+                compress=1 \
+                path=$train_dir/vectors/$lang1-$lang2 \
+            &> $train_dir/logs/$batch.log &
+    done
+    wait
+    for batch in $batches; do
+        rm -f $train_dir/ttrees/batch_$batch.txt
+    done
+    touch $train_dir/vectors/.finaltouch            
+    log "finished $doing"
+}
+
 function train_transfer_models_direction {
     local train_dir=$1
     local src=$2
     local trg=$3
     create_dir $train_dir/models/$src-$trg/{lemma,formeme}
     if test $train_dir/models/$src-$trg/.finaltouch -nt \
-            $train_dir/ttrees/.finaltouch \
-            && ( ! is_set QTLM_FROM ); then
+            $train_dir/vectors/.finaltouch; then
             log "transfer models for $src-$trg are up-to-date"
         return 0
     fi
     local doing="sorting $src-$trg vectors by $src lemmas"
     log "$doing"
-    find $train_dir/models/$src-$trg/v -name "part_*.gz" |
+    find $train_dir/vectors/$src-$trg -name "part_*.gz" |
     sort |
     xargs zcat |
     cut -f1,2,5 |
@@ -281,7 +328,7 @@ function train_transfer_models_direction {
     gzip > $train_dir/models/$src-$trg/lemma/train.gz
     log "finished $doing"
     doing="sorting $src-trg vectors for formemes"
-    find $train_dir/models/$src-$trg/v -name "part_*.gz" |
+    find $train_dir/vectors/$src-$trg -name "part_*.gz" |
     sort |
     xargs zcat |
     cut -f3,4,5 |
