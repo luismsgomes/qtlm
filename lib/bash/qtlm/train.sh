@@ -265,7 +265,7 @@ function train_transfer_models {
 
 function recompute_vectors {
     local train_dir=$1
-    local doing="creating $src-$trg vectors from t-trees"
+    local doing="creating vectors from t-trees"
     log "$doing"
     find $train_dir/batches -name "t2v_*" -delete
     rm -f $train_dir/todo.t2v
@@ -275,7 +275,7 @@ function recompute_vectors {
         split -d -a 3 -n l/$num_procs $train_dir/todo.t2v $train_dir/batches/t2v_
         rm -f $train_dir/todo.t2v
     fi
-    mkdir -p $train_dir/vectors/{$lang1-$lang,$lang2-$lang1}
+    mkdir -p $train_dir/vectors/{$lang1-$lang2,$lang2-$lang1}
     batches=$(find $train_dir/batches -name "t2v_*" -printf '%f\n')
     for batch in $batches; do
         test -s $train_dir/batches/$batch || continue
@@ -285,7 +285,6 @@ function recompute_vectors {
                 selector=src \
             Read::Treex \
                 from=@$train_dir/ttrees/batch_$batch.txt \
-            Read::Treex from=
             Print::VectorsForTM \
                 language=$lang2 \
                 selector=src \
