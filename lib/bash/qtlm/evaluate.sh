@@ -314,6 +314,8 @@ function list_scores {
     find -L . -maxdepth 2 -name '*.bleu' |
     xargs --no-run-if-empty grep --with-filename 'BLEU score' |
     perl -pe "s/$file_regex\s*$nist_regex\s*$bleu_regex\s*$system_regex/\1\t\2\t\3\t\4/g" |
+    sort -n -r -k 2 | # sort by NIST
+    sort -n -r -k 3 -s | # sort by BLEU with option -s (same BLEU => keep NIST ordering)
     cat <(echo -e "TESTSET\tNIST\tBLEU\tSYSTEM") - |
     column -t
 }
