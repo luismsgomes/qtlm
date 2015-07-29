@@ -120,6 +120,7 @@ function main {
             trg="$1"
             shift
             if test $# -eq 0; then
+                load_config
                 testsets=$(list_all_testsets | grep -vP "^_")
             else
                 testsets=$@
