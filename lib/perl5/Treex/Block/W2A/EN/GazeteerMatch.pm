@@ -55,7 +55,7 @@ sub process_atree {
     my $entities = _resolve_entities($matches);
 
     $Data::Dumper::Maxdepth = 2;
-    log_info Dumper($matches);
+    #log_info Dumper($matches);
     
     # transform the a-tree
     my $entity_anodes = _collapse_entity_anodes($atree, $entities);
@@ -63,7 +63,7 @@ sub process_atree {
     my $collapsed_entities = _collapse_neighboring_entities($entity_anodes);
     
     $entity_anodes = _collapse_entity_anodes($atree, $collapsed_entities);
-    log_info Dumper($collapsed_entities);
+    #log_info Dumper($collapsed_entities);
 
 }
 
