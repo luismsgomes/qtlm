@@ -18,7 +18,7 @@ T2T::EN2PT::AddRelpronBelowRc
 T2T::EN2PT::TurnVerbLemmaToAdjectives
 T2T::EN2PT::FixPunctuation
 
-T2T::EN2PT::TrL_ITdomain
+#T2T::EN2PT::TrL_ITdomain
 
 T2A::CopyTtree
 
