@@ -19,29 +19,29 @@ sub agree {
 
 sub compute_score {
     my ( $self, $logpa, $logpb ) = @_;
-
+    # NOTE: Treex uses log probabilities of base 2
     if ($self->fun eq "AM-Log-P") {
         # arithmetic mean of log probabilities
-        # a(log(P(a),log(P(b))) = (log(P(a) + log(P(b))) / 2
+        # AM(log(P(a),log(P(b))) = (log(P(a) + log(P(b))) / 2
         return ($logpa + $logpb) / 2;
     } elsif ($self->fun eq "Log-AM-P") {
         # log of arithmetic mean of probabilities
-        # log(a(P(a), P(b))) = log((P(a) + P(b)) / 2)
+        # log(AM(P(a), P(b))) = log((P(a) + P(b)) / 2)
         #                    = log(P(a) + P(b)) - log(2)
-        return log(exp($logpa) + exp($logpb)) - log(2);
+        return log(2**$logpa + 2**$logpb) / log(2) - 1; # 1 == log_2(2)
     } elsif ($self->fun eq "Log-GM-P") {
         # log of geometric mean of probabilities
-        # log(g(P(a), P(b))) = log(sqrt(P(a) * P(b)))
+        # log(GM(P(a), P(b))) = log(sqrt(P(a) * P(b)))
         #                    = log(sqrt(exp(log(P(a)) + log(P(b)))))
-        return log(sqrt(exp($logpa + $logpb)));
+        return log(sqrt(2**$logpa * 2**$logpb)) / log(2);
     } elsif ($self->fun eq "GM-Log-P") {
         # geometric mean of log probabilities
         return -sqrt($logpa * $logpb);
     } elsif ($self->fun eq "Log-HM-P") {
         # log of harmonic mean of probabilities
-        # log(h(P(a), P(b))) = log(2 * P(a) * P(b) / (P(a) + P(b)))
+        # log(HM(P(a), P(b))) = log(2 * P(a) * P(b) / (P(a) + P(b)))
         #                    = log(2) + log(P(a)) + log(P(b)) - log(P(a) + P(b))
-        return log(2) + $logpa + $logpb - log(exp($logpa) + exp($logpb));
+        return 1 + $logpa + $logpb - log(2**$logpa + 2**$logpb) / log(2);
     } elsif ($self->fun eq "HM-Log-P") {
         # harmonic mean of log probabilities
         return 2 * $logpa * $logpb / ($logpa + $logpb);
