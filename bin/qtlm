@@ -11,6 +11,9 @@
 ##?   train
 ##?         Trains the transfer models for the current configuration.
 ##?
+##?   adapt <out_domain_train_dir> <in_domain_train_dir>
+##?         Creates domain-adapted transfer models for the current configuration.
+##?
 ##?   start
 ##?         Starts two MTMonkey workers, one for each translation direction.
 ##?
@@ -79,6 +82,7 @@ function main {
     source "$QTLM_ROOT/lib/bash/utils.sh" || exit 1
     source "$QTLM_ROOT/lib/bash/qtlm/common.sh" || exit 1
     source "$QTLM_ROOT/lib/bash/qtlm/train.sh" || exit 1
+    source "$QTLM_ROOT/lib/bash/qtlm/adapt.sh" || exit 1
     source "$QTLM_ROOT/lib/bash/qtlm/evaluate.sh" || exit 1
     source "$QTLM_ROOT/lib/bash/qtlm/translate.sh" || exit 1
     source "$QTLM_ROOT/lib/bash/qtlm/serve.sh" || exit 1
@@ -98,6 +102,15 @@ function main {
                 fatal "command $cmd takes no arguments"
             fi
             $cmd
+        ;;
+        adapt)
+            if test $# -lt 2; then
+                fatal "command $cmd requires two arguments: <out_domain_train_dir> <in_domain_train_dir>"
+            fi
+            out_domain_train_dir="$1"
+            shift
+            in_domain_train_dir="$1"
+            shift
         ;;
         list)
             if test $# -ne 1; then

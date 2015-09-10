@@ -56,6 +56,9 @@ summary:
       train
             Trains the transfer models for the current configuration.
 
+      adapt <out_domain_train_dir> <in_domain_train_dir>
+            Creates domain-adapted transfer models for the current configuration.
+
       serve
             Starts two MTMonkey workers, one for each translation direction.
 
@@ -252,7 +255,7 @@ To evaluate the current pipeline on all evaluation sets listed in
 
     qtlm evaluate en pt
 
-To list BLEU and NIST scores for all testsets evaluated under the current 
+To list BLEU and NIST scores for all testsets evaluated under the current
 directory:
 
     qtlm list scores
@@ -388,21 +391,21 @@ Either of these files must define the following variables:
 
 #### \$num_procs
 The maximum number of concurrent processes that should be executed. Specify a
-number lower than the number of available processors in your machine.  
+number lower than the number of available processors in your machine.
 (default: `2`)
 
 #### \$sort_mem
-How much memory can we use for sorting?  
+How much memory can we use for sorting?
 (default: 50%)
 
 #### \$big_machine
 Set this to `true` only if your machine has enough memory to run several
 concurrent analysis pipelines (for example a machine with 32 cores and 256 GB
-RAM).  
+RAM).
 (default: `false`)
 
 #### \$giza_dir
-Where GIZA++ has been installed.  
+Where GIZA++ has been installed.
 (default: `"$TMT_ROOT/share/installed_tools/giza"`)
 
 
