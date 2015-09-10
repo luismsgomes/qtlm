@@ -11,18 +11,18 @@ function adapt {
     log "$doing"
     local train_dir=train_${lang_pair}_${dataset}_${train_date}
     create_dir $train_dir/logs
-    train_transfer_models $train_dir $in_domain_train_dir $out_domain_train_dir
+    train_adapted_transfer_models $train_dir $in_domain_train_dir $out_domain_train_dir
     upload_transfer_models $train_dir
     log "finished $doing"
 }
 
-function train_transfer_models {
+function train_adapted_transfer_models {
     local train_dir=$1
     local in_domain_train_dir=$2
     local out_domain_train_dir=$3
     get_domain_vectors $train_dir $in_domain_train_dir/ttrees true
     get_domain_vectors $train_dir $out_domain_train_dir/ttrees false
-    train_transfer_models_direction $train_dir $lang1 $lang2 &
+    train_adapted_transfer_models_direction $train_dir $lang1 $lang2 &
     if ! test $big_machine; then
         wait
     fi
@@ -70,7 +70,6 @@ function get_domain_vectors {
                 trg_lang=$lang2 \
                 compress=1 \
                 path=$train_dir/vectors/$lang1-$lang2 \
-                stem_suffix=$($in_domain && echo _in_domain || echo _out_domain) \
             &> $train_dir/logs/$batch.log &
     done
     wait

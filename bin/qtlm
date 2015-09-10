@@ -111,6 +111,7 @@ function main {
             shift
             in_domain_train_dir="$1"
             shift
+            adapt
         ;;
         list)
             if test $# -ne 1; then
