@@ -22,7 +22,7 @@ function train_adapted_transfer_models {
     local out_domain_train_dir=$3
     get_domain_vectors $train_dir $in_domain_train_dir/ttrees true
     get_domain_vectors $train_dir $out_domain_train_dir/ttrees false
-    train_adapted_transfer_models_direction $train_dir $lang1 $lang2 &
+    train_transfer_models_direction $train_dir $lang1 $lang2 &
     if ! test $big_machine; then
         wait
     fi
