@@ -69,6 +69,9 @@ def calculate_statistics(dict_grams):
 
     number_items_show = 50
 
+    if len(dict_grams) < number_items_show:
+        number_items_show = len(dict_grams)
+
     for count_gram in range(len(dict_grams)):
         print("#" + str(count_gram + 1) + "-gram")
 
