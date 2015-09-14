@@ -3,62 +3,75 @@ function load_config {
     if ! check_required_variables QTLM_CONF QTLM_ROOT; then
         exit 1
     fi
-    lang_pair=${QTLM_CONF%/*/*}
-    lang1=${lang_pair%-*}
-    lang2=${lang_pair#*-}
-    if [[ "$lang1" > "$lang2" ]]; then
-        fatal "<lang1> and <lang2> should be lexicographically ordered; please use $lang2-$lang1 instead."
-    fi
-    if test "$lang1" == "$lang2"; then
-        fatal "<lang1> and <lang2> must be different"
-    fi
-    local dataset_and_train_date=${QTLM_CONF#*-*/} # dataset/train_date
-    dataset=${dataset_and_train_date%/*}
-    train_date=${dataset_and_train_date#*/}
 
-    # Sharing configuration
-    source $QTLM_ROOT/conf/sharing.sh
-    if ! check_required_variables download_http_{base_url,user,password} \
-            upload_ssh_{user,host,port,path}; then
-        fatal "please fix $QTLM_ROOT/conf/sharing.sh"
-    fi
+    for conf in "${QTLM_CONF[@]}"
+    do
+        # explodes items at the slash
+        # ex.:  en-pt/ep/2015-01-01/1.0/0.5
+        #       conf_list[0] = en-pt
+        #       conf_list[1] = ep
+        conf_item=(${conf//// })
 
-    local host_config_file=$QTLM_ROOT/conf/hosts/$(hostname).sh
-    # Host configuration
-    if ! test -f $host_config_file; then
-        host_config_file=$QTLM_ROOT/conf/hosts/default.sh
-    fi
-    source $host_config_file
-    if ! check_required_variables num_procs sort_mem big_machine giza_dir; then
-        fatal "please fix $host_config_file"
-    fi
-
-    # Dataset configuration
-    local dataset_config_file=$QTLM_ROOT/conf/datasets/$lang1-$lang2/$dataset.sh
-    if ! test -f $dataset_config_file; then
-        fatal "$dataset_config_file does not exist"
-    fi
-    source $dataset_config_file
-    if ! check_required_variables dataset_files train_hostname rm_giza_files \
-            lemma_static_train_opts lemma_maxent_train_opts \
-            formeme_static_train_opts formeme_maxent_train_opts; then
-        fatal "please fix $dataset_config_file"
-    fi
-
-    treex_share_dir=$(perl -e '
-        use Treex::Core::Config;
-        my ($d) = Treex::Core::Config->resource_path();
-        print "$d\n";
-    ')
-
-    # let's check if all scenarios exist
-    local scen scendir
-    scendir=$QTLM_ROOT/scen/$lang1-$lang2
-    for scen in $scendir/{{${lang1},${lang2}}_{w2a,a2t,t2w},{${lang1}${lang2},${lang2}${lang1}}_t2t}.scen; do
-        if ! test -f "$scen"; then
-            fatal "missing scenario $scen"
+        lang_pair=${conf_item[0]}
+        lang1=${lang_pair%-*}
+        lang2=${lang_pair#*-}
+        if [[ "$lang1" > "$lang2" ]]; then
+            fatal "<lang1> and <lang2> should be lexicographically ordered; please use $lang2-$lang1 instead."
         fi
+        if test "$lang1" == "$lang2"; then
+            fatal "<lang1> and <lang2> must be different"
+        fi
+
+        dataset=${conf_item[1]}
+        train_date=${conf_item[2]}
+
+        # Sharing configuration
+        source $QTLM_ROOT/conf/sharing.sh
+        if ! check_required_variables download_http_{base_url,user,password} \
+                upload_ssh_{user,host,port,path}; then
+            fatal "please fix $QTLM_ROOT/conf/sharing.sh"
+        fi
+
+        local host_config_file=$QTLM_ROOT/conf/hosts/$(hostname).sh
+        # Host configuration
+        if ! test -f $host_config_file; then
+            host_config_file=$QTLM_ROOT/conf/hosts/default.sh
+        fi
+        source $host_config_file
+        if ! check_required_variables num_procs sort_mem big_machine giza_dir; then
+            fatal "please fix $host_config_file"
+        fi
+
+        # Dataset configuration
+        local dataset_config_file=$QTLM_ROOT/conf/datasets/$lang1-$lang2/$dataset.sh
+        if ! test -f $dataset_config_file; then
+            fatal "$dataset_config_file does not exist"
+        fi
+        source $dataset_config_file
+        if ! check_required_variables dataset_files train_hostname rm_giza_files \
+                lemma_static_train_opts lemma_maxent_train_opts \
+                formeme_static_train_opts formeme_maxent_train_opts; then
+            fatal "please fix $dataset_config_file"
+        fi
+
+        treex_share_dir=$(perl -e '
+            use Treex::Core::Config;
+            my ($d) = Treex::Core::Config->resource_path();
+            print "$d\n";
+        ')
+
+        # let's check if all scenarios exist
+        local scen scendir
+        scendir=$QTLM_ROOT/scen/$lang1-$lang2
+        for scen in $scendir/{{${lang1},${lang2}}_{w2a,a2t,t2w},{${lang1}${lang2},${lang2}${lang1}}_t2t}.scen; do
+            if ! test -f "$scen"; then
+                fatal "missing scenario $scen"
+            fi
+        done
+        
     done
+
+
 }
 
 function check_src_trg {
