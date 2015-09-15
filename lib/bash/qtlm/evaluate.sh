@@ -9,7 +9,13 @@ function evaluate {
     local doing="evaluating ${src^^}->${trg^^} translation of testset $testset"
     log "$doing"
     load_testset_config
-    eval_dir=eval_${lang_pair}_${dataset}_${train_date}_${testset}
+    if [ -z $datasets_dir ];
+    then
+        eval_dir=eval_${lang_pair}_${dataset}_${train_date}_${testset}
+    else
+        # interpolation
+        eval_dir=eval_${lang_pair}_${datasets_dir}_${testset}
+    fi
     create_dir $eval_dir
     local remote_path
     for remote_path in $testset_files; do
@@ -79,14 +85,42 @@ function translate_from_scratch {
             source_language=$src \
             source_selector=src \
         "$QTLM_ROOT/scen/$lang1-$lang2/${src}${trg}_t2t.scen" \
-        T2T::TrFAddVariants \
-            model_dir=data/models/transfer/$dataset/$train_date/$src-$trg/formeme \
-            static_model=static.model.gz \
-            discr_model=maxent.model.gz \
-        T2T::TrLAddVariants \
-            model_dir=data/models/transfer/$dataset/$train_date/$src-$trg/lemma \
-            static_model=static.model.gz \
-            discr_model=maxent.model.gz \
+        > $eval_dir/$test_file.${src}2${trg}.from_scratch.new.scen
+
+    if [ -z $datasets_dir ];
+    then
+        $TMT_ROOT/treex/bin/treex --dump_scenario \
+            T2T::TrFAddVariants \
+                model_dir=data/models/transfer/$dataset/$train_date/$src-$trg/formeme \
+                static_model=static.model.gz \
+                discr_model=maxent.model.gz \
+            T2T::TrLAddVariants \
+                model_dir=data/models/transfer/$dataset/$train_date/$src-$trg/lemma \
+                static_model=static.model.gz \
+                discr_model=maxent.model.gz \
+        >> $eval_dir/$test_file.${src}2${trg}.from_scratch.new.scen
+    else
+        # interpolation
+        n=0
+        TFORMEME_TMS=""
+        TLEMMA_TMS=""
+        for dt in "${datasets[@]}"
+        do
+            TFORMEME_TMS="${TFORMEME_TMS}static ${formeme_maxent_weight[$n]} data/models/transfer/$dt/$src-$trg/formeme/static.model.gz maxent ${formeme_static_weight[$n]} data/models/transfer/$dt/$src-$trg/formeme/maxent.model.gz "
+            TLEMMA_TMS="${TLEMMA_TMS}static ${lemma_maxent_weight[$n]} data/models/transfer/$dt/$src-$trg/lemma/static.model.gz maxent ${lemma_static_weight[$n]} data/models/transfer/$dt/$src-$trg/lemma/maxent.model.gz "
+        done
+
+        $TMT_ROOT/treex/bin/treex --dump_scenario \
+            T2T::TrFAddVariantsInterpol \
+                model_dir= \
+                models="$TFORMEME_TMS" \
+            T2T::TrLAddVariantsInterpol \
+                model_dir= \
+                models="$TLEMMA_TMS" \
+        >> $eval_dir/$test_file.${src}2${trg}.from_scratch.new.scen
+
+    fi
+    $TMT_ROOT/treex/bin/treex --dump_scenario \
         Write::Treex \
             storable=0 \
             compress=1 \
@@ -98,7 +132,7 @@ function translate_from_scratch {
             compress=1 \
             path=$eval_dir/$test_file.${src}2${trg}.final.new \
         Write::Sentences \
-	> $eval_dir/$test_file.${src}2${trg}.from_scratch.new.scen
+	   >> $eval_dir/$test_file.${src}2${trg}.from_scratch.new.scen
 
     $TMT_ROOT/treex/bin/treex $eval_dir/$test_file.${src}2${trg}.from_scratch.new.scen \
         < "$eval_dir/$test_file.$src.txt" 2> "$eval_dir/$test_file.${src}2${trg}.treexlog.new" |

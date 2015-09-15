@@ -3,13 +3,16 @@ function load_config {
     if ! check_required_variables QTLM_CONF QTLM_ROOT; then
         exit 1
     fi
-
-    for conf in "${QTLM_CONF[@]}"
+  
+    qtlm_conf_list=(${QTLM_CONF//,/ })
+    datasets_dir=""
+    datasets=()
+    for conf in "${qtlm_conf_list[@]}"
     do
         # explodes items at the slash
         # ex.:  en-pt/ep/2015-01-01/1.0/0.5
-        #       conf_list[0] = en-pt
-        #       conf_list[1] = ep
+        #       conf_item[0] = en-pt
+        #       conf_item[1] = ep
         conf_item=(${conf//// })
 
         lang_pair=${conf_item[0]}
@@ -23,8 +26,19 @@ function load_config {
         fi
 
         dataset=${conf_item[1]}
-        datasets+="+$dataset"
         train_date=${conf_item[2]}
+
+        # for QTLM_CONF back-compability 
+        # future QTLM_CONF should come with formeme/lemma static/maxent weights
+        if [ ${#conf_item[@]} -ge 4 ];
+        then
+            datasets_dir+="+${dataset}_${train_date}"
+            datasets+=("$dataset/$train_date")
+            formeme_maxent_weight+=(${conf_item[3]})
+            formeme_static_weight+=(${conf_item[4]})
+            lemma_maxent_weight+=(${conf_item[5]})
+            lemma_static_weight+=(${conf_item[6]})
+        fi
 
         # Sharing configuration
         source $QTLM_ROOT/conf/sharing.sh
