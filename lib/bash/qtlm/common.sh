@@ -23,6 +23,7 @@ function load_config {
         fi
 
         dataset=${conf_item[1]}
+        datasets+="+$dataset"
         train_date=${conf_item[2]}
 
         # Sharing configuration
@@ -188,5 +189,3 @@ function rotate_new_old {
         mv -v $base.new $base
     fi
 }
-
-
