@@ -1,11 +1,13 @@
 Util::SetGlobal language=en
 
+W2A::HideIT domain=IT resegment=1 gazetteer=all hideIT=1
+
 ## to m-layer
 W2A::EN::Tokenize
 W2A::NormalizeForms
 W2A::EN::FixTokenization
 
-#W2A::EN::GazeteerMatch
+W2A::EN::GazeteerMatch
 
 W2A::EN::TagMorce
 W2A::EN::FixTags
@@ -13,9 +15,9 @@ W2A::EN::Lemmatize
 
 #W2A::WSD
 
-W2A::ToWSD filename_prefix=wsd_in
-W2A::RunDocWSD input_filename_prefix=wsd_in output_filename_prefix=wsd_out
-W2A::FromWSD filename_prefix=wsd_out
+#W2A::ToWSD filename_prefix=wsd_in
+#W2A::RunDocWSD input_filename_prefix=wsd_in output_filename_prefix=wsd_out
+#W2A::FromWSD filename_prefix=wsd_out
 
 # named entities
 A2N::EN::StanfordNamedEntities model=ner-eng-ie.crf-3-all2008.ser.gz

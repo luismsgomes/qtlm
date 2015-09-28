@@ -18,7 +18,7 @@ T2T::EN2PT::AddRelpronBelowRc
 T2T::EN2PT::TurnVerbLemmaToAdjectives
 T2T::EN2PT::FixPunctuation
 
-#T2T::EN2PT::TrL_ITdomain
+T2T::EN2PT::TrL_ITdomain
 
 T2A::CopyTtree
 
@@ -62,3 +62,5 @@ A2W::PT::ConcatenateTokens
 
 # this is the place for temporary regex-based hacks:
 A2W::PT::DirtyTricks
+
+A2W::ShowIT

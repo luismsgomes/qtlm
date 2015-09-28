@@ -6,7 +6,7 @@ A2T::EN::MarkEdgesToCollapseNeg
 A2T::BuildTtree
 A2T::SetIsMember
 A2T::EN::MoveAuxFromCoordToMembers
-#A2T::ProjectGazeteerInfo
+A2T::ProjectGazeteerInfo
 A2T::EN::FixTlemmas
 A2T::EN::SetCoapFunctors
 A2T::EN::FixEitherOr
